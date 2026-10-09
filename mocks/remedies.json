@@ -1,0 +1,155 @@
+[
+  {
+    "id": "rem_sun_arghya",
+    "title": { "en": "Surya Jal Arghya with Copper Lota", "hi": "तांबे के लोटे से सूर्य अर्घ्य" },
+    "category": "Lifestyle",
+    "categoryHi": "दिनचर्या / पूजा",
+    "governingNumber": 1,
+    "planet": { "en": "Sun (Surya)", "hi": "सूर्य" },
+    "overview": {
+      "en": "Offering energized water to the rising Sun awakens dormant vitality, clears eye or bone weaknesses, and boosts administrative authority.",
+      "hi": "प्रातः उगते सूर्य को अर्घ्य देने से मान-सम्मान, नेतृत्व क्षमता और शारीरिक आरोग्यता की वृद्धि होती है।"
+    },
+    "method": {
+      "en": "Fill a pure copper vessel with clean water, add a pinch of red kumkum and red flowers. Raise arms above head level and pour water while looking at the sunbeam through the stream. Chant 'Om Suryaya Namah'.",
+      "hi": "तांबे के पात्र में जल लेकर उसमें रोली व लाल पुष्प डालें। सिर से ऊपर दोनों हाथ उठाकर जलधारा के बीच से सूर्य दर्शन करते हुए अर्घ्य दें। 'ॐ सूर्याय नमः' का जप करें।"
+    },
+    "bestDayTime": { "en": "Daily at sunrise (within 1 hour of dawn)", "hi": "प्रतिदिन सूर्योदय के 1 घंटे के भीतर" }
+  },
+  {
+    "id": "rem_pearl_silver",
+    "title": { "en": "Silver Vessel Hydration & Pearl Harmony", "hi": "चांदी के पात्र में जलपान व मोती" },
+    "category": "Lifestyle",
+    "categoryHi": "दिनचर्या / धातु",
+    "governingNumber": 2,
+    "planet": { "en": "Moon (Chandra)", "hi": "चन्द्र" },
+    "overview": {
+      "en": "Stabilizes mercurial emotions, dissolves nocturnal anxiety, and activates graceful intuitive power.",
+      "hi": "चंचल मन को शांत करता है, मानसिक तनाव मिटाता है और अंतर्ज्ञान को जागृत करता है।"
+    },
+    "method": {
+      "en": "Store clean drinking water in a pure silver tumbler overnight and drink it first thing in the morning. Wear a natural South Sea Pearl in silver on the little finger on Monday evening if recommended.",
+      "hi": "रात में चांदी के बर्तन में जल भरकर रखें और प्रातःकाल उसका सेवन करें। आवश्यकतानुसार कनिष्ठिका अंगुली में चांदी में मोती धारण करें।"
+    },
+    "bestDayTime": { "en": "Mondays & Full Moon evenings", "hi": "सोमवार व पूर्णिमा की संध्या" }
+  },
+  {
+    "id": "rem_kesar_tilak",
+    "title": { "en": "Kesar & Chandan Forehead Anointing", "hi": "केसर व चंदन का तिलक" },
+    "category": "Lifestyle",
+    "categoryHi": "दैनिक आचरण",
+    "governingNumber": 3,
+    "planet": { "en": "Jupiter (Brihaspati)", "hi": "गुरु (बृहस्पति)" },
+    "overview": {
+      "en": "Stimulates the Ajna chakra, improves intellectual retention, attracts wise mentors, and blesses with financial luck.",
+      "hi": "आज्ञा चक्र को सक्रिय करता है, एकाग्रता बढ़ाता है और गुरुजनों का आशीर्वाद दिलाता है।"
+    },
+    "method": {
+      "en": "Rub a pinch of pure saffron or turmeric with water or milk in a stone slab. Apply on the forehead center and navel using the ring finger.",
+      "hi": "शुद्ध केसर या हल्दी को घिसकर अनामिका अंगुली से माथे के मध्य और नाभि पर तिलक लगाएं।"
+    },
+    "bestDayTime": { "en": "Every morning after bath, specially Thursdays", "hi": "प्रतिदिन प्रातः स्नान के बाद, विशेषकर गुरुवार" }
+  },
+  {
+    "id": "rem_green_aven",
+    "title": { "en": "Green Aventurine & Jade Wealth Anchor", "hi": "ग्रीन एवेंचुरिन व जेड पिरामिड" },
+    "category": "Gemstone",
+    "categoryHi": "उपरत्न / क्रिस्टल",
+    "governingNumber": 4,
+    "planet": { "en": "Rahu & Wood Element", "hi": "राहु व काष्ठ तत्व" },
+    "overview": {
+      "en": "Grounds scattered thoughts, introduces financial order, and guards against sudden deceptive losses.",
+      "hi": "अचानक होने वाले नुकसान से रक्षा करता है और धन संचय में स्थिरता लाता है।"
+    },
+    "method": {
+      "en": "Place a genuine Green Aventurine pyramid or tree in the South-East corner of your work desk. Wash under sea salt water once a month to clear psychic static.",
+      "hi": "कार्यस्थल के आग्नेय कोण (दक्षिण-पूर्व) में ग्रीन एवेंचुरिन पिरामिड रखें और महीने में एक बार समुद्री नमक के पानी से शुद्ध करें।"
+    },
+    "bestDayTime": { "en": "Wednesday or Saturday morning", "hi": "बुधवार अथवा शनिवार प्रातः" }
+  },
+  {
+    "id": "rem_gau_seva",
+    "title": { "en": "Gau Seva (Feeding Green Fodder to Cows)", "hi": "गौमाता को हरा चारा व पालक खिलाना" },
+    "category": "Daan/Charity",
+    "categoryHi": "दान व सेवा",
+    "governingNumber": 5,
+    "planet": { "en": "Mercury (Budh)", "hi": "बुध" },
+    "overview": {
+      "en": "Balances the Central Brahmasthan, unlocks speech blocks, heals nervous strain, and multiplies business turnover.",
+      "hi": "व्यापार में गति लाता है, वाणी दोष दूर करता है और परिवार में सुख-शांति प्रदान करता है।"
+    },
+    "method": {
+      "en": "Feed fresh green spinach, soaked green gram (moong dal), or green grass to desi cows with your own hands. Touch cow's back for blessings.",
+      "hi": "अपने हाथों से देसी गाय को हरा चारा, पालक या भीगी हुई मूंग की दाल खिलाएं और आशीर्वाद लें।"
+    },
+    "bestDayTime": { "en": "Every Wednesday morning", "hi": "प्रतिदिन या प्रत्येक बुधवार प्रातः" }
+  },
+  {
+    "id": "rem_rose_quartz",
+    "title": { "en": "Rose Quartz & Natural Itra (Attar) Fragrance", "hi": "गुलाब स्फटिक व प्राकृतिक इत्र प्रयोग" },
+    "category": "Vastu",
+    "categoryHi": "वास्तु व जीवनशैली",
+    "governingNumber": 6,
+    "planet": { "en": "Venus (Shukra)", "hi": "शुक्र" },
+    "overview": {
+      "en": "Ignites domestic romance, dissolves spousal bitterness, and attracts luxury amenities.",
+      "hi": "दांपत्य जीवन में मधुरता लाता है, आकर्षण बढ़ाता है और भौतिक सुख-साधनों की प्राप्ति कराता है।"
+    },
+    "method": {
+      "en": "Place a pair of Rose Quartz hearts or swans on your bedside table. Use pure sandalwood or rose attar on pulse points each morning.",
+      "hi": "शयनकक्ष में रोज क्वार्ट्ज का जोड़ा रखें और कलाई व नाभि पर शुद्ध गुलाब या चंदन का इत्र लगाएं।"
+    },
+    "bestDayTime": { "en": "Friday mornings and evenings", "hi": "शुक्रवार प्रातः व संध्याकाल" }
+  },
+  {
+    "id": "rem_street_dog_care",
+    "title": { "en": "Feeding Street Dogs (Ketu Pacification)", "hi": "श्वान सेवा (कुत्तों को मीठी रोटी खिलाना)" },
+    "category": "Daan/Charity",
+    "categoryHi": "दान व सेवा",
+    "governingNumber": 7,
+    "planet": { "en": "Ketu", "hi": "केतु" },
+    "overview": {
+      "en": "Dispels mysterious phobias, guards family against sudden accidents, and awakens prophetic intuition.",
+      "hi": "अज्ञात भय और संकटों का निवारण करता है तथा संतान सुख व अंतर्ज्ञान बढ़ाता है।"
+    },
+    "method": {
+      "en": "Feed black or multi-colored stray dogs with rotis smeared with a little mustard oil or fresh milk. Treat animals with tenderness.",
+      "hi": "काले या चितकबरे श्वान को सरसों का तेल लगी रोटी या दूध-रोटी खिलाएं।"
+    },
+    "bestDayTime": { "en": "Tuesdays and Saturdays at dusk", "hi": "मंगलवार व शनिवार सायंकाल" }
+  },
+  {
+    "id": "rem_shani_deepam",
+    "title": { "en": "Mustard Oil Deepam at Peepal Tree", "hi": "पीपल वृक्ष के नीचे सरसों के तेल का दीपक" },
+    "category": "Lifestyle",
+    "categoryHi": "पूजा व दान",
+    "governingNumber": 8,
+    "planet": { "en": "Saturn (Shani)", "hi": "शनि" },
+    "overview": {
+      "en": "Alleviates karmic debt, releases long-standing litigation delays, and rewards patient industry with monumental growth.",
+      "hi": "कष्टों और विलंब का निवारण करता है, ऋण से मुक्ति दिलाता है और दीर्घकालिक स्थिरता देता है।"
+    },
+    "method": {
+      "en": "Light an earthen lamp filled with pure mustard oil under a Peepal tree without touching the tree after sunset. Recite 'Om Sham Shanaishcharaya Namah' 11 times and return without looking back.",
+      "hi": "सूर्यास्त के बाद पीपल के पेड़ के नीचे सरसों के तेल का मिट्टी का दीपक जलाएं और 'ॐ शं शनैश्चराय नमः' का जप करें।"
+    },
+    "bestDayTime": { "en": "Saturday evenings after sunset", "hi": "शनिवार की संध्याकाल" }
+  },
+  {
+    "id": "rem_hanuman_chalisa",
+    "title": { "en": "Shri Hanuman Chalisa & Sindoor Puja", "hi": "श्री हनुमान चालीसा पाठ व सिंदूर अर्पण" },
+    "category": "Mantra",
+    "categoryHi": "मंत्र व स्तोत्र",
+    "governingNumber": 9,
+    "planet": { "en": "Mars (Mangal)", "hi": "मंगल" },
+    "overview": {
+      "en": "Eliminates cowardice, drives away negative astral influences, and guarantees victory in honorable battles.",
+      "hi": "भय, क्रोध व शत्रुओं पर विजय दिलाता है और शरीर में अद्भुत स्फूर्ति प्रदान करता है।"
+    },
+    "method": {
+      "en": "Sit facing North or East on a red wool mat. Light a jasmine oil or ghee lamp. Chant the complete Hanuman Chalisa with full voice and steady devotion.",
+      "hi": "लाल आसन पर बैठकर चमेली के तेल का दीपक जलाएं और भक्तिभाव से श्री हनुमान चालीसा का पाठ करें।"
+    },
+    "bestDayTime": { "en": "Tuesdays and Saturdays morning or evening", "hi": "मंगलवार व शनिवार प्रातः या संध्या" }
+  }
+]

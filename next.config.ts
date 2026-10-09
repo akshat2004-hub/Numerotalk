@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // React Compiler (stable in Next.js 16): auto-memoizes all components
+  // so we get zero-cost render optimization without manual useMemo/useCallback
+  reactCompiler: true,
   turbopack: {
     rules: {
       "*.css": {
@@ -14,4 +17,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

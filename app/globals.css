@@ -1,26 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  html {
+    font-size: 13.5px;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Exact Semantic Tokens as specified */
+    --bg: #FFFAF3;
+    --surface: #FFFFFF;
+    --border: #F3E3C4;
+    --input-border: #EADFC8;
+    --heading: #14213D;
+    --text: #2B2B3A;
+    --text-muted: #8A7F6E;
+    --gold: #E8A317;
+    --gold-gradient: linear-gradient(135deg, #F0B53A, #C98310);
+    --active-bg: #FDE9C4;
+    --chip-bg: #FFF1CC;
+    --seg-active: #F7C96B;
+    --seg-inactive: #F4F1EA;
+
+    /* Theme Aliases */
+    --gold-hover: #C98310;
+    --gold-soft: #FDE9C4;
+    --gold-light: #FFF1CC;
+    --text-primary: var(--heading);
+    --text-secondary: var(--text);
+    --text-very-muted: var(--text-muted);
+    --bg-page: var(--bg);
+    --bg-card: var(--surface);
+    --bg-sidebar: var(--surface);
+    --bg-sidebar-active: var(--active-bg);
+    --border-main: var(--border);
+    --border-soft: var(--border);
+
+    /* Shadow System */
+    --shadow-card: 0 4px 24px rgba(190, 130, 20, 0.08);
+    --shadow-subtle: 0 2px 8px rgba(190, 130, 20, 0.04);
+    --shadow-dropdown: 0 10px 30px rgba(190, 130, 20, 0.12);
+    --shadow-floating: 0 8px 30px rgba(190, 130, 20, 0.10);
+
+    /* Fonts */
+    --font-serif: 'Playfair Display', 'Tiro Devanagari Hindi', Georgia, serif;
+    --font-sans: 'Inter', 'Mukta', system-ui, -apple-system, sans-serif;
+
+    /* Backward compatibility tokens */
+    --bg-primary: var(--bg);
+    --bg-surface: var(--surface);
+    --bg-surface-alt: #FFFDF9;
+    --bg-tint-active: var(--active-bg);
+    --bg-tint-hover: #FFF7ED;
+    --border-card: var(--border);
+    --border-input: var(--input-border);
+    --color-primary: var(--gold);
+    --color-primary-deep: #C98310;
+    --color-gold-soft: var(--chip-bg);
+    --color-gold-hairline: var(--border);
+    --text-main: var(--heading);
+    --text-navy: var(--heading);
+    --text-body: var(--text);
+    --accent-kumkum: #EF4444;
+    --accent-success: #16A34A;
+    --shadow-warm: var(--shadow-card);
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif, .font-vedic-serif {
+    font-family: var(--font-serif);
+    letter-spacing: -0.015em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* White 24px-radius cards with semantic tokens */
+.vedic-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.vedic-card:hover {
+  border-color: #EADFC8;
+  box-shadow: 0 6px 28px rgba(190, 130, 20, 0.12);
+}
+
+/* Primary Gold Button CTA: 16px radius, gold gradient */
+.btn-gold-gradient, .btn-vedic-primary {
+  background: var(--gold-gradient);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 12.5px;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(232, 163, 23, 0.25);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-gold-gradient:hover, .btn-vedic-primary:hover {
+  transform: translateY(-0.5px);
+  filter: brightness(1.04);
+  box-shadow: 0 4px 14px rgba(232, 163, 23, 0.32);
+}
+
+.btn-gold-gradient:active, .btn-vedic-primary:active {
+  transform: translateY(0);
+}
+
+.btn-vedic-secondary {
+  background-color: var(--surface);
+  color: var(--text);
+  font-weight: 500;
+  font-size: 12.5px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+}
+
+.btn-vedic-secondary:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+}
+
+/* Orbit slow spin */
+@keyframes spin-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-orbit-slow {
+  animation: spin-orbit 80s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-orbit-slow {
+    animation: none !important;
+  }
+}
+
+/* Tables: compact padding, clean headers */
+.vedic-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.vedic-table th {
+  background-color: #F8FAFC;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 11.5px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-main);
+}
+
+.vedic-table td {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--border-main);
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 8px 12px;
 }

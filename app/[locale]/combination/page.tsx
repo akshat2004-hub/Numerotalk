@@ -1,0 +1,292 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { GitMerge, Sparkles, Briefcase, Heart, CheckCircle2, Shield, Palette } from 'lucide-react';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { NumberBadge } from '@/components/ui/NumberBadge';
+import { PredictionCard } from '@/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { calculateMulank, calculateBhagyank, getNumberRelationship, NUMBER_RELATIONSHIPS, numerologyService } from '@/lib';
+import { CombinationReading } from '@/types';
+
+export default function CombinationPage() {
+  const t = useTranslations('combinationPage');
+  const tp = useTranslations('profile');
+  const locale = (useLocale() || 'en') as 'en' | 'hi';
+  const profile = useNumerologyStore((s) => s.profile);
+
+  const mulank = profile.dob ? calculateMulank(profile.dob).mulank : 5;
+  const bhagyank = profile.dob ? calculateBhagyank(profile.dob).bhagyank : 3;
+
+  const [reading, setReading] = useState<CombinationReading | null>(null);
+
+  const relation = getNumberRelationship(mulank, bhagyank);
+  const mulankInfo = NUMBER_RELATIONSHIPS[mulank];
+  const bhagyankInfo = NUMBER_RELATIONSHIPS[bhagyank];
+
+  useEffect(() => {
+    numerologyService.getCombinationReading(mulank, bhagyank, locale).then(setReading);
+  }, [mulank, bhagyank, locale]);
+
+  const getRelationBadge = () => {
+    if (relation === 'friendly') {
+      return { text: locale === 'hi' ? 'परम मित्र संबंध' : 'Harmonious Alliance', color: 'emerald' as const };
+    }
+    if (relation === 'enemy') {
+      return { text: locale === 'hi' ? 'विपरीत ग्रह संबंध' : 'Challenging Friction', color: 'crimson' as const };
+    }
+    return { text: locale === 'hi' ? 'तटस्थ संबंध' : 'Neutral Resonance', color: 'gold' as const };
+  };
+
+  const badge = getRelationBadge();
+
+  // Combined friendly, neutral, and enemy numbers
+  const allFriends = Array.from(new Set([...(mulankInfo?.friends || []), ...(bhagyankInfo?.friends || [])]));
+  const allNeutrals = Array.from(new Set([...(mulankInfo?.neutrals || []), ...(bhagyankInfo?.neutrals || [])]));
+  const allEnemies = Array.from(new Set([...(mulankInfo?.enemies || []), ...(bhagyankInfo?.enemies || [])]));
+
+  return (
+    <div className="space-y-6 sm:space-y-7">
+      <SectionHeader
+        title={t('title')}
+        subtitle={t('subtitle')}
+        badge={locale === 'hi' ? 'अंक तालमेल 03' : 'ENERGY SYNERGY 03'}
+        icon={<GitMerge className="w-5 h-5 stroke-[1.5]" />}
+      />
+
+      <ProfileEmptyBanner />
+
+      {/* Synthesis Banner */}
+      <div className="vedic-card p-4 sm:p-5">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <span className="text-[10.5px] text-[var(--gold)] font-semibold block mb-1">{tp('mulank')}</span>
+              <NumberBadge number={mulank} size="lg" subLabel={mulankInfo?.rulerEn} />
+            </div>
+
+            <div className="text-lg font-serif font-black text-[var(--text-muted)]">✕</div>
+
+            <div className="text-center">
+              <span className="text-[10.5px] text-[var(--gold)] font-semibold block mb-1">{tp('bhagyank')}</span>
+              <NumberBadge number={bhagyank} size="lg" subLabel={bhagyankInfo?.rulerEn} />
+            </div>
+          </div>
+
+          <div className="text-center md:text-right space-y-1">
+            <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold border ${
+              badge.color === 'emerald'
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                : badge.color === 'crimson'
+                ? 'bg-rose-50 text-rose-700 border-rose-200'
+                : 'bg-[var(--chip-bg)] text-[var(--gold)] border-[var(--border)]'
+            }`}>
+              {badge.text}
+            </span>
+            <h3 className="font-serif text-base sm:text-lg font-bold text-[var(--heading)]">
+              {reading ? (locale === 'hi' ? reading.title.hi : reading.title.en) : `Driver ${mulank} x Conductor ${bhagyank}`}
+            </h3>
+            <p className="text-[11.5px] text-[var(--text-muted)] max-w-md">
+              {locale === 'hi' ? 'आंतरिक प्रेरणा और बाह्य भाग्य का संगम' : 'Intersection of subconscious instinct and external life path'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 3 CHIP GROUPS: Friendly, Neutral, Enemy numbers */}
+      <div className="vedic-card p-4 sm:p-5 space-y-3">
+        <h4 className="font-serif text-sm font-semibold text-[var(--heading)]">
+          {locale === 'hi' ? 'ग्रह संबंध वर्गीकरण (मित्र, तटस्थ, शत्रु)' : 'Planetary Relationship Matrix (Friendly, Neutral, Enemy)'}
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Friendly Group */}
+          <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-800">
+                {locale === 'hi' ? 'मित्र अंक (Friendly)' : 'Friendly Numbers'}
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold">
+                {allFriends.length}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {allFriends.map((num) => (
+                <span
+                  key={num}
+                  className="w-7 h-7 rounded-xl bg-white border border-emerald-300 text-emerald-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                >
+                  {num}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Neutral Group */}
+          <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-800">
+                {locale === 'hi' ? 'तटस्थ अंक (Neutral)' : 'Neutral Numbers'}
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold">
+                {allNeutrals.length}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {allNeutrals.map((num) => (
+                <span
+                  key={num}
+                  className="w-7 h-7 rounded-xl bg-white border border-amber-300 text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                >
+                  {num}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Enemy Group */}
+          <div className="p-3 rounded-2xl bg-rose-50/60 border border-rose-200/80 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-rose-800">
+                {locale === 'hi' ? 'शत्रु अंक (Enemy)' : 'Enemy Numbers'}
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-800 font-bold">
+                {allEnemies.length}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {allEnemies.length > 0 ? (
+                allEnemies.map((num) => (
+                  <span
+                    key={num}
+                    className="w-7 h-7 rounded-xl bg-white border border-rose-300 text-rose-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                  >
+                    {num}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-[var(--text-muted)] italic">
+                  {locale === 'hi' ? 'कोई शत्रु अंक नहीं' : 'No inimical numbers'}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Lucky Color Swatches & Lucky Numbers */}
+      <div className="vedic-card p-4 sm:p-5 space-y-3">
+        <h4 className="font-serif text-sm font-semibold text-[var(--heading)] flex items-center gap-1.5">
+          <Palette className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />
+          <span>{locale === 'hi' ? 'शुभ रंग एवं शुभ अंक संरेखण' : 'Lucky Color Swatches & Numbers'}</span>
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+            <span className="font-serif font-bold text-[var(--heading)] block text-xs">
+              {locale === 'hi' ? `मूलांक ${mulank} (${mulankInfo?.rulerHi})` : `Driver ${mulank} (${mulankInfo?.rulerEn})`}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ रंग:' : 'Lucky Colors:'}</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(locale === 'hi' ? mulankInfo?.luckyColorsHi : mulankInfo?.luckyColorsEn)?.map((col, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-0.5 rounded-lg bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--heading)] text-[11px] font-semibold"
+                  >
+                    {col}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ अंक:' : 'Lucky Numbers:'}</span>
+              <span className="font-bold text-emerald-700">{mulankInfo?.friends.join(', ')}</span>
+            </div>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+            <span className="font-serif font-bold text-[var(--heading)] block text-xs">
+              {locale === 'hi' ? `भाग्यांक ${bhagyank} (${bhagyankInfo?.rulerHi})` : `Conductor ${bhagyank} (${bhagyankInfo?.rulerEn})`}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ रंग:' : 'Lucky Colors:'}</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(locale === 'hi' ? bhagyankInfo?.luckyColorsHi : bhagyankInfo?.luckyColorsEn)?.map((col, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-0.5 rounded-lg bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--heading)] text-[11px] font-semibold"
+                  >
+                    {col}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ अंक:' : 'Lucky Numbers:'}</span>
+              <span className="font-bold text-emerald-700">{bhagyankInfo?.friends.join(', ')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Reading Breakdown with Add to report */}
+      {reading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <PredictionCard
+            title={t('synergyTitle')}
+            badge="Cosmic Synergy"
+            badgeVariant="gold"
+            sectionKey="module3_synergy"
+            icon={<Sparkles className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
+          >
+            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
+              {locale === 'hi' ? reading.synergyAnalysis.hi : reading.synergyAnalysis.en}
+            </p>
+          </PredictionCard>
+
+          <PredictionCard
+            title={t('careerGuidanceTitle')}
+            badge="Career Flow"
+            badgeVariant="indigo"
+            sectionKey="module3_career"
+            icon={<Briefcase className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
+          >
+            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
+              {locale === 'hi' ? reading.careerGuidance.hi : reading.careerGuidance.en}
+            </p>
+          </PredictionCard>
+
+          <PredictionCard
+            title={t('personalLifeTitle')}
+            badge="Personal Harmony"
+            badgeVariant="crimson"
+            sectionKey="module3_personal"
+            icon={<Heart className="w-4 h-4 text-rose-500 stroke-[1.5]" />}
+          >
+            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
+              {locale === 'hi' ? reading.personalLife.hi : reading.personalLife.en}
+            </p>
+          </PredictionCard>
+
+          <PredictionCard
+            title={t('recommendedRemedies')}
+            badge="Remedy Alignment"
+            badgeVariant="emerald"
+            sectionKey="module3_remedies"
+            icon={<Shield className="w-4 h-4 text-emerald-600 stroke-[1.5]" />}
+          >
+            <ul className="space-y-1.5 text-[12.5px]">
+              {reading.luckyRemedies.map((rem, i) => (
+                <li key={i} className="flex items-center gap-2 text-[var(--text)]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[1.5] shrink-0" />
+                  <span>{locale === 'hi' ? rem.hi : rem.en}</span>
+                </li>
+              ))}
+            </ul>
+          </PredictionCard>
+        </div>
+      )}
+    </div>
+  );
+}
