@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { eventScore, ALL_EVENTS, calculateAllEventScores } from '../lib/engine/events';
+import { eventScore, ALL_EVENTS, calculateAllEventScores } from '../core/engine/events';
 import { SAMPLE_PROFILES } from './fixtures/profiles';
 
 describe('Life Events Engine (Module 16)', () => {

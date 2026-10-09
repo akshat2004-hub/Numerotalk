@@ -1,0 +1,148 @@
+{
+  "yogas": [
+    {
+      "id": "mental",
+      "name": { "en": "Mental Plane (Thought / Gyana)", "hi": "ज्ञान / विचार तल (मानसिक योग)" },
+      "numbers": [4, 9, 2],
+      "category": { "en": "Intellect & Analysis", "hi": "बुद्धि एवं विश्लेषण" },
+      "description": {
+        "en": "Exceptional analytical depth, photographic memory, and strategic foresight.",
+        "hi": "असाधारण विश्लेषणात्मक क्षमता, तीव्र स्मरण शक्ति एवं रणनीतिक दूरदर्शिता।"
+      },
+      "positiveManifestation": {
+        "en": "Master of strategy, high academic distinction, intellectual leadership.",
+        "hi": "रणनीति के विशेषज्ञ, उच्च शैक्षणिक सफलता एवं बौद्धिक नेतृत्व।"
+      },
+      "balancingRemedy": {
+        "en": "Meditate daily facing North-East; offer water to the rising Sun.",
+        "hi": "प्रतिदिन उत्तर-पूर्व दिशा में ध्यान करें; उगते सूर्य को तांबे के लोटे से जल अर्पित करें।"
+      }
+    },
+    {
+      "id": "emotional",
+      "name": { "en": "Emotional Plane (Will / Sankalpa)", "hi": "इच्छाशक्ति / संकल्प तल (भावनात्मक योग)" },
+      "numbers": [3, 5, 7],
+      "category": { "en": "Heart & Intuition", "hi": "हृदय एवं अंतर्ज्ञान" },
+      "description": {
+        "en": "Unshakable perseverance, spiritual intuition, and profound heart-centered resilience.",
+        "hi": "अटल दृढ़ संकल्प, आध्यात्मिक अंतर्ज्ञान एवं गहरी आंतरिक शक्ति।"
+      },
+      "positiveManifestation": {
+        "en": "Triumphs against insurmountable odds through sheer determination and emotional equilibrium.",
+        "hi": "कठिन से कठिन चुनौतियों पर अटूट इच्छाशक्ति और भावनात्मक संतुलन से विजय।"
+      },
+      "balancingRemedy": {
+        "en": "Wear a natural 5-Mukhi Rudraksha; practice pranayama at dawn.",
+        "hi": "प्राकृतिक 5-मुखी रुद्राक्ष धारण करें; प्रातःकाल प्राणायाम का अभ्यास करें।"
+      }
+    },
+    {
+      "id": "practical",
+      "name": { "en": "Practical Plane (Action / Karma)", "hi": "कर्म / क्रियान्वयन तल (व्यावहारिक योग)" },
+      "numbers": [8, 1, 6],
+      "category": { "en": "Materialization", "hi": "भौतिक सफलता" },
+      "description": {
+        "en": "Supreme capacity to materialize theoretical visions into physical, commercial wealth.",
+        "hi": "वैचारिक योजनाओं को धरातल पर उतारकर भौतिक व व्यापारिक समृद्धि बनाने की श्रेष्ठ क्षमता।"
+      },
+      "positiveManifestation": {
+        "en": "Elite commercial acumen, real estate ownership, and executive leadership.",
+        "hi": "कुशल व्यावसायिक समझ, भूमि-भवन लाभ एवं प्रशासनिक नेतृत्व क्षमता।"
+      },
+      "balancingRemedy": {
+        "en": "Feed birds grains on Saturdays; maintain honest and ethical business practices.",
+        "hi": "शनिवार को पक्षियों को सप्तधान्य डालें; व्यापार में पूर्ण सत्यनिष्ठा रखें।"
+      }
+    },
+    {
+      "id": "vision",
+      "name": { "en": "Visionary Column (Prosperity & Planning)", "hi": "योजना एवं दूरदर्शिता रेखा" },
+      "numbers": [4, 3, 8],
+      "category": { "en": "Foundation", "hi": "आधारशिला" },
+      "description": {
+        "en": "Exemplary architectural and organizational mindset; executes multi-decade horizons.",
+        "hi": "उत्कृष्ट संगठनात्मक सोच; दीर्घकालिक योजनाओं का सफल निर्माण व क्रियान्वयन।"
+      },
+      "positiveManifestation": {
+        "en": "Pioneering entrepreneurship, legacy builder, foundational structural stability.",
+        "hi": "युगांतरकारी उद्यमशीलता, सुदृढ़ नींव और दीर्घकालिक प्रतिष्ठा।"
+      },
+      "balancingRemedy": {
+        "en": "Keep the South-West of workspace clean; respect mentors and elders.",
+        "hi": "कार्यस्थल के दक्षिण-पश्चिम कोने को व्यवस्थित रखें; गुरुजनों का आशीर्वाद लें।"
+      }
+    },
+    {
+      "id": "willpower",
+      "name": { "en": "Willpower Column (Courage & Balance)", "hi": "धैर्य एवं पराक्रम रेखा" },
+      "numbers": [9, 5, 1],
+      "category": { "en": "Dynamic Core", "hi": "ऊर्जा केंद्र" },
+      "description": {
+        "en": "Unbreakable core stability, radiant optimism, and ability to steer through crises.",
+        "hi": "अटूट मानसिक स्थिरता, तेजस्वी आशावाद एवं किसी भी संकट से पार पाने का पराक्रम।"
+      },
+      "positiveManifestation": {
+        "en": "Magnificent executive authority, public veneration, unstoppable momentum.",
+        "hi": "प्रभावशाली नेतृत्व, जनप्रिय प्रतिष्ठा एवं निरंतर प्रगतिशील जीवन।"
+      },
+      "balancingRemedy": {
+        "en": "Chant Gayatri Mantra 27 times at sunrise; avoid anger and haste.",
+        "hi": "सूर्योदय के समय गायत्री मंत्र का 27 बार जप करें; क्रोध से बचें।"
+      }
+    },
+    {
+      "id": "action",
+      "name": { "en": "Action Column (Execution & Grace)", "hi": "कर्म एवं सिद्धि रेखा" },
+      "numbers": [2, 7, 6],
+      "category": { "en": "Delivery", "hi": "क्रियान्वयन" },
+      "description": {
+        "en": "Instantaneous execution of inspiration; bridge between imagination and final art.",
+        "hi": "संकल्प को तत्काल सिद्ध करने की कला; रचनात्मकता और पूर्णता का सुंदर संगम।"
+      },
+      "positiveManifestation": {
+        "en": "Artistic grandeur, luxury mastery, swift and flawless professional delivery.",
+        "hi": "कलात्मक वैभव, विलासिता सुख एवं कार्यों का त्वरित व त्रुटिरहित निष्पादन।"
+      },
+      "balancingRemedy": {
+        "en": "Light a cow ghee lamp every evening in the North-West.",
+        "hi": "प्रतिदिन संध्या समय उत्तर-पश्चिम दिशा में शुद्ध घी का दीपक जलाएं।"
+      }
+    },
+    {
+      "id": "rajayoga_golden",
+      "name": { "en": "Golden Rajayoga Diagonal (Mahalaxmi Yoga)", "hi": "स्वर्ण राजयोग (महालक्ष्मी योग)" },
+      "numbers": [4, 5, 6],
+      "category": { "en": "Royal Fortune", "hi": "राजयोग एवं ऐश्वर्य" },
+      "description": {
+        "en": "The supreme prosperity diagonal. Brings effortless fortune, regal elegance, and continuous flow of wealth.",
+        "hi": "अति शुभ राजयोग रेखा। सहज समृद्धि, राजसी ठाठ-बाट एवं अनवरत धन-वैभव प्रदान करती है।"
+      },
+      "positiveManifestation": {
+        "en": "Supreme wealth, magnetic reputation, domestic harmony, and international honor.",
+        "hi": "असीम धन संपदा, चुंबकीय व्यक्तित्व, पारिवारिक सुख एवं अंतरराष्ट्रीय ख्याति।"
+      },
+      "balancingRemedy": {
+        "en": "Support women in education; maintain aromatic cleanliness in living quarters.",
+        "hi": "कन्याओं की शिक्षा में सहयोग दें; घर में चंदन या कपूर की सुगंध रखें।"
+      }
+    },
+    {
+      "id": "silver_rajayoga",
+      "name": { "en": "Silver Rajayoga Diagonal (Vidya & Kirti)", "hi": "रजत राजयोग (विद्या एवं कीर्ति योग)" },
+      "numbers": [2, 5, 8],
+      "category": { "en": "Wisdom & Land", "hi": "विद्या एवं भूमि सुख" },
+      "description": {
+        "en": "Immense real-estate blessings, patience, and ancestral wisdom.",
+        "hi": "अचल संपत्ति, भूमि-भवन लाभ, धैर्य एवं आध्यात्मिक ज्ञान की प्रचुरता।"
+      },
+      "positiveManifestation": {
+        "en": "Substantial land/property acquisition, tranquil family life, timeless wisdom.",
+        "hi": "विशाल भू-संपत्ति अर्जन, शांत गृहस्थ जीवन एवं प्रतिष्ठित परामर्शदाता पद।"
+      },
+      "balancingRemedy": {
+        "en": "Water a Peepal or Tulsi tree on Thursdays; respect Mother Earth.",
+        "hi": "गुरुवार को तुलसी या पीपल को जल दें; भूमि का सम्मान करें।"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "dashaRules": {
+    "cycleYears": 9,
+    "mahadashaFormula": "cycle_based_on_mulank_and_age",
+    "antardashaFormula": "dob_day_plus_month_plus_target_year_reduced",
+    "pratyantarFormula": "antardasha_plus_month_offset_reduced",
+    "dashaMeanings": {
+      "1": { "en": "New beginnings, leadership surge, government prestige.", "hi": "नए उपक्रमों की शुरुआत, प्रशासनिक मान-सम्मान एवं नेतृत्व क्षमता में वृद्धि।" },
+      "2": { "en": "Emotional sensitivity, partnerships, creative collaborations.", "hi": "भावनात्मक संतुलन, नए सहयोगी संबंध एवं रचनात्मक कार्यों में सफलता।" },
+      "3": { "en": "Expansion of knowledge, spiritual elevation, financial wisdom.", "hi": "विद्या व ज्ञान का विस्तार, गुरु कृपा एवं उत्तम आर्थिक निर्णय।" },
+      "4": { "en": "Sudden shifts, unconventional technological ventures, breakthrough.", "hi": "अप्रत्याशित बदलाव, तकनीकी सफलता एवं दूरगामी योजनाओं का आरंभ।" },
+      "5": { "en": "High commercial velocity, travel, communication, swift growth.", "hi": "व्यापार में तीव्र गति, लाभकारी यात्राएं एवं प्रभावशाली जनसंचार।" },
+      "6": { "en": "Luxury acquisition, marital happiness, arts, elevated comfort.", "hi": "विलासिता व भौतिक सुख, दांपत्य सुख एवं कलात्मक उपलब्धियां।" },
+      "7": { "en": "Introspection, metaphysical study, detachment, inner enlightenment.", "hi": "आत्म-चिंतन, गूढ़ ज्ञान का अध्ययन एवं अंतरात्मा की शांति।" },
+      "8": { "en": "Discipline, karmic harvest, real estate consolidation, persistence.", "hi": "कड़ा परिश्रम, न्यायपूर्ण लाभ, भूमि-भवन लाभ एवं दीर्घकालिक स्थिरता।" },
+      "9": { "en": "Culmination, decisive victory, courage, high vitality.", "hi": "लक्ष्यों की सिद्धि, साहसिक निर्णय एवं पराक्रम से विजय।" }
+    }
+  }
+}

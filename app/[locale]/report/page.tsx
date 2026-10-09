@@ -1,8 +1,31 @@
 'use client';
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { FileSpreadsheet, Download, Plus, Trash2, Sparkles, Check, Globe, Shield } from 'lucide-react';
+import {
+  FileSpreadsheet,
+  Download,
+  Plus,
+  Trash2,
+  Sparkles,
+  Check,
+  Globe,
+  Shield,
+  Crown,
+  GitMerge,
+  EyeOff,
+  Repeat,
+  Grid,
+  FileSignature,
+  Heart,
+  Smartphone,
+  Briefcase,
+  KeyRound,
+  Calendar,
+  Home,
+  Clock,
+  Hash
+} from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -16,9 +39,26 @@ import {
   calculateBhagyank,
   calculateDestinyNumber,
   calculateVedicGrid,
-  detectYogas
+  detectYogas,
+  calculateYearlyPrediction,
+  analyzeMobileNumber,
+  calculateVastuNumerology,
+  calculateTimeNumerology,
+  getNumberMeaning,
+  generatePinByNumerology,
+  generatePasswordByProfession,
+  getNumberRelationship,
+  NUMBER_RELATIONSHIPS,
+  calculateAllEventScores,
+  numerologyService
 } from '@/lib';
-import { calculateAllEventScores } from '@/lib/engine/events';
+import {
+  DestinyReading,
+  CombinationReading,
+  MissingNumberReading,
+  RepeatingNumberReading,
+  RemedyMasterItem
+} from '@/types';
 
 export default function FinalReportPage() {
   const t = useTranslations('reportPage');
@@ -43,6 +83,7 @@ export default function FinalReportPage() {
 
   const previewRef = useRef<HTMLDivElement>(null);
 
+  // Core Math Calculations
   const mulank = useMemo(
     () => profile.dob ? calculateMulank(profile.dob) : { mulank: 5, compoundStr: '23/5', dayNumber: 23 },
     [profile.dob]
@@ -61,10 +102,78 @@ export default function FinalReportPage() {
   );
   const yogasResult = useMemo(() => detectYogas(grid), [grid]);
   const eventsResult = useMemo(() => calculateAllEventScores(profile), [profile]);
+  const yearlyResult = useMemo(() => calculateYearlyPrediction(profile.dob || '1995-10-23'), [profile.dob]);
+  const mobileResult = useMemo(() => analyzeMobileNumber(profile.mobile || '9876543210', mulank.mulank), [profile.mobile, mulank.mulank]);
+  const vastuResult = useMemo(() => calculateVastuNumerology(profile.dob || '1995-10-23'), [profile.dob]);
+  
+  const birthHours = profile.birthTime ? parseInt(profile.birthTime.split(':')[0], 10) : 10;
+  const birthMins = profile.birthTime ? parseInt(profile.birthTime.split(':')[1], 10) : 30;
+  const timeResult = useMemo(() => calculateTimeNumerology(birthHours, birthMins), [birthHours, birthMins]);
+
+  const mulankMeaning = useMemo(() => getNumberMeaning(mulank.mulank), [mulank.mulank]);
+  const bhagyankMeaning = useMemo(() => getNumberMeaning(bhagyank.bhagyank), [bhagyank.bhagyank]);
+  const [reportDate, setReportDate] = useState('2026-10-09');
+  useEffect(() => {
+    setReportDate(new Date().toLocaleDateString());
+  }, []);
+
+  const pin4 = useMemo(() => {
+    // Deterministic 4-digit PIN harmonized with Driver Number to prevent SSR hydration mismatch
+    const d1 = ((mulank.mulank * 2) % 9) || 1;
+    const d2 = ((mulank.mulank * 3) % 9) || 2;
+    const d3 = ((mulank.mulank * 4) % 9) || 3;
+    let d4 = 1;
+    for (let c = 1; c <= 9; c++) {
+      if (((d1 + d2 + d3 + c - 1) % 9) + 1 === mulank.mulank) {
+        d4 = c;
+        break;
+      }
+    }
+    const pin = `${d1}${d2}${d3}${d4}`;
+    const sum = d1 + d2 + d3 + d4;
+    return { pin, sum };
+  }, [mulank.mulank]);
+
+  const pin6 = useMemo(() => {
+    // Deterministic 6-digit PIN harmonized with Conductor Number to prevent SSR hydration mismatch
+    const d1 = ((bhagyank.bhagyank * 2) % 9) || 1;
+    const d2 = ((bhagyank.bhagyank * 3) % 9) || 2;
+    const d3 = ((bhagyank.bhagyank * 4) % 9) || 3;
+    const d4 = ((bhagyank.bhagyank * 5) % 9) || 4;
+    const d5 = ((bhagyank.bhagyank * 6) % 9) || 5;
+    let d6 = 1;
+    for (let c = 1; c <= 9; c++) {
+      if (((d1 + d2 + d3 + d4 + d5 + c - 1) % 9) + 1 === bhagyank.bhagyank) {
+        d6 = c;
+        break;
+      }
+    }
+    const pin = `${d1}${d2}${d3}${d4}${d5}${d6}`;
+    const sum = d1 + d2 + d3 + d4 + d5 + d6;
+    return { pin, sum };
+  }, [bhagyank.bhagyank]);
+
+  const relationType = useMemo(() => getNumberRelationship(mulank.mulank, bhagyank.bhagyank), [mulank.mulank, bhagyank.bhagyank]);
+  const mulankRelations = useMemo(() => NUMBER_RELATIONSHIPS[mulank.mulank] || { friends: [1, 2], neutrals: [3, 9], enemies: [4, 8] }, [mulank.mulank]);
+
+  // Async Mock Readings State
+  const [destinyReading, setDestinyReading] = useState<DestinyReading | null>(null);
+  const [combinationReading, setCombinationReading] = useState<CombinationReading | null>(null);
+  const [missingRemedies, setMissingRemedies] = useState<MissingNumberReading[]>([]);
+  const [repeatingReadings, setRepeatingReadings] = useState<RepeatingNumberReading[]>([]);
+  const [remediesMasterList, setRemediesMasterList] = useState<RemedyMasterItem[]>([]);
+
+  useEffect(() => {
+    numerologyService.getDestinyReading(destiny.destinyNumber, profile.destinySystem || 'chaldean', exportLanguage).then(setDestinyReading);
+    numerologyService.getCombinationReading(mulank.mulank, bhagyank.bhagyank, exportLanguage).then(setCombinationReading);
+    numerologyService.getMissingNumberRemedies(grid.missingNumbers, exportLanguage).then(setMissingRemedies);
+    numerologyService.getRepeatingNumberReadings(grid.repeatingNumbers, exportLanguage).then(setRepeatingReadings);
+    numerologyService.getRemediesMasterList({ number: mulank.mulank }, exportLanguage).then(setRemediesMasterList);
+  }, [destiny.destinyNumber, mulank.mulank, bhagyank.bhagyank, grid.missingNumbers, grid.repeatingNumbers, profile.destinySystem, exportLanguage]);
 
   // Sections list according to prompt: 1 to 16, and 18 (17 is Help popup)
   const sectionsList: SectionPickerItem[] = [
-    { id: 'userDetail', number: 1, labelEn: 'User Detail & Grid', labelHi: 'उपयोगकर्ता विवरण व ग्रिड', checked: !!reportSections.userDetail },
+    { id: 'userDetail', number: 1, labelEn: 'User Detail & 3x3 Grid', labelHi: 'उपयोगकर्ता विवरण व ग्रिड', checked: !!reportSections.userDetail },
     { id: 'destiny', number: 2, labelEn: 'Destiny (Namank)', labelHi: 'नामांक विश्लेषण', checked: !!reportSections.destiny },
     { id: 'combination', number: 3, labelEn: 'Destiny x Life Path', labelHi: 'मूलांक x भाग्यांक समन्वय', checked: !!reportSections.combination },
     { id: 'missing', number: 4, labelEn: 'Missing Numbers & Remedies', labelHi: 'अनुपस्थित अंक व उपाय', checked: !!reportSections.missing },
@@ -100,7 +209,46 @@ export default function FinalReportPage() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#FFFAF3'
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#FFFAF3',
+        onclone: (clonedDoc, clonedElement) => {
+          // 1. Sanitize all <style> tags to eliminate unsupported modern color functions (oklab, oklch)
+          const styleTags = clonedDoc.getElementsByTagName('style');
+          for (let i = 0; i < styleTags.length; i++) {
+            const tag = styleTags[i];
+            if (tag.textContent) {
+              tag.textContent = tag.textContent
+                .replace(/oklab\([^)]+\)/gi, '#14213D')
+                .replace(/oklch\([^)]+\)/gi, '#E8A317');
+            }
+          }
+
+          // 2. Normalize computed colors on all cloned elements
+          const allElements = clonedElement.querySelectorAll('*');
+          allElements.forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            try {
+              const comp = window.getComputedStyle(htmlEl);
+              ['color', 'backgroundColor', 'borderColor', 'outlineColor', 'fill', 'stroke'].forEach((prop) => {
+                const val = (comp as any)[prop];
+                if (val && typeof val === 'string' && (val.includes('oklab') || val.includes('oklch'))) {
+                  if (prop === 'backgroundColor') {
+                    htmlEl.style.backgroundColor = '#FFFFFF';
+                  } else if (prop === 'borderColor') {
+                    htmlEl.style.borderColor = '#EADFC8';
+                  } else if (prop === 'fill' || prop === 'stroke') {
+                    (htmlEl.style as any)[prop] = '#E8A317';
+                  } else {
+                    htmlEl.style.color = '#14213D';
+                  }
+                }
+              });
+            } catch {
+              // ignore computed style read errors
+            }
+          });
+        }
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -126,9 +274,12 @@ export default function FinalReportPage() {
         heightLeft -= pageHeight;
       }
 
-      pdf.save(`NumeroTalk_Report_${profile.name || 'User'}_${exportLanguage.toUpperCase()}.pdf`);
-    } catch (err) {
+      pdf.save(`NumeroTalk_Report_${(profile.name || 'User').replace(/[^a-zA-Z0-9]/g, '_')}_${exportLanguage.toUpperCase()}.pdf`);
+    } catch (err: any) {
       console.error('PDF generation error', err);
+      if (typeof window !== 'undefined') {
+        window.print();
+      }
     } finally {
       setIsDownloading(false);
     }
@@ -138,11 +289,11 @@ export default function FinalReportPage() {
     <div className="space-y-6 sm:space-y-7">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <SectionHeader
-          title={locale === 'hi' ? 'वैदिक रिपोर्ट संकलन एवं पीडीएफ' : 'Custom Report Dossier & PDF Export'}
+          title={locale === 'hi' ? 'वैदिक रिपोर्ट संकलन एवं संपूर्ण पीडीएफ' : 'Comprehensive Dossier & Full PDF Export'}
           subtitle={
             locale === 'hi'
-              ? 'अनुभागों का चयन करें, कस्टम उपाय जोड़ें एवं आइवरी स्वर्ण शैली में संपूर्ण रिपोर्ट डाउनलोड करें'
-              : 'Select modules, append personalized remedies, and export an ivory-gold Vedic numerology dossier'
+              ? 'सभी 17 अनुभागों का विस्तृत डेटा, कुंडली विश्लेषण, दशा, वास्तु एवं उपाय एक ही दस्तावेज में'
+              : 'Complete multi-module dossier including destiny, yogas, dasha, vastu, events, remedies, and security'
           }
           badge={locale === 'hi' ? 'रिपोर्ट संकलन 19' : 'Dossier Builder 19'}
           icon={<FileSpreadsheet className="w-5 h-5 sm:w-6 sm:h-6" />}
@@ -158,7 +309,7 @@ export default function FinalReportPage() {
               onClick={() => setExportLanguage('en')}
               className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${
                 exportLanguage === 'en'
-                  ? 'bg-[var(--chip-bg)] text-[var(--heading)] font-bold'
+                  ? 'bg-[var(--chip-bg)] text-[var(--gold)] font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
               }`}
             >
@@ -184,7 +335,11 @@ export default function FinalReportPage() {
             className="btn-gold-gradient h-[38px] px-4 text-xs font-semibold flex items-center gap-1.5 shrink-0 disabled:opacity-50 cursor-pointer rounded-xl text-white shadow-xs"
           >
             <Download className="w-4 h-4" />
-            <span>{isDownloading ? (locale === 'hi' ? 'पीडीएफ बन रही है...' : 'Generating PDF...') : (locale === 'hi' ? 'पीडीएफ डाउनलोड करें' : 'Download PDF')}</span>
+            <span>
+              {isDownloading
+                ? (locale === 'hi' ? 'संपूर्ण पीडीएफ बन रही है...' : 'Generating Full PDF...')
+                : (locale === 'hi' ? 'संपूर्ण पीडीएफ डाउनलोड करें' : 'Download Complete PDF')}
+            </span>
           </button>
         </div>
       </div>
@@ -221,22 +376,22 @@ export default function FinalReportPage() {
             onChange={(e) => setNewRemedyInput(e.target.value)}
             placeholder={
               locale === 'hi'
-                ? 'उदा. प्रतिदिन प्रातः गायत्री मंत्र का 11 बार जप करें...'
-                : 'e.g., Chant Gayatri Mantra 11 times every morning...'
+                ? 'उदा. प्रतिदिन प्रातः काल सूर्य देव को जल अर्पित करें...'
+                : 'e.g. Ring brass bell every morning with Gayatri Mantra...'
             }
-            className="flex-1 h-[40px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] outline-hidden focus:border-[var(--gold)]"
+            className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-[var(--heading)] placeholder:text-[var(--text-muted)] focus:outline-hidden focus:border-[var(--gold)]"
           />
           <button
             type="submit"
-            className="btn-gold-gradient h-[40px] px-4 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shrink-0 cursor-pointer rounded-xl text-white"
+            className="px-4 py-2 rounded-xl bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--gold)] text-xs font-semibold hover:bg-[var(--active-bg)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
           >
-            <Plus className="w-4 h-4" />
-            <span>{locale === 'hi' ? 'उपाय जोड़ें' : 'Add Remedy'}</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>{locale === 'hi' ? 'जोड़ें' : 'Add Note'}</span>
           </button>
         </form>
 
         {customRemedies.length > 0 && (
-          <div className="space-y-2 pt-1">
+          <div className="space-y-1.5 pt-2 border-t border-[var(--border)]">
             <span className="text-xs font-semibold text-[var(--text-muted)] block">
               {locale === 'hi' ? 'कस्टम उपायों की सूची' : 'Appended Remedies'} ({customRemedies.length}):
             </span>
@@ -266,19 +421,19 @@ export default function FinalReportPage() {
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold font-serif text-[var(--heading)] flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[var(--gold)]" />
-            {locale === 'hi' ? 'लाइव रिपोर्ट पूर्वावलोकन (आइवरी एवं स्वर्ण पृष्ठ)' : 'Live Dossier Preview (Ivory & Gold Page)'}
+            {locale === 'hi' ? 'लाइव संपूर्ण रिपोर्ट पूर्वावलोकन (प्रिंट प्रति)' : 'Live Dossier Document Preview (Print Ready)'}
           </h3>
           <span className="text-xs text-[var(--text-muted)]">
-            {locale === 'hi' ? 'पीडीएफ प्रारूप के अनुरूप' : 'Formatted as printable A4 PDF'}
+            {locale === 'hi' ? 'ए4 प्रारूप अनुसार स्वचालित पृष्ठ विभाजन' : 'Formatted as multi-page A4 dossier'}
           </span>
         </div>
 
         <div
           ref={previewRef}
-          className="p-6 sm:p-10 rounded-[24px] bg-[#FFFAF3] border-2 border-[#EADFC8] text-[#14213D] space-y-7 shadow-sm relative overflow-hidden font-sans"
+          className="p-6 sm:p-10 rounded-[24px] bg-[#FFFAF3] border-2 border-[#EADFC8] text-[#14213D] space-y-8 shadow-sm relative overflow-hidden font-sans"
         >
           {/* Subtle printed mandala watermark 5% */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.05] flex items-center justify-center">
+          <div className="absolute inset-0 pointer-events-none opacity-[0.04] flex items-center justify-center">
             <svg viewBox="0 0 400 400" className="w-[520px] h-[520px] stroke-[#E8A317] fill-none" strokeWidth="1.5">
               <circle cx="200" cy="200" r="185" />
               <circle cx="200" cy="200" r="145" />
@@ -291,7 +446,9 @@ export default function FinalReportPage() {
             </svg>
           </div>
 
-          {/* Header of Report Document */}
+          {/* ========================================================
+              COVER / HEADER OF REPORT DOCUMENT
+          ======================================================== */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-5 border-b-2 border-[#EADFC8] relative z-10">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -299,7 +456,7 @@ export default function FinalReportPage() {
                   ॐ
                 </span>
                 <span className="text-[11px] font-bold text-[#E8A317] uppercase tracking-wider font-serif">
-                  NumeroTalk • Vedic Almanac Dossier
+                  NumeroTalk • Comprehensive Vedic Almanac Dossier
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold font-serif text-[#14213D] tracking-tight">
@@ -307,8 +464,9 @@ export default function FinalReportPage() {
               </h1>
               <p className="text-xs text-[#8A7F6E] mt-1 font-medium">
                 DOB: <strong className="text-[#14213D]">{profile.dob || '1995-10-23'}</strong> • Mobile:{' '}
-                <strong className="text-[#14213D]">{profile.mobile || '9876543210'}</strong> • Date:{' '}
-                <strong className="text-[#14213D]">{new Date().toLocaleDateString()}</strong>
+                <strong className="text-[#14213D]">{profile.mobile || '9876543210'}</strong> • System:{' '}
+                <strong className="text-[#14213D] capitalize">{profile.destinySystem || 'Chaldean'}</strong> • Date:{' '}
+                <strong className="text-[#14213D]" suppressHydrationWarning>{reportDate}</strong>
               </p>
             </div>
 
@@ -319,52 +477,244 @@ export default function FinalReportPage() {
             </div>
           </div>
 
-          {/* Section 1: User Detail & Grid */}
+          {/* ========================================================
+              SECTION 1: USER DETAIL & 3x3 VEDIC GRID
+          ======================================================== */}
           {reportSections.userDetail && (
-            <div className="space-y-3 pb-5 border-b border-[#EADFC8] relative z-10">
-              <h3 className="text-base font-bold font-serif text-[#E8A317]">
-                01. {exportLanguage === 'hi' ? 'वैदिक 3x3 अंक ग्रिड' : 'Vedic 3x3 Energy Grid'}
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Grid className="w-4 h-4 text-[#E8A317]" />
+                01. {exportLanguage === 'hi' ? 'उपयोगकर्ता विवरण एवं वैदिक 3x3 अंक ग्रिड' : 'User Detail & Vedic 3x3 Energy Grid'}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center">
-                <div className="flex justify-center">
+                <div className="flex justify-center bg-white p-3 rounded-2xl border border-[#EADFC8]">
                   <VedicGrid dob={profile.dob} locale={exportLanguage} size="sm" hideControls={true} hideStats={true} />
                 </div>
-                <div className="space-y-2 text-xs text-[#2B2B3A] bg-white/70 p-4 rounded-xl border border-[#EADFC8]">
-                  <p>
-                    <strong className="text-[#8A7F6E]">Mulank (Driver):</strong> {mulank.mulank} (Compound {mulank.compoundStr})
+                <div className="space-y-2 text-xs text-[#2B2B3A] bg-white p-4 rounded-xl border border-[#EADFC8]">
+                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <span className="text-[#8A7F6E]">Mulank (Driver Number):</span>
+                    <strong className="text-[#14213D]">{mulank.mulank} ({mulank.compoundStr})</strong>
                   </p>
-                  <p>
-                    <strong className="text-[#8A7F6E]">Bhagyank (Conductor):</strong> {bhagyank.bhagyank} (Compound {bhagyank.compoundStr})
+                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <span className="text-[#8A7F6E]">Bhagyank (Conductor Number):</span>
+                    <strong className="text-[#14213D]">{bhagyank.bhagyank} ({bhagyank.compoundStr})</strong>
                   </p>
-                  <p>
-                    <strong className="text-[#8A7F6E]">Destiny (Namank):</strong> {destiny.destinyNumber} ({destiny.system})
+                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <span className="text-[#8A7F6E]">Destiny (Namank):</span>
+                    <strong className="text-[#14213D]">{destiny.destinyNumber} ({destiny.compoundStr})</strong>
                   </p>
-                  <p>
-                    <strong className="text-[#8A7F6E]">Missing Numbers:</strong> {grid.missingNumbers.join(', ') || 'None'}
+                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <span className="text-[#8A7F6E]">Present Grid Numbers:</span>
+                    <strong className="text-[#059669]">{grid.presentNumbers.join(', ') || 'None'}</strong>
                   </p>
-                  <p>
-                    <strong className="text-[#8A7F6E]">Repeating Numbers:</strong>{' '}
-                    {grid.repeatingNumbers.map((r) => `${r.number} (×${r.count})`).join(', ') || 'None'}
+                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <span className="text-[#8A7F6E]">Missing Numbers:</span>
+                    <strong className="text-[#E11D48]">{grid.missingNumbers.join(', ') || 'None'}</strong>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-[#8A7F6E]">Repeating Numbers:</span>
+                    <strong className="text-[#D97706]">{grid.repeatingNumbers.map((r) => `${r.number} (×${r.count})`).join(', ') || 'None'}</strong>
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Section 6: Yogas Active */}
+          {/* ========================================================
+              SECTION 2: DESTINY NUMBER (NAMANK)
+          ======================================================== */}
+          {reportSections.destiny && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Crown className="w-4 h-4 text-[#E8A317]" />
+                02. {exportLanguage === 'hi' ? 'नामांक विश्लेषण (Destiny Number)' : 'Destiny Number (Namank) Analysis'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
+                  <span className="font-bold text-[#14213D] text-sm">
+                    {destinyReading ? (exportLanguage === 'hi' ? destinyReading.title.hi : destinyReading.title.en) : `Destiny Number ${destiny.destinyNumber}`}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold text-[11px]">
+                    {destiny.system.toUpperCase()} ({destiny.compoundStr})
+                  </span>
+                </div>
+                <p className="text-[#2B2B3A] leading-relaxed">
+                  <strong>Life Mission: </strong>
+                  {destinyReading ? (exportLanguage === 'hi' ? destinyReading.lifeMission.hi : destinyReading.lifeMission.en) : 'Leading with strategic wisdom and inspiring those around you.'}
+                </p>
+                {destinyReading?.coreStrengths && (
+                  <div className="space-y-1">
+                    <span className="font-semibold text-[#8A7F6E]">Core Strengths:</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                      {destinyReading.coreStrengths.map((str, idx) => (
+                        <div key={idx} className="flex items-center gap-1.5 text-[#14213D]">
+                          <Check className="w-3.5 h-3.5 text-[#059669] shrink-0" />
+                          <span>{exportLanguage === 'hi' ? str.hi : str.en}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {destinyReading?.careerAvenues && (
+                  <div className="pt-1">
+                    <span className="font-semibold text-[#8A7F6E]">Career Avenues: </span>
+                    <span className="text-[#14213D]">
+                      {destinyReading.careerAvenues.map(c => exportLanguage === 'hi' ? c.hi : c.en).join(', ')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 3: COMBINATION (MULANK x BHAGYANK)
+          ======================================================== */}
+          {reportSections.combination && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <GitMerge className="w-4 h-4 text-[#E8A317]" />
+                03. {exportLanguage === 'hi' ? 'मूलांक एवं भाग्यांक तालमेल (Driver x Conductor)' : 'Driver x Conductor Synergy (Mulank x Bhagyank)'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2.5 text-xs">
+                <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
+                  <span className="font-bold text-[#14213D] text-sm">
+                    {combinationReading ? (exportLanguage === 'hi' ? combinationReading.title.hi : combinationReading.title.en) : `Mulank ${mulank.mulank} x Bhagyank ${bhagyank.bhagyank}`}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold uppercase text-[11px]">
+                    Relation: {relationType}
+                  </span>
+                </div>
+                <p className="text-[#2B2B3A] leading-relaxed">
+                  <strong>Synergy Analysis: </strong>
+                  {combinationReading ? (exportLanguage === 'hi' ? combinationReading.synergyAnalysis.hi : combinationReading.synergyAnalysis.en) : 'Harmonious alliance blending leadership with destiny.'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="p-2.5 rounded-lg bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#E8A317] block mb-1">Career Strategy:</strong>
+                    <span className="text-[#2B2B3A]">
+                      {combinationReading ? (exportLanguage === 'hi' ? combinationReading.careerGuidance.hi : combinationReading.careerGuidance.en) : 'Strategic planning aligns instinct with destiny.'}
+                    </span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#E8A317] block mb-1">Personal Life:</strong>
+                    <span className="text-[#2B2B3A]">
+                      {combinationReading ? (exportLanguage === 'hi' ? combinationReading.personalLife.hi : combinationReading.personalLife.en) : 'Open listening dissolves natural differences.'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 4: MISSING NUMBERS & REMEDIES
+          ======================================================== */}
+          {reportSections.missing && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <EyeOff className="w-4 h-4 text-[#E8A317]" />
+                04. {exportLanguage === 'hi' ? 'अनुपस्थित अंक एवं सुधारात्मक उपाय' : 'Missing Numbers & Remedial Blueprint'}
+              </h3>
+              {missingRemedies.length === 0 ? (
+                <div className="p-3 rounded-xl bg-white border border-[#EADFC8] text-xs text-[#059669]">
+                  {exportLanguage === 'hi' ? 'बधाई! आपके वैदिक ग्रिड में कोई प्रमुख अंक अनुपस्थित नहीं है।' : 'All key numerological vibrations are present in your chart.'}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  {missingRemedies.map((item) => (
+                    <div key={item.number} className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-2">
+                      <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-1.5">
+                        <span className="font-bold text-[#14213D] text-sm">
+                          {exportLanguage === 'hi' ? `अंक ${item.number} अनुपस्थित` : `Missing Number ${item.number}`}
+                        </span>
+                        <span className="text-[10px] font-semibold text-[#E11D48] bg-[#FEE2E2] px-1.5 py-0.5 rounded">Deficient</span>
+                      </div>
+                      <p className="text-[#8A7F6E]">
+                        <strong>Impact: </strong>
+                        {exportLanguage === 'hi' ? item.deficiencyImpact.hi : item.deficiencyImpact.en}
+                      </p>
+                      <div className="space-y-1 pt-1">
+                        <strong className="text-[#E8A317] block">Remedies:</strong>
+                        {item.remedies.slice(0, 2).map((rem, ridx) => (
+                          <div key={ridx} className="flex items-start gap-1.5 text-[#2B2B3A]">
+                            <Check className="w-3 h-3 text-[#059669] shrink-0 mt-0.5" />
+                            <span>{exportLanguage === 'hi' ? rem.action.hi : rem.action.en}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 5: REPEATING NUMBERS
+          ======================================================== */}
+          {reportSections.repeating && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Repeat className="w-4 h-4 text-[#E8A317]" />
+                05. {exportLanguage === 'hi' ? 'पुनरावृत्त अंक एवं ऊर्जा संतुलन' : 'Repeating Numbers & Energy Balancing'}
+              </h3>
+              {repeatingReadings.length === 0 ? (
+                <div className="p-3 rounded-xl bg-white border border-[#EADFC8] text-xs text-[#059669]">
+                  {exportLanguage === 'hi' ? 'कोई अंक अत्यधिक दोहराया नहीं गया है; संतुलित ऊर्जा प्रवाह।' : 'No hyper-repeating digits detected; natural balanced flow.'}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  {repeatingReadings.map((rep) => (
+                    <div key={rep.number} className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-2">
+                      <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-1.5">
+                        <span className="font-bold text-[#14213D] text-sm">
+                          Digit {rep.number} (Appears {rep.frequency}×)
+                        </span>
+                        <span className="text-[10px] font-semibold text-[#D97706] bg-[#FEF3C7] px-1.5 py-0.5 rounded">High Vibration</span>
+                      </div>
+                      <p className="text-[#2B2B3A]">
+                        <strong>Nature: </strong>{exportLanguage === 'hi' ? rep.nature.hi : rep.nature.en}
+                      </p>
+                      <p className="text-[#8A7F6E]">
+                        <strong>Overload Effect: </strong>{exportLanguage === 'hi' ? rep.overloadImpact.hi : rep.overloadImpact.en}
+                      </p>
+                      <div className="p-2 rounded bg-[#FFFAF3] border border-[#EADFC8] text-[#14213D]">
+                        <strong>Grounding Remedy: </strong>
+                        {exportLanguage === 'hi' ? rep.groundingRemedy.hi : rep.groundingRemedy.en}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 6: YOGAS ACTIVE
+          ======================================================== */}
           {reportSections.yogas && (
-            <div className="space-y-3 pb-5 border-b border-[#EADFC8] relative z-10">
-              <h3 className="text-base font-bold font-serif text-[#E8A317]">
-                06. {exportLanguage === 'hi' ? 'सक्रिय योग एवं तल' : 'Active Vedic Planes & Yogas'}
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#E8A317]" />
+                06. {exportLanguage === 'hi' ? 'वैदिक ऊर्जा तल एवं योग (8 Yogas)' : 'Active Vedic Energy Planes & Yogas'}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 {yogasResult.yogas.map((y) => (
-                  <div key={y.id} className="p-3 rounded-xl bg-white/80 border border-[#EADFC8] space-y-1">
-                    <span className="font-bold font-serif text-[#14213D] text-xs">
-                      {exportLanguage === 'hi' ? y.nameHi : y.nameEn} ({y.numbers.join('-')})
-                    </span>
+                  <div key={y.id} className="p-3 rounded-xl bg-white border border-[#EADFC8] space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold font-serif text-[#14213D] text-xs">
+                        {exportLanguage === 'hi' ? y.nameHi : y.nameEn} ({y.numbers.join('-')})
+                      </span>
+                      <span className={`text-[10px] font-semibold px-1.5 py-0.2 rounded ${y.status === 'full' ? 'bg-[#D1FAE5] text-[#065F46]' : 'bg-[#F3F4F6] text-[#6B7280]'}`}>
+                        {y.status === 'full' ? 'Full' : y.status === 'partial' ? 'Partial' : 'Inactive'}
+                      </span>
+                    </div>
                     <p className="text-[#8A7F6E] text-[11px] leading-relaxed">
                       {exportLanguage === 'hi' ? y.impactHi : y.impactEn}
+                    </p>
+                    <p className="text-[11px] text-[#D97706]">
+                      <strong>Plan: </strong>{exportLanguage === 'hi' ? y.descriptionHi : y.descriptionEn}
                     </p>
                   </div>
                 ))}
@@ -372,15 +722,295 @@ export default function FinalReportPage() {
             </div>
           )}
 
-          {/* Section 16: Life Events Summary */}
+          {/* ========================================================
+              SECTION 7: NAME NUMEROLOGY
+          ======================================================== */}
+          {reportSections.nameNumerology && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <FileSignature className="w-4 h-4 text-[#E8A317]" />
+                07. {exportLanguage === 'hi' ? 'नाम अंकशास्त्र एवं अक्षर कंपन' : 'Name Numerology Breakdown'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-3 text-xs">
+                <p className="text-[#8A7F6E]">
+                  Detailed letter value breakdown for <strong>{destiny.originalName}</strong>:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {destiny.letterBreakdown.map((item, idx) => (
+                    <div key={idx} className="flex flex-col items-center justify-center w-8 h-10 rounded-lg bg-[#FFFAF3] border border-[#EADFC8]">
+                      <span className="font-bold text-xs text-[#14213D]">{item.char}</span>
+                      <span className="text-[10px] font-semibold text-[#E8A317]">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-2.5 rounded-lg bg-[#FFFAF3] border border-[#EADFC8] flex justify-between items-center">
+                  <span className="font-semibold text-[#14213D]">Compound Name Number:</span>
+                  <span className="font-bold font-serif text-[#E8A317] text-sm">{destiny.compoundNumber} &rarr; Root {destiny.destinyNumber}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 8: MATCH-MAKING & RELATIONSHIPS
+          ======================================================== */}
+          {reportSections.matchMaking && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Heart className="w-4 h-4 text-[#E8A317]" />
+                08. {exportLanguage === 'hi' ? 'गुण मिलान एवं संबंध अनुकूलता' : 'Match-Making & Partnership Harmonics'}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-white border border-[#EADFC8] text-center space-y-1">
+                  <span className="text-[#059669] font-bold block">Favorable Allies</span>
+                  <span className="text-base font-serif font-bold text-[#14213D]">
+                    {mulankRelations.friends.join(', ')}
+                  </span>
+                  <p className="text-[10px] text-[#8A7F6E]">Best compatibility in marriage & partnership</p>
+                </div>
+                <div className="p-3 rounded-xl bg-white border border-[#EADFC8] text-center space-y-1">
+                  <span className="text-[#D97706] font-bold block">Neutral Allies</span>
+                  <span className="text-base font-serif font-bold text-[#14213D]">
+                    {mulankRelations.neutrals.join(', ')}
+                  </span>
+                  <p className="text-[10px] text-[#8A7F6E]">Balanced mutual support with conscious communication</p>
+                </div>
+                <div className="p-3 rounded-xl bg-white border border-[#EADFC8] text-center space-y-1">
+                  <span className="text-[#E11D48] font-bold block">Friction / Warning</span>
+                  <span className="text-base font-serif font-bold text-[#14213D]">
+                    {mulankRelations.enemies.join(', ')}
+                  </span>
+                  <p className="text-[10px] text-[#8A7F6E]">Needs deliberate patience and remedies to harmonize</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 9: MOBILE NUMEROLOGY
+          ======================================================== */}
+          {reportSections.mobile && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-[#E8A317]" />
+                09. {exportLanguage === 'hi' ? 'मोबाइल अंकशास्त्र एवं दिशा कंपन' : 'Mobile Number Energetics'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2.5 text-xs">
+                <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
+                  <span className="font-bold text-[#14213D]">
+                    Mobile: {mobileResult.rawNumber}
+                  </span>
+                  <span className="font-serif font-bold text-[#E8A317]">
+                    Total: {mobileResult.digitSum} &rarr; Root {mobileResult.reducedTotal}
+                  </span>
+                </div>
+                <p className="text-[#2B2B3A]">
+                  <strong>Compatibility with Driver {mulank.mulank}: </strong>
+                  {mobileResult.isFavorableTotal ? 'Highly Harmonious' : 'Moderate / Requires Protective Color Cases'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
+                  <div className="p-2 rounded bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong>Charging Direction: </strong>
+                    {exportLanguage === 'hi' ? mobileResult.chargingDirectionHi : mobileResult.chargingDirectionEn}
+                  </div>
+                  <div className="p-2 rounded bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong>Recommended Wallpaper: </strong>
+                    {exportLanguage === 'hi' ? mobileResult.screensaverSuggestionHi : mobileResult.screensaverSuggestionEn}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 10: PROFESSION ALIGNMENT
+          ======================================================== */}
+          {reportSections.profession && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-[#E8A317]" />
+                10. {exportLanguage === 'hi' ? 'व्यवसाय एवं कार्यक्षेत्र संरेखण' : 'Vedic Career & Profession Alignment'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2 text-xs">
+                <p className="text-[#2B2B3A] leading-relaxed">
+                  Based on Driver <strong>{mulank.mulank}</strong> and Conductor <strong>{bhagyank.bhagyank}</strong>, your planetary blueprint excels in:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div className="p-2.5 rounded-lg bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#14213D] block mb-1">Primary Sectors:</strong>
+                    <span className="text-[#8A7F6E]">Strategic Leadership, Administration, IT & Innovation, Advisory Services</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#14213D] block mb-1">Success Catalyst:</strong>
+                    <span className="text-[#8A7F6E]">Direct decisions, independent ownership, disciplined timelines</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 11: PIN & PASSWORD SECURITY
+          ======================================================== */}
+          {reportSections.pinPassword && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#E8A317]" />
+                11. {exportLanguage === 'hi' ? 'शुभ पिन एवं सुरक्षा कोड' : 'Auspicious PIN & Security Harmonics'}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1">
+                  <span className="text-[#8A7F6E] block font-medium">Auspicious 4-Digit Security PIN</span>
+                  <span className="text-lg font-mono font-bold text-[#E8A317] tracking-widest">{pin4.pin}</span>
+                  <p className="text-[10px] text-[#8A7F6E]">Sum reduces to {pin4.sum} (Harmonizes with Driver Number)</p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1">
+                  <span className="text-[#8A7F6E] block font-medium">Auspicious 6-Digit Banking PIN</span>
+                  <span className="text-lg font-mono font-bold text-[#E8A317] tracking-widest">{pin6.pin}</span>
+                  <p className="text-[10px] text-[#8A7F6E]">Sum reduces to {pin6.sum} (Harmonizes with Conductor Number)</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 12: YEARLY DASHA CYCLE
+          ======================================================== */}
+          {reportSections.yearly && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-[#E8A317]" />
+                12. {exportLanguage === 'hi' ? 'वार्षिक दशा चक्र एवं भविष्यकथन' : 'Yearly Planetary Dasha Cycle'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
+                  <span className="font-bold text-[#14213D] text-sm">
+                    Year {yearlyResult.targetYear} &bull; Personal Year {yearlyResult.personalYear}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold text-[11px]">
+                    Ruler: {exportLanguage === 'hi' ? yearlyResult.personalYearRulerHi : yearlyResult.personalYearRulerEn}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div className="p-2.5 rounded bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#E8A317] block">Mahadasha (9 Yr):</strong>
+                    <span className="text-[#14213D]">{exportLanguage === 'hi' ? yearlyResult.mahadasha.rulerPlanetHi : yearlyResult.mahadasha.rulerPlanetEn} ({yearlyResult.mahadasha.periodLabel})</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#E8A317] block">Antardasha (Annual):</strong>
+                    <span className="text-[#14213D]">{exportLanguage === 'hi' ? yearlyResult.antardasha.rulerPlanetHi : yearlyResult.antardasha.rulerPlanetEn}</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-[#FFFAF3] border border-[#EADFC8]">
+                    <strong className="text-[#E8A317] block">Pratyantra (Sub):</strong>
+                    <span className="text-[#14213D]">{exportLanguage === 'hi' ? yearlyResult.pratyantraDasha.rulerPlanetHi : yearlyResult.pratyantraDasha.rulerPlanetEn}</span>
+                  </div>
+                </div>
+                <p className="text-[#8A7F6E] leading-relaxed pt-1">
+                  <strong>Strategic Advice: </strong>
+                  {exportLanguage === 'hi' ? yearlyResult.summaryHi : yearlyResult.summaryEn}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 13: VASTU DIRECTIONS
+          ======================================================== */}
+          {reportSections.vastu && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Home className="w-4 h-4 text-[#E8A317]" />
+                13. {exportLanguage === 'hi' ? 'वास्तु दिशा संरेखण एवं गृह संतुलन' : 'Vastu Directional Harmonics'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-3 text-xs">
+                <p className="text-[#8A7F6E]">
+                  Governing Element: <strong>{exportLanguage === 'hi' ? vastuResult.elementDominanceHi : vastuResult.elementDominanceEn}</strong>
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {vastuResult.directions.slice(0, 4).map((d) => (
+                    <div key={d.number} className="p-2.5 rounded bg-[#FFFAF3] border border-[#EADFC8] space-y-1">
+                      <div className="flex justify-between items-center">
+                        <strong className="text-[#14213D]">{exportLanguage === 'hi' ? d.directionHi : d.directionEn}</strong>
+                        <span className="text-[10px] font-semibold text-[#E8A317]">{exportLanguage === 'hi' ? d.statusHi : d.status}</span>
+                      </div>
+                      <p className="text-[#8A7F6E] text-[11px]">{exportLanguage === 'hi' ? d.roomUsageHi : d.roomUsageEn}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 14: TIME NUMEROLOGY (HORA)
+          ======================================================== */}
+          {reportSections.time && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#E8A317]" />
+                14. {exportLanguage === 'hi' ? 'समय अंकशास्त्र एवं होरा मुहूर्त' : 'Time Numerology & Auspicious Hora'}
+              </h3>
+              <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2.5 text-xs">
+                <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
+                  <span className="font-bold text-[#14213D]">
+                    Birth Time {profile.birthTime || '10:30'} &bull; Planetary Ruler
+                  </span>
+                  <span className="text-xs font-serif font-bold text-[#E8A317]">
+                    {exportLanguage === 'hi' ? timeResult.planetaryHourHi : timeResult.planetaryHourEn}
+                  </span>
+                </div>
+                <p className="text-[#8A7F6E] leading-relaxed">
+                  <strong>Quality: </strong>{exportLanguage === 'hi' ? timeResult.omenQualityHi : timeResult.omenQuality}
+                </p>
+                <p className="text-[#2B2B3A] leading-relaxed">
+                  <strong>Daily Guidance: </strong>{exportLanguage === 'hi' ? timeResult.guidanceHi : timeResult.guidanceEn}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 15: NUMBER 1-108 ORACLE
+          ======================================================== */}
+          {reportSections.numberMeanings && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Hash className="w-4 h-4 text-[#E8A317]" />
+                15. {exportLanguage === 'hi' ? '1 से 108 अंक रहस्य एवं वैदिक अर्थ' : 'Sacred 1-108 Oracle Meanings'}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1.5">
+                  <span className="font-bold text-[#14213D] block text-sm">
+                    Driver Number {mulank.mulank} Archetype
+                  </span>
+                  <p className="text-[#8A7F6E] leading-relaxed">
+                    {mulankMeaning ? (exportLanguage === 'hi' ? mulankMeaning.meaningHi : mulankMeaning.meaningEn) : 'Governed by primal solar/lunar force of initiative.'}
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1.5">
+                  <span className="font-bold text-[#14213D] block text-sm">
+                    Conductor Number {bhagyank.bhagyank} Archetype
+                  </span>
+                  <p className="text-[#8A7F6E] leading-relaxed">
+                    {bhagyankMeaning ? (exportLanguage === 'hi' ? bhagyankMeaning.meaningHi : bhagyankMeaning.meaningEn) : 'Governed by destiny rhythm shaping lifelong evolution.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================
+              SECTION 16: 14 LIFE EVENTS
+          ======================================================== */}
           {reportSections.events && (
-            <div className="space-y-3 pb-5 border-b border-[#EADFC8] relative z-10">
-              <h3 className="text-base font-bold font-serif text-[#E8A317]">
-                16. {exportLanguage === 'hi' ? '14 जीवन घटनाएं एवं स्कोर' : '14 Life Dimensions & Readiness'}
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#E8A317]" />
+                16. {exportLanguage === 'hi' ? '14 जीवन घटनाएं एवं स्कोर' : '14 Life Dimensions & Readiness Scores'}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
-                {eventsResult.scores.slice(0, 6).map((ev) => (
-                  <div key={ev.event.id} className="p-2.5 rounded-lg bg-white/80 border border-[#EADFC8] flex justify-between items-center">
+                {eventsResult.scores.map((ev) => (
+                  <div key={ev.event.id} className="p-2.5 rounded-lg bg-white border border-[#EADFC8] flex justify-between items-center">
                     <span className="font-semibold text-[#14213D]">
                       {exportLanguage === 'hi' ? ev.event.name.hi : ev.event.name.en}
                     </span>
@@ -391,31 +1021,61 @@ export default function FinalReportPage() {
             </div>
           )}
 
-          {/* Section 18: Custom & Prescribed Remedies */}
-          <div className="space-y-3 relative z-10">
-            <h3 className="text-base font-bold font-serif text-[#14213D] flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#E8A317]" />
-              {exportLanguage === 'hi' ? 'वैदिक उपाय एवं अनुशंसाएं' : 'Prescribed Remedial Protocol'}
-            </h3>
-            <div className="space-y-2 text-xs">
-              {customRemedies.map((cr, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 rounded-xl bg-white border border-[#EADFC8] text-[#2B2B3A] flex items-start gap-2.5"
-                >
-                  <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span className="text-xs leading-relaxed">{cr}</span>
-                </div>
-              ))}
+          {/* ========================================================
+              SECTION 18: PRESCRIBED REMEDIES MASTER
+          ======================================================== */}
+          {reportSections.remedies && (
+            <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
+                <Shield className="w-4 h-4 text-[#E8A317]" />
+                18. {exportLanguage === 'hi' ? 'वैदिक उपाय एवं अनुशंसाएं' : 'Prescribed Master Remedial Protocol'}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                {remediesMasterList.slice(0, 4).map((rem) => (
+                  <div key={rem.id} className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1.5">
+                    <div className="flex justify-between items-center border-b border-[#F3E3C4] pb-1">
+                      <strong className="text-[#14213D]">{exportLanguage === 'hi' ? rem.title.hi : rem.title.en}</strong>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold">{rem.category}</span>
+                    </div>
+                    <p className="text-[#8A7F6E] text-[11px]">{exportLanguage === 'hi' ? rem.overview.hi : rem.overview.en}</p>
+                    <p className="text-[11px] text-[#2B2B3A]">
+                      <strong>Method: </strong>{exportLanguage === 'hi' ? rem.method.hi : rem.method.en}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* ========================================================
+              CUSTOM APPENDED REMEDIES
+          ======================================================== */}
+          {customRemedies.length > 0 && (
+            <div className="space-y-3 pb-4 relative z-10">
+              <h3 className="text-base font-bold font-serif text-[#14213D] flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#059669]" />
+                {exportLanguage === 'hi' ? 'व्यक्तिगत / ज्योतिषी विशेष निर्देश' : 'Personalized Astrologer Notes'}
+              </h3>
+              <div className="space-y-2 text-xs">
+                {customRemedies.map((cr, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-xl bg-white border border-[#EADFC8] text-[#2B2B3A] flex items-start gap-2.5"
+                  >
+                    <Check className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
+                    <span className="text-xs leading-relaxed">{cr}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Document Footer Disclaimer */}
           <div className="pt-5 border-t-2 border-[#EADFC8] text-[10px] text-[#8A7F6E] text-center leading-relaxed relative z-10 space-y-1">
             <p>
               {exportLanguage === 'hi'
                 ? 'यह फलादेश केवल मार्गदर्शन एवं ज्ञानवर्धन हेतु प्रस्तुत किया गया है।'
-                : 'For guidance and entertainment only. Results are derived from ancient Vedic almanac formulas.'}
+                : 'For guidance and empowerment. Results derived through ancient Vedic almanac harmonic algorithms.'}
             </p>
             <p className="font-serif text-[#E8A317] font-semibold">
               NumeroTalk • Vedic Numerology Platform • ॐ तत्सत्

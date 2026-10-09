@@ -1,0 +1,335 @@
+[
+  {
+    "number": 1,
+    "deficiencyImpact": {
+      "en": "Absence of Number 1 (Water / Career / North) indicates difficulty in asserting individuality, hesitation in public speaking, or delays in career clarity.",
+      "hi": "अंक 1 (उत्तर दिशा / जल तत्व) की अनुपस्थिति से आत्मविश्वास में संकोच, करियर में दिशा तय करने में कठिनाई और जनसंचार में झिझक हो सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Tendency to lean on others for validation and self-doubt when thrust into sole leadership.",
+      "hi": "दूसरों पर निर्भरता तथा स्वतंत्र निर्णय लेने में आत्मविश्वास की कमी।"
+    },
+    "remedies": [
+      {
+        "type": "Mantra",
+        "typeHi": "मंत्र",
+        "action": {
+          "en": "Chant the Gayatri Mantra 108 times at sunrise facing East.",
+          "hi": "प्रातः पूर्व दिशा की ओर मुख करके 108 बार गायत्री मंत्र का जप करें।"
+        }
+      },
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Offer fresh water to the rising Sun from a pure copper vessel daily.",
+          "hi": "प्रतिदिन तांबे के लोटे से उगते सूर्य को कुमकुम युक्त जल अर्पित करें।"
+        }
+      },
+      {
+        "type": "Crystal/Gem",
+        "typeHi": "रत्न/उपरत्न",
+        "action": {
+          "en": "Wear a natural Red Jasper or Sunstone bracelet on the right wrist.",
+          "hi": "दाहिने हाथ में सनस्टोन (सूर्यकांत मणि) का ब्रेसलेट धारण करें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "deficiencyImpact": {
+      "en": "Missing Number 2 (Earth / Relationships / South-West) causes emotional bluntness, impatience in relationships, or inability to listen empathetically.",
+      "hi": "अंक 2 (दक्षिण-पश्चिम / पृथ्वी तत्व) की कमी से संबंधों में संवेदनशीलता का अभाव, उतावलापन और वैवाहिक तालमेल में बाधा आ सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Dismissing intuitive instincts in favor of rigid cold logic, leading to interpersonal friction.",
+      "hi": "भावनाओं को नजरअंदाज करना जिससे आपसी रिश्तों में दूरी बन सकती है।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Drink water from a pure silver glass or keep a silver coin in your wallet.",
+          "hi": "चांदी के गिलास में पानी पिएं या पर्स में चांदी का चौकोर टुकड़ा रखें।"
+        }
+      },
+      {
+        "type": "Mantra",
+        "typeHi": "मंत्र",
+        "action": {
+          "en": "Chant 'Om Som Somaya Namah' 108 times on Monday evenings.",
+          "hi": "सोमवार की शाम 'ॐ सों सोमाय नमः' का 108 बार जप करें।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Donate milk, rice, or white sweets to mothers or elderly women on Mondays.",
+          "hi": "सोमवार को माताजी का आशीर्वाद लें व खीर/चावल का दान करें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "deficiencyImpact": {
+      "en": "Missing Number 3 (Wood / East / Knowledge) leads to struggles with long-range planning, inconsistent study habits, or disregard for elder advice.",
+      "hi": "अंक 3 (पूर्व दिशा / ज्ञान) की कमी से उच्च शिक्षा में रुकावटें, योजनाओं का अधूरा रहना और अनुभवी लोगों की सलाह की अनदेखी हो सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Difficulty expressing philosophical ideas cohesively; cynical view towards mentors.",
+      "hi": "विचारों को क्रमबद्ध रूप से न रख पाना और मार्गदर्शन के प्रति उदासीनता।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Apply saffron or turmeric tilak on your forehead and navel every morning.",
+          "hi": "प्रतिदिन प्रातः माथे और नाभि पर केसर अथवा हल्दी का तिलक लगाएं।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Donate yellow lentils (chana dal) and yellow fruits on Thursdays.",
+          "hi": "गुरुवार को चने की दाल व पीले फलों का दान करें।"
+        }
+      },
+      {
+        "type": "Crystal/Gem",
+        "typeHi": "उपरत्न",
+        "action": {
+          "en": "Wear a natural Yellow Citrine bracelet to activate Jupiter vibrations.",
+          "hi": "सिट्रीन (सुनहला) ब्रेसलेट अथवा 5 मुखी रुद्राक्ष धारण करें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "deficiencyImpact": {
+      "en": "Missing Number 4 (Wood / South-East / Order) reflects weak financial discipline, messy physical environments, and difficulty holding a structured schedule.",
+      "hi": "अंक 4 (दक्षिण-पूर्व / अनुशासन) की कमी से समय प्रबंधन में कमी, धन का अव्यवस्थित खर्च और दिनचर्या में अनियमितता होती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Resistance to routine documentation, accounting, and long-term asset building.",
+      "hi": "वित्तीय रिकॉर्ड और नियमों का पालन करने में अरुचि।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Keep a small healthy green plant (like money plant or jade) on your work table.",
+          "hi": "कार्यस्थल पर दक्षिण-पूर्व में हरा पौधा या मनी प्लांट रखें।"
+        }
+      },
+      {
+        "type": "Lifestyle",
+        "typeHi": "आचरण",
+        "action": {
+          "en": "Maintain a strict written expense diary and clear clutter from corners weekly.",
+          "hi": "प्रतिदिन का आय-व्यय डायरी में नोट करें और घर के कोनों को साफ रखें।"
+        }
+      },
+      {
+        "type": "Crystal/Gem",
+        "typeHi": "उपरत्न",
+        "action": {
+          "en": "Wear a natural Green Aventurine or Tourmaline bracelet.",
+          "hi": "ग्रीन एवेंचुरिन या गोमेद उपरत्न का ब्रेसलेट पहनें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "deficiencyImpact": {
+      "en": "Missing Number 5 (Earth / Center / Balance) causes emotional instability, difficulty completing projects before starting new ones, and communication blocks.",
+      "hi": "अंक 5 (ब्रह्मस्थान / स्थिरता) की अनुपस्थिति से जीवन में संतुलन की कमी, एकाग्रता का अभाव और व्यापार में अस्थिरता आ सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Swinging between extreme lethargy and rushed impulsiveness without a stabilizing center.",
+      "hi": "मन में एकाएक अति-उत्साह और फिर घोर निराशा के बीच झूलना।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Wear green clothing on Wednesdays and keep the center of your house clear.",
+          "hi": "बुधवार को हरे वस्त्र पहनें और घर के केंद्र (ब्रह्मस्थान) को खुला रखें।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Feed green grass or spinach to cows on Wednesdays.",
+          "hi": "बुधवार को गौशाला में हरी घास या पालक खिलाएं।"
+        }
+      },
+      {
+        "type": "Mantra",
+        "typeHi": "मंत्र",
+        "action": {
+          "en": "Chant 'Om Gan Ganapataye Namah' 108 times before starting any major work.",
+          "hi": "कार्य प्रारंभ से पूर्व 'ॐ गं गणपतये नमः' का जप करें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "deficiencyImpact": {
+      "en": "Missing Number 6 (Metal / North-West / Luxury & Support) brings scarcity of helpful friends, struggles to enjoy leisure, or domestic disharmony.",
+      "hi": "अंक 6 (उत्तर-पश्चिम / शुक्र) की कमी से जीवन में शुभचिंतकों का अभाव, भौतिक सुखों में विलंब और दांपत्य में नीरसता आ सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Guilt when spending on comfort and fear of relying on trusted companions.",
+      "hi": "सुख-सुविधाओं का आनंद लेने में अपराधबोध और मित्रों पर विश्वास न कर पाना।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Use mild floral fragrances or natural sandalwood perfume daily.",
+          "hi": "प्रतिदिन गुलाब अथवा चंदन के प्राकृतिक इत्र का प्रयोग करें।"
+        }
+      },
+      {
+        "type": "Vastu",
+        "typeHi": "वास्तु",
+        "action": {
+          "en": "Hang a 6-rod metal wind chime in the North-West area of your living space.",
+          "hi": "घर के वायव्य कोण (उत्तर-पश्चिम) में 6 छड़ों वाली विंड चाइम लगाएं।"
+        }
+      },
+      {
+        "type": "Crystal/Gem",
+        "typeHi": "उपरत्न",
+        "action": {
+          "en": "Wear an Opal or Clear Quartz bracelet on the left wrist.",
+          "hi": "ओपल अथवा स्फटिक (Clear Quartz) की माला/ब्रेसलेट धारण करें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "deficiencyImpact": {
+      "en": "Missing Number 7 (Metal / West / Intuition) indicates superficial surface analysis, neglect of spiritual practices, or difficulty in deep introspective learning.",
+      "hi": "अंक 7 (पश्चिम दिशा / केतु) की कमी से अंतर्ज्ञान की कमी, उथला अध्ययन, और आध्यात्मिक साधना में मन न लगना हो सकता है।"
+    },
+    "psychologicalEffect": {
+      "en": "Impatience with silence and difficulty processing deeper spiritual truths.",
+      "hi": "गहन चिंतन से बचना और जीवन के आध्यात्मिक पक्ष को अनदेखा करना।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Spend 15 minutes in silent contemplation or Vipassana meditation every sunset.",
+          "hi": "प्रतिदिन सूर्यास्त के समय 15 मिनट मौन ध्यान या ओंकार जप करें।"
+        }
+      },
+      {
+        "type": "Mantra",
+        "typeHi": "मंत्र",
+        "action": {
+          "en": "Chant the Mahamrityunjaya Mantra or Ganesh Atharvashirsha weekly.",
+          "hi": "महामृत्युंजय मंत्र अथवा गणेश अथर्वशीर्ष का नियमित पाठ करें।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Feed stray street dogs with bread or roti on Tuesday or Saturday evenings.",
+          "hi": "मंगलवार व शनिवार की शाम श्वान (कुत्तों) को भोजन कराएं।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "deficiencyImpact": {
+      "en": "Missing Number 8 (Earth / North-East / Karma & Wealth) results in poor financial planning, low stamina for sustained toil, or legal negligence.",
+      "hi": "अंक 8 (ईशान कोण / शनि) की कमी से धन संचय में निरंतरता का अभाव, धैर्य की कमी और कानूनी मामलों में लापरवाही हो सकती है।"
+    },
+    "psychologicalEffect": {
+      "en": "Desire for quick shortcuts instead of respecting incremental, compounding mastery.",
+      "hi": "कड़े परिश्रम की जगह शॉर्टकट ढूंढना और जिम्मेदारी से भागना।"
+    },
+    "remedies": [
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Treat domestic help, drivers, and sanitation workers with kindness and dignity.",
+          "hi": "मजदूरों, सफाई कर्मचारियों और अधीनस्थों का आदर करें व समय पर वेतन दें।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Donate black sesame seeds, mustard oil, or warm blue/black blankets on Saturdays.",
+          "hi": "शनिवार को काले तिल, सरसों का तेल अथवा कंबल का दान करें।"
+        }
+      },
+      {
+        "type": "Crystal/Gem",
+        "typeHi": "उपरत्न",
+        "action": {
+          "en": "Wear an Amethyst (Katela) or Blue Tiger Eye bracelet.",
+          "hi": "जमुनिया (Amethyst) अथवा ब्लू टाइगर आई का ब्रेसलेट पहनें।"
+        }
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "deficiencyImpact": {
+      "en": "Missing Number 9 (Fire / South / Fame & Drive) brings lack of courage to fight for one's rights, low physical enthusiasm, or lack of social standing.",
+      "hi": "अंक 9 (दक्षिण दिशा / मंगल) की कमी से साहस और पराक्रम में कमी, सामाजिक यश में रुकावट और त्वरित निर्णय न ले पाना हो सकता है।"
+    },
+    "psychologicalEffect": {
+      "en": "Backing away from legitimate competition and hesitation to defend principles.",
+      "hi": "चुनौतियों का सामना करने में संकोच और आत्म-विश्वास की कमी।"
+    },
+    "remedies": [
+      {
+        "type": "Mantra",
+        "typeHi": "मंत्र",
+        "action": {
+          "en": "Recite the Hanuman Chalisa daily with devotion.",
+          "hi": "नित्य श्रद्धापूर्वक श्री हनुमान चालीसा का पाठ करें।"
+        }
+      },
+      {
+        "type": "Lifestyle",
+        "typeHi": "दिनचर्या",
+        "action": {
+          "en": "Incorporate active physical workouts or martial arts into your daily routine.",
+          "hi": "प्रतिदिन व्यायाम या खेलकूद में भाग लेकर शारीरिक ऊर्जा बढ़ाएं।"
+        }
+      },
+      {
+        "type": "Charity",
+        "typeHi": "दान",
+        "action": {
+          "en": "Donate blood once a year or donate jaggery and roasted chickpeas on Tuesdays.",
+          "hi": "मंगलवार को बंदरों या जरूरतमंदों को गुड़ और चना खिलाएं।"
+        }
+      }
+    ]
+  }
+]

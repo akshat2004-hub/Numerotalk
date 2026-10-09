@@ -5,18 +5,18 @@ import {
   calculateDestinyNumber,
   reduceToSingleDigit,
   parseDob
-} from '../lib/engine/numerology';
-import { calculateVedicGrid, LO_SHU_LAYOUT } from '../lib/engine/grid';
-import { detectYogas } from '../lib/engine/yogas';
-import { getNumberRelationship, calculateMatchMaking } from '../lib/engine/compatibility';
-import { calculateYearlyPrediction, calculatePersonalYear } from '../lib/engine/dasha';
-import { analyzeMobileNumber } from '../lib/engine/mobile';
-import { transliterateDevanagari } from '../lib/engine/transliteration';
-import { getNumberMeaning } from '../lib/engine/meanings108';
-import { calculateTimeNumerology } from '../lib/engine/timeNumerology';
-import { calculateVastuNumerology } from '../lib/engine/vastu';
-import { calculateEventPredictions } from '../lib/engine/events';
-import { generatePasswordByProfession, generatePinByNumerology } from '../lib/engine/security';
+} from '../core/engine/numerology';
+import { calculateVedicGrid, LO_SHU_LAYOUT } from '../core/engine/grid';
+import { detectYogas } from '../core/engine/yogas';
+import { getNumberRelationship, calculateMatchMaking } from '../core/engine/compatibility';
+import { calculateYearlyPrediction, calculatePersonalYear } from '../core/engine/dasha';
+import { analyzeMobileNumber } from '../core/engine/mobile';
+import { transliterateDevanagari } from '../core/engine/transliteration';
+import { getNumberMeaning } from '../core/engine/meanings108';
+import { calculateTimeNumerology } from '../core/engine/timeNumerology';
+import { calculateVastuNumerology } from '../core/engine/vastu';
+import { calculateEventPredictions } from '../core/engine/events';
+import { generatePasswordByProfession, generatePinByNumerology } from '../core/engine/security';
 
 describe('Vedic Numerology Engine', () => {
   describe('DOB & Driver / Conductor Calculations', () => {
