@@ -4,13 +4,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { EyeOff, ShieldAlert, CheckCircle, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { VedicGrid } from '@/components/VedicGrid';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateVedicGrid, numerologyService } from '@/lib';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateVedicGrid, numerologyService } from '@/frontend';
 import { MissingNumberReading } from '@/types';
 
 export default function MissingPage() {
@@ -31,7 +31,6 @@ export default function MissingPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'अनुपस्थित अंक 04' : 'MISSING NUMBERS 04'}
         icon={<EyeOff className="w-5 h-5 stroke-[1.5]" />}
       />
 
@@ -74,16 +73,6 @@ export default function MissingPage() {
               />
             ))}
           </div>
-
-          <div className="pt-2 border-t border-[var(--border)]">
-            <Link
-              href="/remedies"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--gold)] hover:underline"
-            >
-              <span>{locale === 'hi' ? 'सभी वैदिक उपाय देखें' : 'Explore All Vedic Remedies'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -121,13 +110,6 @@ export default function MissingPage() {
                     <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider">
                       {t('remediesTitle')}
                     </span>
-                    <Link
-                      href="/remedies"
-                      className="text-[10px] text-[var(--gold)] hover:underline font-semibold flex items-center gap-0.5"
-                    >
-                      <span>{locale === 'hi' ? 'उपाय मॉड्यूल' : 'Remedy Module'}</span>
-                      <ArrowRight className="w-2.5 h-2.5" />
-                    </Link>
                   </div>
 
                   {/* Linked Remedy Chips */}

@@ -1,0 +1,94 @@
+{
+  "directions": {
+    "1": {
+      "directionEn": "North",
+      "directionHi": "उत्तर",
+      "elementEn": "Water",
+      "elementHi": "जल",
+      "roomUsageEn": "North: Main Entrance, Water features, Workstation, Wealth locker",
+      "roomUsageHi": "उत्तर: मुख्य द्वार, जल स्रोत, अध्ययन कक्ष, धन तिजोरी",
+      "remedyEn": "Place a small indoor water fountain or brass Kuber idol in the North.",
+      "remedyHi": "उत्तर दिशा में छोटा फव्वारा या पीतल की कुबेर प्रतिमा स्थापित करें।"
+    },
+    "2": {
+      "directionEn": "South-West",
+      "directionHi": "दक्षिण-पश्चिम",
+      "elementEn": "Earth",
+      "elementHi": "पृथ्वी",
+      "roomUsageEn": "South-West: Master Bedroom, Heavy storage, Stability zone",
+      "roomUsageHi": "दक्षिण-पश्चिम: मुख्य शयनकक्ष, भारी सामान, स्थिरता क्षेत्र",
+      "remedyEn": "Place yellow curtains or a pair of brass swans in the South-West.",
+      "remedyHi": "दक्षिण-पश्चिम में पीले पर्दे अथवा पीतल के हंस का जोड़ा रखें।"
+    },
+    "3": {
+      "directionEn": "East",
+      "directionHi": "पूर्व",
+      "elementEn": "Wood",
+      "elementHi": "वायु / काष्ठ",
+      "roomUsageEn": "East: Living Room, Balcony, Family gathering, Morning sun",
+      "roomUsageHi": "पूर्व: बैठक कक्ष, बालकनी, पारिवारिक संवाद, सूर्य प्रकाश",
+      "remedyEn": "Hang a wooden wind chime or keep a healthy green plant in the East.",
+      "remedyHi": "पूर्व दिशा में लकड़ी का विंड चाइम लगाएं या हरा पौधा रखें।"
+    },
+    "4": {
+      "directionEn": "South-East",
+      "directionHi": "दक्षिण-पूर्व (आग्नेय)",
+      "elementEn": "Wood / Fire",
+      "elementHi": "अग्नि",
+      "roomUsageEn": "South-East: Kitchen, Electric panels, Inverter, Fire appliances",
+      "roomUsageHi": "दक्षिण-पूर्व: रसोईघर, बिजली मीटर, हीटर, अग्निकोण",
+      "remedyEn": "Keep a green money plant or light a ghee lamp facing South-East.",
+      "remedyHi": "आग्नेय कोण (दक्षिण-पूर्व) में मनी प्लांट रखें या घी का दीपक प्रज्वलित करें।"
+    },
+    "5": {
+      "directionEn": "Center (Brahmasthan)",
+      "directionHi": "मध्य (ब्रह्मस्थान)",
+      "elementEn": "Earth",
+      "elementHi": "पृथ्वी / आकाश",
+      "roomUsageEn": "Center (Brahmasthan): Open courtyard, Light furniture, Free airflow",
+      "roomUsageHi": "मध्य (ब्रह्मस्थान): खुला आँगन, हल्का स्थान, वायु संचार",
+      "remedyEn": "Keep the center (Brahmasthan) clutter-free; hang a faceted crystal globe.",
+      "remedyHi": "घर का केंद्र (ब्रह्मस्थान) पूर्णतः स्वच्छ व हल्का रखें।"
+    },
+    "6": {
+      "directionEn": "North-West",
+      "directionHi": "उत्तर-पश्चिम (वायव्य)",
+      "elementEn": "Metal",
+      "elementHi": "वायु / धातु",
+      "roomUsageEn": "North-West: Guest Room, Finished goods storage, Parking",
+      "roomUsageHi": "उत्तर-पश्चिम: अतिथि कक्ष, तैयार माल, वाहन पार्किंग",
+      "remedyEn": "Hang a 6-pipe silver or white metallic wind chime in the North-West.",
+      "remedyHi": "वायव्य (उत्तर-पश्चिम) में 6 छड़ों वाला चांदी या सफेद विंड चाइम लगाएं।"
+    },
+    "7": {
+      "directionEn": "West",
+      "directionHi": "पश्चिम",
+      "elementEn": "Metal",
+      "elementHi": "वरुण / धातु",
+      "roomUsageEn": "West: Children study room, Dining area, Sunset view",
+      "roomUsageHi": "पश्चिम: बच्चों का कक्ष, भोजन कक्ष, पश्चिम मुखी खिड़कियां",
+      "remedyEn": "Place a small white quartz crystal cluster in the West zone.",
+      "remedyHi": "पश्चिम दिशा में श्वेत स्फटिक क्लस्टर या चांदी का सिक्का रखें।"
+    },
+    "8": {
+      "directionEn": "North-East",
+      "directionHi": "उत्तर-पूर्व (ईशान)",
+      "elementEn": "Earth",
+      "elementHi": "ईशान / जल",
+      "roomUsageEn": "North-East (Ishan): Puja Room, Meditation altar, Underground water tank",
+      "roomUsageHi": "उत्तर-पूर्व (ईशान): पूजा घर, ध्यान कक्ष, भूमिगत जल",
+      "remedyEn": "Keep the North-East impeccably clean; place a bowl of Gangajal or crystal.",
+      "remedyHi": "ईशान कोण को सदैव स्वच्छ व हल्का रखें तथा गंगाजल या स्फटिक रखें।"
+    },
+    "9": {
+      "directionEn": "South",
+      "directionHi": "दक्षिण",
+      "elementEn": "Fire",
+      "elementHi": "अग्नि / यम",
+      "roomUsageEn": "South: Electrical appliances, Overhead tank, High boundary wall",
+      "roomUsageHi": "दक्षिण: भारी निर्माण, प्रतिष्ठा क्षेत्र, अग्नि उपकरण",
+      "remedyEn": "Display a warm red lamp or picture of rising sun on the South wall.",
+      "remedyHi": "दक्षिण दीवार पर लाल प्रकाश या उगते सूर्य का चित्र लगाएं।"
+    }
+  }
+}

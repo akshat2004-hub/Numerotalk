@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { UserProfile } from '@/types';
+import { UserProfile } from '@/core/types';
 
 interface NumerologyStoreState {
   profile: UserProfile;
@@ -14,7 +14,8 @@ interface NumerologyStoreState {
   toggleReportSection: (sectionKey: string) => void;
   selectAllReportSections: () => void;
   deselectAllReportSections: () => void;
-  setDestinySystem: (system: 'chaldean' | 'pythagorean') => void;
+  selectedProfession: string;
+  setSelectedProfession: (profId: string) => void;
   setHydrated: (hydrated: boolean) => void;
 }
 
@@ -24,8 +25,7 @@ const DEFAULT_PROFILE: UserProfile = {
   dob: '1995-10-23',
   birthTime: '10:30',
   image: '',
-  consent: true,
-  destinySystem: 'chaldean'
+  consent: true
 };
 
 const DEFAULT_REPORT_SECTIONS: Record<string, boolean> = {
@@ -57,7 +57,10 @@ export const useNumerologyStore = create<NumerologyStoreState>()(
         'Place a natural brass bell at the entrance and ring it every morning with positive prayer.'
       ],
       reportSections: DEFAULT_REPORT_SECTIONS,
+      selectedProfession: 'tech_entrepreneur',
       isHydrated: false,
+
+      setSelectedProfession: (profId) => set({ selectedProfession: profId }),
 
       setProfile: (updates) =>
         set((state) => ({
@@ -72,8 +75,7 @@ export const useNumerologyStore = create<NumerologyStoreState>()(
             dob: '',
             birthTime: '',
             image: '',
-            consent: false,
-            destinySystem: 'chaldean'
+            consent: false
           }
         })),
 
@@ -112,11 +114,6 @@ export const useNumerologyStore = create<NumerologyStoreState>()(
           }, {} as Record<string, boolean>);
           return { reportSections: allFalse };
         }),
-
-      setDestinySystem: (system) =>
-        set((state) => ({
-          profile: { ...state.profile, destinySystem: system }
-        })),
 
       setHydrated: (hydrated) => set({ isHydrated: hydrated })
     }),

@@ -1,9 +1,9 @@
 import { transliterateDevanagari } from './transliteration';
 
 /**
- * Chaldean numerology letter values (1 to 8; 9 is sacred and not assigned to individual letters).
+ * Sacred Vedic letter phonetic values (1 to 8; 9 is sacred and unassigned to individual letters).
  */
-export const CHALDEAN_MAP: Record<string, number> = {
+export const LETTER_VALUES_MAP: Record<string, number> = {
   A: 1, I: 1, J: 1, Q: 1, Y: 1,
   B: 2, K: 2, R: 2,
   C: 3, G: 3, L: 3, S: 3,
@@ -12,21 +12,6 @@ export const CHALDEAN_MAP: Record<string, number> = {
   U: 6, V: 6, W: 6,
   O: 7, Z: 7,
   F: 8, P: 8
-};
-
-/**
- * Pythagorean numerology letter values (1 to 9).
- */
-export const PYTHAGOREAN_MAP: Record<string, number> = {
-  A: 1, J: 1, S: 1,
-  B: 2, K: 2, T: 2,
-  C: 3, L: 3, U: 3,
-  D: 4, M: 4, V: 4,
-  E: 5, N: 5, W: 5,
-  F: 6, O: 6, X: 6,
-  G: 7, P: 7, Y: 7,
-  H: 8, Q: 8, Z: 8,
-  I: 9, R: 9
 };
 
 /**
@@ -109,15 +94,18 @@ export function parseDob(dob: string | Date): { year: number; month: number; day
 export function calculateMulank(dob: string | Date): {
   dayNumber: number;
   mulank: number;
-  compoundStr: string;
+  compound: number;
+  reduced: number;
+  compoundStr?: string;
 } {
   const { day } = parseDob(dob);
   const mulank = reduceToSingleDigit(day);
-  const compoundStr = day > 9 ? `${day}/${mulank}` : `${mulank}`;
   return {
     dayNumber: day,
     mulank,
-    compoundStr
+    compound: day,
+    reduced: mulank,
+    compoundStr: day > 9 ? `${day}` : `${mulank}`
   };
 }
 
@@ -128,65 +116,262 @@ export function calculateMulank(dob: string | Date): {
 export function calculateBhagyank(dob: string | Date): {
   rawSum: number;
   bhagyank: number;
-  compoundStr: string;
+  compound: number;
+  reduced: number;
+  compoundStr?: string;
 } {
   const { digits } = parseDob(dob);
   const rawSum = digits.reduce((acc, curr) => acc + curr, 0);
   const bhagyank = reduceToSingleDigit(rawSum);
-  const compoundStr = rawSum > 9 ? `${rawSum}/${bhagyank}` : `${bhagyank}`;
   return {
     rawSum,
     bhagyank,
-    compoundStr
+    compound: rawSum,
+    reduced: bhagyank,
+    compoundStr: rawSum > 9 ? `${rawSum}` : `${bhagyank}`
   };
 }
 
+import friendlyEnemyRules from '@/mocks/rules/friendly-enemy-neutral.json';
+import spellingAlternatesData from '@/mocks/rules/spelling-alternates.json';
+
+export interface LetterDetail {
+  ch: string;
+  value: number;
+  isVowel: boolean;
+}
+
+export interface WordDetail {
+  word: string;
+  letters: LetterDetail[];
+  subtotal: number;
+  reduced: number;
+}
+
 export interface DestinyCalculationResult {
-  system: 'chaldean' | 'pythagorean';
+  words: WordDetail[];
+  compound: number;
+  reduced: number;
   originalName: string;
   transliteratedName: string;
   isDevanagari: boolean;
   letterBreakdown: Array<{ char: string; value: number }>;
   compoundNumber: number;
   destinyNumber: number;
-  compoundStr: string;
+  compoundStr?: string;
 }
 
 /**
- * Calculates Destiny / Name Number (Namank) using Chaldean or Pythagorean method.
- * Supports English and Devanagari (Hindi) input.
+ * Calculates Destiny / Name Number (Namank).
+ * Breaks down name into words and individual letters with sacred phonetic values.
+ * Reduces to single digit 1-9 (no master-number exceptions).
  */
-export function calculateDestinyNumber(
-  name: string,
-  system: 'chaldean' | 'pythagorean' = 'chaldean'
-): DestinyCalculationResult {
-  const translit = transliterateDevanagari(name);
+export function nameNumber(name: string): DestinyCalculationResult {
+  const translit = transliterateDevanagari(name || '');
   const targetText = translit.transliterated;
-  const map = system === 'chaldean' ? CHALDEAN_MAP : PYTHAGOREAN_MAP;
 
+  // Split into words while retaining pure alphabetic characters
+  const rawWords = targetText.trim().split(/\s+/).filter(Boolean);
+  const words: WordDetail[] = [];
   const letterBreakdown: Array<{ char: string; value: number }> = [];
-  let compoundNumber = 0;
 
-  for (const char of targetText) {
-    if (char === ' ') continue;
-    const val = map[char] || 0;
-    if (val > 0) {
-      letterBreakdown.push({ char, value: val });
-      compoundNumber += val;
+  for (const rawWord of rawWords) {
+    const letters: LetterDetail[] = [];
+    let subtotal = 0;
+
+    for (const char of rawWord) {
+      const upper = char.toUpperCase();
+      const val = LETTER_VALUES_MAP[upper] || 0;
+      if (val > 0) {
+        const isVowel = 'AEIOU'.includes(upper);
+        letters.push({ ch: upper, value: val, isVowel });
+        letterBreakdown.push({ char: upper, value: val });
+        subtotal += val;
+      }
+    }
+
+    if (letters.length > 0) {
+      words.push({
+        word: rawWord,
+        letters,
+        subtotal,
+        reduced: reduceToSingleDigit(subtotal)
+      });
     }
   }
 
-  const destinyNumber = reduceToSingleDigit(compoundNumber);
-  const compoundStr = compoundNumber > 9 ? `${compoundNumber}/${destinyNumber}` : `${destinyNumber}`;
+  const compound = words.reduce((acc, w) => acc + w.subtotal, 0);
+  const reduced = reduceToSingleDigit(compound);
 
   return {
-    system,
+    words,
+    compound,
+    reduced,
     originalName: name,
     transliteratedName: targetText,
     isDevanagari: translit.isDevanagari,
     letterBreakdown,
-    compoundNumber,
-    destinyNumber,
-    compoundStr
+    compoundNumber: compound,
+    destinyNumber: reduced,
+    compoundStr: compound > 9 ? `${compound}` : `${reduced}`
   };
+}
+
+/**
+ * calculateDestinyNumber proxy for backward compatibility.
+ */
+export function calculateDestinyNumber(name: string): DestinyCalculationResult {
+  return nameNumber(name);
+}
+
+export interface NameVariantSuggestion {
+  suggestedName: string;
+  compound: number;
+  reduced: number;
+  harmonyMulank: 'friendly' | 'neutral' | 'enemy';
+  harmonyBhagyank: 'friendly' | 'neutral' | 'enemy';
+  changeMade: string;
+}
+
+export function getHarmonyRelation(sourceNum: number, targetNum: number): 'friendly' | 'neutral' | 'enemy' {
+  const relMap = (friendlyEnemyRules as any).relations?.[String(sourceNum)];
+  if (!relMap) return 'neutral';
+  if (relMap.friendly?.includes(targetNum)) return 'friendly';
+  if (relMap.enemy?.includes(targetNum)) return 'enemy';
+  return 'neutral';
+}
+
+/**
+ * Generates spelling suggestions for a name that harmonize with birth numbers (Mulank & Bhagyank).
+ * Keeps only variants whose Name Number is friendly with BOTH Mulank and Bhagyank.
+ */
+export function suggestNameVariants(
+  name: string,
+  profile: { dob?: string; mulank?: number; bhagyank?: number }
+): NameVariantSuggestion[] {
+  if (!name || !name.trim()) return [];
+
+  let mulank = profile.mulank;
+  let bhagyank = profile.bhagyank;
+
+  if ((!mulank || !bhagyank) && profile.dob) {
+    const m = calculateMulank(profile.dob);
+    const b = calculateBhagyank(profile.dob);
+    mulank = mulank || m.mulank;
+    bhagyank = bhagyank || b.bhagyank;
+  }
+
+  if (!mulank || !bhagyank) return [];
+
+  const rawWords = name.trim().split(/\s+/);
+  if (rawWords.length === 0) return [];
+
+  interface Candidate {
+    name: string;
+    changeMade: string;
+  }
+
+  const candidateMap = new Map<string, Candidate>();
+
+  const addCandidate = (candWords: string[], changeMade: string) => {
+    const formatted = candWords.join(' ');
+    const key = formatted.toLowerCase();
+    if (key !== name.trim().toLowerCase() && !candidateMap.has(key)) {
+      candidateMap.set(key, { name: formatted, changeMade });
+    }
+  };
+
+  // (1) Doubling a letter
+  rawWords.forEach((word, wIdx) => {
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      if (/^[a-zA-Z]$/.test(ch)) {
+        const doubledWord = word.slice(0, i) + ch + word.slice(i);
+        const newWords = [...rawWords];
+        newWords[wIdx] = doubledWord;
+        addCandidate(newWords, `Double '${ch.toUpperCase()}'`);
+      }
+    }
+  });
+
+  // (2) Adding a trailing a/h/i/y
+  const trailingAdditions = ['a', 'h', 'i', 'y'];
+  trailingAdditions.forEach((addChar) => {
+    // Add to first word if multi-word
+    if (rawWords.length > 1) {
+      const newWords = [...rawWords];
+      newWords[0] = newWords[0] + addChar;
+      addCandidate(newWords, `+ ${addChar.toUpperCase()} to first name`);
+    }
+    // Add to end of entire name
+    const newWordsEnd = [...rawWords];
+    newWordsEnd[newWordsEnd.length - 1] = newWordsEnd[newWordsEnd.length - 1] + addChar;
+    addCandidate(newWordsEnd, `+ ${addChar.toUpperCase()} at end`);
+  });
+
+  // (3) Dropping a non-initial letter
+  rawWords.forEach((word, wIdx) => {
+    if (word.length > 2) {
+      for (let i = 1; i < word.length; i++) {
+        const ch = word[i];
+        if (/^[a-zA-Z]$/.test(ch)) {
+          const droppedWord = word.slice(0, i) + word.slice(i + 1);
+          const newWords = [...rawWords];
+          newWords[wIdx] = droppedWord;
+          addCandidate(newWords, `Drop '${ch.toUpperCase()}'`);
+        }
+      }
+    }
+  });
+
+  // (4) Common Indian spelling alternates
+  const alternates = (spellingAlternatesData as any).alternates || [];
+  for (const alt of alternates) {
+    const regex = new RegExp(alt.pattern, 'gi');
+    if (regex.test(name)) {
+      const replaced = name.replace(regex, (match) => {
+        // preserve casing roughly
+        if (match[0] === match[0].toUpperCase()) {
+          return alt.replacement.charAt(0).toUpperCase() + alt.replacement.slice(1);
+        }
+        return alt.replacement;
+      });
+      const words = replaced.trim().split(/\s+/);
+      addCandidate(words, `${alt.description || alt.pattern + ' → ' + alt.replacement}`);
+    }
+  }
+
+  // Evaluate each candidate
+  const validSuggestions: NameVariantSuggestion[] = [];
+
+  for (const cand of candidateMap.values()) {
+    const calc = nameNumber(cand.name);
+    const harmM = getHarmonyRelation(mulank, calc.reduced);
+    const harmB = getHarmonyRelation(bhagyank, calc.reduced);
+
+    // Keep ONLY variants whose Name Number is friendly with BOTH Mulank and Bhagyank
+    if (harmM === 'friendly' && harmB === 'friendly') {
+      validSuggestions.push({
+        suggestedName: cand.name,
+        compound: calc.compound,
+        reduced: calc.reduced,
+        harmonyMulank: harmM,
+        harmonyBhagyank: harmB,
+        changeMade: cand.changeMade
+      });
+    }
+  }
+
+  // Rank by harmony (e.g. matching Mulank or Bhagyank directly) then smallest change
+  validSuggestions.sort((a, b) => {
+    const aMatchesBirth = (a.reduced === mulank || a.reduced === bhagyank) ? 1 : 0;
+    const bMatchesBirth = (b.reduced === mulank || b.reduced === bhagyank) ? 1 : 0;
+    if (bMatchesBirth !== aMatchesBirth) return bMatchesBirth - aMatchesBirth;
+
+    const diffA = Math.abs(a.suggestedName.length - name.length);
+    const diffB = Math.abs(b.suggestedName.length - name.length);
+    return diffA - diffB;
+  });
+
+  return validSuggestions.slice(0, 5);
 }

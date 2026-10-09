@@ -8,7 +8,6 @@ const updateProfileSchema = z.object({
   dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   birth_time: z.string().optional().nullable(),
   image_url: z.string().optional().nullable(),
-  destiny_system: z.enum(['chaldean', 'pythagorean']).optional(),
   is_self: z.boolean().optional(),
   notes: z.string().optional().nullable(),
 });

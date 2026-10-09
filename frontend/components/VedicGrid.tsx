@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useMemo, memo } from 'react';
-import { Sun, LayoutGrid, Diamond, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { calculateVedicGrid, VedicGridResult, GridCell, VEDIC_INDIAN_LAYOUT, LO_SHU_LAYOUT } from '@/lib/engine/grid';
-import { detectYogas } from '@/lib/engine/yogas';
+import { Sun } from 'lucide-react';
+import { cn } from '@/frontend/utils';
+import { calculateVedicGrid, VedicGridResult, GridCell } from '@/core/engine/grid';
+import { detectYogas } from '@/core/engine/yogas';
 
 export interface VedicGridProps {
   dob: string;
@@ -18,7 +18,6 @@ export interface VedicGridProps {
   size?: 'sm' | 'md' | 'lg';
   title?: string;
   caption?: string;
-  layout?: 'vedic' | 'loshu';
   additionalDigits?: number[];
   newlyAddedNumber?: number;
   digitHighlights?: Record<number, 'support' | 'hurdle' | 'dasha' | 'custom'>;
@@ -38,7 +37,6 @@ export function VedicGrid({
   size = 'md',
   title,
   caption,
-  layout = 'vedic',
   additionalDigits = [],
   newlyAddedNumber,
   digitHighlights,
@@ -46,16 +44,15 @@ export function VedicGrid({
   hideStats = false
 }: VedicGridProps) {
   const [includeDriverConductor, setIncludeDriverConductor] = useState(defaultIncludeMulankBhagyank);
-  const [activeLayout, setActiveLayout] = useState<'vedic' | 'loshu'>(layout);
   const [selectedCell, setSelectedCell] = useState<GridCell | null>(null);
 
   // Stable key for additionalDigits array so useMemo dependency is correct
   const additionalDigitsKey = additionalDigits.join(',');
 
   const gridResult: VedicGridResult = useMemo(
-    () => calculateVedicGrid(dob || '1995-10-23', includeDriverConductor, activeLayout, additionalDigits),
+    () => calculateVedicGrid(dob || '1995-10-23', includeDriverConductor, undefined, additionalDigits),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dob, includeDriverConductor, activeLayout, additionalDigitsKey]
+    [dob, includeDriverConductor, additionalDigitsKey]
   );
   const activeYogas = useMemo(() => detectYogas(gridResult).fullYogas, [gridResult]);
 
@@ -101,37 +98,8 @@ export function VedicGrid({
             </p>
           </div>
 
-          {/* Layout Toggle & Driver/Conductor Switch */}
+          {/* Driver/Conductor Switch */}
           <div className="flex items-center gap-2.5">
-            <div className="inline-flex items-center p-0.5 rounded-md bg-[var(--seg-inactive)] border border-[var(--border)] text-xs">
-              <button
-                type="button"
-                onClick={() => setActiveLayout('vedic')}
-                title="Vedic Indian Layout"
-                className={cn(
-                  'px-2 py-0.5 rounded text-[10.5px] transition-all cursor-pointer font-serif',
-                  activeLayout === 'vedic'
-                    ? 'bg-[var(--surface)] text-[var(--heading)] font-bold shadow-xs'
-                    : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
-                )}
-              >
-                Vedic
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveLayout('loshu')}
-                title="Lo Shu Layout"
-                className={cn(
-                  'px-2 py-0.5 rounded text-[10.5px] transition-all cursor-pointer font-serif',
-                  activeLayout === 'loshu'
-                    ? 'bg-[var(--surface)] text-[var(--heading)] font-bold shadow-xs'
-                    : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
-                )}
-              >
-                Lo Shu
-              </button>
-            </div>
-
             <label className="flex items-center gap-1.5 cursor-pointer select-none text-[11px] text-[var(--text-muted)]">
               <input
                 type="checkbox"
@@ -237,13 +205,6 @@ export function VedicGrid({
                         —
                       </div>
                     )}
-                  </div>
-
-                  {/* Bottom Direction Label */}
-                  <div className="w-full text-center">
-                    <span className="text-[9px] text-[var(--text-muted)] block truncate">
-                      {cell.direction}
-                    </span>
                   </div>
                 </button>
               );

@@ -1,0 +1,20 @@
+{
+  "alternates": [
+    { "pattern": "ee", "replacement": "i", "description": "ee → i" },
+    { "pattern": "i", "replacement": "ee", "description": "i → ee" },
+    { "pattern": "oo", "replacement": "u", "description": "oo → u" },
+    { "pattern": "u", "replacement": "oo", "description": "u → oo" },
+    { "pattern": "v", "replacement": "w", "description": "v → w" },
+    { "pattern": "w", "replacement": "v", "description": "w → v" },
+    { "pattern": "sh", "replacement": "s", "description": "sh → s" },
+    { "pattern": "s", "replacement": "sh", "description": "s → sh" },
+    { "pattern": "aa", "replacement": "a", "description": "aa → a" },
+    { "pattern": "a", "replacement": "aa", "description": "a → aa" },
+    { "pattern": "k", "replacement": "c", "description": "k → c" },
+    { "pattern": "c", "replacement": "k", "description": "c → k" },
+    { "pattern": "ph", "replacement": "f", "description": "ph → f" },
+    { "pattern": "f", "replacement": "ph", "description": "f → ph" },
+    { "pattern": "dh", "replacement": "d", "description": "dh → d" },
+    { "pattern": "th", "replacement": "t", "description": "th → t" }
+  ]
+}

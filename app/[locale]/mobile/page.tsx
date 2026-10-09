@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Smartphone, Sparkles, Compass, Image as ImageIcon, CheckCircle, AlertTriangle, ArrowUp } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { analyzeMobileNumber, calculateMulank, MobileAnalysisResult } from '@/lib';
+import { Smartphone, Sparkles, Compass, Image as ImageIcon, CheckCircle, Scale, AlertTriangle } from 'lucide-react';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { analyzeMobileNumber, calculateMulank, MobileAnalysisResult } from '@/frontend';
+import pairMeaningsData from '@/mocks/rules/pair-meanings.json';
 
 export default function MobilePage() {
   const t = useTranslations('mobilePage');
@@ -20,7 +21,7 @@ export default function MobilePage() {
   const mulank = profile.dob ? calculateMulank(profile.dob).mulank : 1;
   const analysis: MobileAnalysisResult = analyzeMobileNumber(inputMobile, mulank);
 
-  // Mock screensaver cards with colors & themes
+  // Screensaver cards with colors & themes
   const screensavers = [
     {
       id: 1,
@@ -66,37 +67,39 @@ export default function MobilePage() {
 
   const targetDir = analysis.chargingDirectionEn.toUpperCase();
 
+  const emptyStates = pairMeaningsData.emptyState as Record<string, { en: string; hi: string }>;
+
   return (
     <div className="space-y-6 sm:space-y-7">
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'मोबाइल अंक 09' : 'MOBILE FREQUENCY 09'}
         icon={<Smartphone className="w-5 h-5 stroke-[1.5]" />}
       />
 
       <ProfileEmptyBanner />
 
       {/* Input bar */}
-      <div className="vedic-card p-4 sm:p-5 space-y-2.5">
-        <label className="block text-[11px] font-semibold text-[var(--text-muted)]">
-          {t('inputLabel')}
+      <div className="vedic-card p-4 sm:p-5 space-y-2">
+        <label className="block text-[13px] font-medium text-[var(--text-muted)]">
+          {locale === 'hi' ? '10 अंकों का मोबाइल नंबर दर्ज करें' : 'Enter Mobile Number'}
         </label>
-        <div className="flex flex-col sm:flex-row gap-2.5">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
           <input
             type="text"
             value={inputMobile}
             maxLength={10}
             onChange={(e) => setInputMobile(e.target.value.replace(/\D/g, ''))}
-            placeholder="Enter 10 digit mobile..."
-            className="flex-1 h-[40px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs font-mono text-[var(--heading)] focus:border-[var(--gold)] outline-hidden transition-all"
+            placeholder={locale === 'hi' ? '10 अंकों का मोबाइल नंबर दर्ज करें...' : 'Enter 10 digit mobile...'}
+            className="flex-1 w-full h-[44px] px-[14px] rounded-[12px] bg-[var(--surface)] border border-[var(--input-border)] text-[16px] font-mono text-[var(--heading)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[var(--gold)]/20 outline-hidden transition-all leading-[1.5] lining-nums"
           />
           <button
             type="button"
             onClick={() => setInputMobile(profile.mobile || '9876543210')}
-            className="btn-gold-gradient h-[40px] px-5 text-xs font-semibold rounded-xl cursor-pointer shrink-0"
+            className="btn-gold-gradient h-[44px] px-5 rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto shadow-[0_4px_12px_rgba(201,131,16,0.25)]"
           >
-            {t('analyzeBtn')}
+            <Sparkles className="w-4 h-4 stroke-[2]" />
+            <span>{locale === 'hi' ? 'कंपन विश्लेषण करें' : 'Analyze Vibrations'}</span>
           </button>
         </div>
       </div>
@@ -104,18 +107,21 @@ export default function MobilePage() {
       {/* Overview Card */}
       <div className="vedic-card p-4 sm:p-5">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-          <div className="text-center md:text-left space-y-0.5">
+          <div className="text-center md:text-left space-y-1">
             <span className="text-[11px] text-[var(--text-muted)]">{t('totalSum')}</span>
-            <div className="font-serif text-2xl font-bold text-[var(--heading)]">
+            <div className="font-serif text-2xl font-bold text-[var(--heading)] lining-nums">
               {analysis.digitSum}
             </div>
-            <span className="text-[11px] text-[var(--gold)] font-mono font-semibold">
-              Compound: {analysis.compoundStr}
-            </span>
+            <div className="text-[11px] text-[var(--gold)] font-medium flex items-center justify-center md:justify-start gap-1">
+              <span>{locale === 'hi' ? 'संयुक्त अंक:' : 'Compound:'}</span>
+              <CompoundNumber compound={analysis.compound} reduced={analysis.reduced} size="sm" />
+            </div>
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            <span className="text-[11px] text-[var(--text-muted)] mb-1">Final Reduced Root</span>
+            <span className="text-[11px] text-[var(--text-muted)] mb-1">
+              {locale === 'hi' ? 'अंतिम मूल अंक' : 'Final Reduced Root'}
+            </span>
             <NumberBadge number={analysis.reducedTotal} size="lg" variant="gold" />
           </div>
 
@@ -146,13 +152,11 @@ export default function MobilePage() {
           <div className="flex flex-col sm:flex-row items-center gap-5 justify-between">
             {/* Circular Compass Visual */}
             <div className="relative w-36 h-36 rounded-full border-2 border-dashed border-[var(--border)] bg-[var(--surface)] flex items-center justify-center shadow-inner shrink-0">
-              {/* Compass Needle Rings */}
               <div className="absolute inset-2 rounded-full border border-[var(--border)]/60" />
               <div className="w-12 h-12 rounded-full bg-[var(--chip-bg)] border border-[var(--border)] flex items-center justify-center font-bold text-[10px] text-[var(--gold)]">
                 {analysis.chargingDirectionEn.slice(0, 4)}
               </div>
 
-              {/* 8 Cardinal Direction Markers */}
               {directions.map((d) => {
                 const isHighlight = targetDir.includes(d.label) || targetDir.includes(d.name.toUpperCase());
                 return (
@@ -205,7 +209,6 @@ export default function MobilePage() {
             </span>
           </div>
 
-          {/* 4 Screensaver Mock Items */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
             {screensavers.map((item) => (
               <div
@@ -244,51 +247,206 @@ export default function MobilePage() {
         </div>
       </div>
 
-      {/* Adjacent Pairs Analysis */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm sm:text-base font-bold font-serif text-[var(--heading)] flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" />
-            {t('pairsTitle')}
-          </h3>
-          <div className="flex items-center gap-2 text-[11px]">
-            <span className="text-emerald-700 font-semibold">
-              {t('auspiciousPairs')}: {analysis.auspiciousPairsCount}
+      {/* PART B: Adjacent Digit Pairs Analysis - Clean Two-Column Redesign */}
+      <div className="space-y-4 pt-2">
+        {/* Section Heading & Summary Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="text-base sm:text-lg font-serif font-bold text-[var(--heading)] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[var(--gold)]" />
+              <span>{locale === 'hi' ? 'सन्निकट अंक युग्म विश्लेषण' : 'Adjacent Digit Pairs Analysis'}</span>
+            </h3>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">
+              {locale === 'hi'
+                ? 'मोबाइल संख्या के प्रत्येक क्रमिक अंक जोड़े का सूक्ष्म ऊर्जा प्रभाव'
+                : 'Micro-vibrational influence of consecutive digit pairs in the mobile sequence'}
+            </p>
+          </div>
+
+          {/* Summary bar chips + total reduced number */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{locale === 'hi' ? 'शुभ' : 'Auspicious'}</span>
+              <span className="lining-nums font-bold ml-0.5">{analysis.auspiciousPairsCount}</span>
             </span>
-            <span className="text-rose-700 font-semibold">
-              {t('cautionPairs')}: {analysis.cautionPairsCount}
+
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
+              <Scale className="w-3.5 h-3.5 text-amber-600" />
+              <span>{locale === 'hi' ? 'सामान्य' : 'Neutral'}</span>
+              <span className="lining-nums font-bold ml-0.5">{analysis.neutralPairsCount}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 shadow-2xs">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+              <span>{locale === 'hi' ? 'चुनौतीपूर्ण' : 'Challenging'}</span>
+              <span className="lining-nums font-bold ml-0.5">{analysis.challengingPairsCount}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--chip-bg)] text-[var(--heading)] border border-[var(--border)] shadow-2xs">
+              <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'कुल योग:' : 'Total:'}</span>
+              <span className="font-bold text-[var(--gold)] lining-nums">
+                {analysis.digitSum} → {analysis.reducedTotal}
+              </span>
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-          {analysis.pairs.map((p, idx) => (
-            <div
-              key={idx}
-              className={`p-3 rounded-2xl border flex items-start gap-2.5 ${
-                p.quality === 'auspicious'
-                  ? 'bg-emerald-50/70 border-emerald-200'
-                  : p.quality === 'caution'
-                  ? 'bg-rose-50/70 border-rose-200'
-                  : 'bg-[var(--surface)] border-[var(--border)]'
-              }`}
-            >
-              <div className="font-serif text-sm font-bold text-[var(--gold)] bg-[var(--surface)] px-2 py-0.5 rounded-xl border border-[var(--border)] shrink-0">
-                {p.pair}
+        {/* Two Equal-Height Columns: Left Auspicious, Right Neutral */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+          {/* LEFT: Auspicious Pairs */}
+          <div className="vedic-card border-t-[3px] border-t-emerald-500 p-0 flex flex-col overflow-hidden shadow-xs">
+            {/* Column Header */}
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-muted)]/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <h4 className="font-serif font-bold text-[15px] text-[var(--heading)]">
+                  {locale === 'hi' ? 'शुभ अंक युग्म' : 'Auspicious Pairs'}
+                </h4>
               </div>
-              <div className="text-xs space-y-0.5">
-                <span className={`font-semibold block text-[11px] ${
-                  p.quality === 'auspicious' ? 'text-emerald-800' : p.quality === 'caution' ? 'text-rose-800' : 'text-[var(--heading)]'
-                }`}>
-                  Sum: {p.sum} • {p.quality.toUpperCase()}
-                </span>
-                <p className="text-[var(--text-muted)] text-[11px] leading-relaxed">
-                  {locale === 'hi' ? p.meaningHi : p.meaningEn}
-                </p>
-              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                {analysis.auspiciousPairsCount}
+              </span>
             </div>
-          ))}
+
+            {/* Hairline-separated Rows */}
+            <div className="flex-1 divide-y divide-[var(--border)]">
+              {analysis.auspiciousPairs.length > 0 ? (
+                analysis.auspiciousPairs.map((p, idx) => (
+                  <div
+                    key={`ausp-${idx}`}
+                    className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                      {p.pair}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[11px] text-[var(--text-muted)] font-medium lining-nums">
+                          {p.positionLabel}
+                        </span>
+                        <span className="text-[10px] text-[var(--text-muted)]">•</span>
+                        <span className="text-[11px] font-semibold text-emerald-700 lining-nums">
+                          {p.sumDisplay}
+                        </span>
+                      </div>
+                      <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
+                        {locale === 'hi' ? p.titleHi : p.titleEn}
+                      </h5>
+                      <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                        {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-xs text-[var(--text-muted)] italic">
+                  {emptyStates.auspicious?.[locale] || 'No auspicious pairs detected.'}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT: Neutral Pairs */}
+          <div className="vedic-card border-t-[3px] border-t-[var(--gold)] p-0 flex flex-col overflow-hidden shadow-xs">
+            {/* Column Header */}
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-muted)]/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Scale className="w-4 h-4 text-[var(--gold)] shrink-0" />
+                <h4 className="font-serif font-bold text-[15px] text-[var(--heading)]">
+                  {locale === 'hi' ? 'सामान्य अंक युग्म' : 'Neutral Pairs'}
+                </h4>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 lining-nums">
+                {analysis.neutralPairsCount}
+              </span>
+            </div>
+
+            {/* Hairline-separated Rows */}
+            <div className="flex-1 divide-y divide-[var(--border)]">
+              {analysis.neutralPairs.length > 0 ? (
+                analysis.neutralPairs.map((p, idx) => (
+                  <div
+                    key={`neut-${idx}`}
+                    className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                      {p.pair}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[11px] text-[var(--text-muted)] font-medium lining-nums">
+                          {p.positionLabel}
+                        </span>
+                        <span className="text-[10px] text-[var(--text-muted)]">•</span>
+                        <span className="text-[11px] font-semibold text-[var(--gold)] lining-nums">
+                          {p.sumDisplay}
+                        </span>
+                      </div>
+                      <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
+                        {locale === 'hi' ? p.titleHi : p.titleEn}
+                      </h5>
+                      <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                        {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-xs text-[var(--text-muted)] italic">
+                  {emptyStates.neutral?.[locale] || 'No neutral pairs detected.'}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+
+        {/* Challenging Pairs: Full-width section below ONLY when count > 0 */}
+        {analysis.challengingPairsCount > 0 && (
+          <div className="vedic-card border-t-[3px] border-t-rose-500 p-0 overflow-hidden shadow-xs mt-3">
+            <div className="p-4 border-b border-[var(--border)] bg-rose-50/40 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <h4 className="font-serif font-bold text-[15px] text-rose-950">
+                  {locale === 'hi' ? 'चुनौतीपूर्ण अंक युग्म (सावधानी)' : 'Challenging Pairs (Friction Warning)'}
+                </h4>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 lining-nums">
+                {analysis.challengingPairsCount}
+              </span>
+            </div>
+
+            <div className="divide-y divide-[var(--border)]">
+              {analysis.challengingPairs.map((p, idx) => (
+                <div
+                  key={`chall-${idx}`}
+                  className="p-3.5 flex items-center gap-3.5 hover:bg-rose-50/20 transition-colors"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 font-mono font-bold text-base text-rose-900 flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                    {p.pair}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-[11px] text-[var(--text-muted)] font-medium lining-nums">
+                        {p.positionLabel}
+                      </span>
+                      <span className="text-[10px] text-[var(--text-muted)]">•</span>
+                      <span className="text-[11px] font-semibold text-rose-700 lining-nums">
+                        {p.sumDisplay}
+                      </span>
+                    </div>
+                    <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
+                      {locale === 'hi' ? p.titleHi : p.titleEn}
+                    </h5>
+                    <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                      {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

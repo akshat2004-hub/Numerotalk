@@ -1,9 +1,19 @@
 import { reduceToSingleDigit } from './numerology';
+import pairMeaningsData from '@/mocks/rules/pair-meanings.json';
 
 export interface MobilePairAnalysis {
   pair: string;
+  positionLabel: string;
+  rawSum: number;
+  reducedSum: number;
+  sumDisplay: string;
+  quality: 'auspicious' | 'neutral' | 'challenging';
+  titleEn: string;
+  titleHi: string;
+  descriptionEn: string;
+  descriptionHi: string;
+  // Backward compatibility
   sum: number;
-  quality: 'auspicious' | 'neutral' | 'caution';
   meaningEn: string;
   meaningHi: string;
 }
@@ -13,38 +23,25 @@ export interface MobileAnalysisResult {
   cleanDigits: number[];
   digitSum: number;
   reducedTotal: number;
-  compoundStr: string;
+  compound: number;
+  reduced: number;
+  compoundStr?: string;
   isFavorableTotal: boolean;
   chargingDirectionEn: string;
   chargingDirectionHi: string;
   screensaverSuggestionEn: string;
   screensaverSuggestionHi: string;
   pairs: MobilePairAnalysis[];
+  auspiciousPairs: MobilePairAnalysis[];
+  neutralPairs: MobilePairAnalysis[];
+  challengingPairs: MobilePairAnalysis[];
   auspiciousPairsCount: number;
-  cautionPairsCount: number;
+  neutralPairsCount: number;
+  cautionPairsCount: number; // for backward compatibility
+  challengingPairsCount: number;
   generalVerdictEn: string;
   generalVerdictHi: string;
 }
-
-// Well known Vedic mobile pair energies
-export const PAIR_MEANINGS: Record<string, { quality: 'auspicious' | 'neutral' | 'caution'; en: string; hi: string }> = {
-  '15': { quality: 'auspicious', en: 'Leadership & Commercial Luck (Sun + Budh)', hi: 'बुधादित्य प्रभाव, व्यापार व नेतृत्व में लाभ' },
-  '51': { quality: 'auspicious', en: 'Quick thinking & Wealth creation', hi: 'तीव्र बुद्धि और धन संचय' },
-  '37': { quality: 'auspicious', en: 'Spiritual knowledge & Intuitive brilliance', hi: 'आध्यात्मिक ज्ञान व अंतर्ज्ञान' },
-  '73': { quality: 'auspicious', en: 'Respect, Mentorship & Wise counsel', hi: 'मान-सम्मान और उच्च ज्ञान' },
-  '24': { quality: 'caution', en: 'Emotional restlessness & Sudden anxiety', hi: 'मानसिक अशांति व अचानक तनाव' },
-  '42': { quality: 'caution', en: 'Mood swings & Indecisiveness', hi: 'मन में संशय व अनिर्णय की स्थिति' },
-  '18': { quality: 'caution', en: 'Sun-Saturn friction, Delays in recognition', hi: 'सूर्य-शनि टकराव, कार्यों में विलंब' },
-  '81': { quality: 'caution', en: 'Heavy struggle before reward', hi: 'कड़ा संघर्ष और उत्तरदायित्व का भार' },
-  '36': { quality: 'caution', en: 'Guru-Shukra ideological discord', hi: 'गुरु-शुक्र मतभेद, वैचारिक द्वंद्व' },
-  '63': { quality: 'caution', en: 'Financial expenditure & Conflicting values', hi: 'अनावश्यक व्यय व विचारों में द्वंद्व' },
-  '47': { quality: 'auspicious', en: 'Deep technical research & Occult insight', hi: 'गहन शोध, तकनीकी व गूढ़ विद्या में सफलता' },
-  '74': { quality: 'auspicious', en: 'Innovative solutions & Analytical flair', hi: 'नवाचार और विश्लेषणात्मक दक्षता' },
-  '56': { quality: 'auspicious', en: 'Mercury-Venus luxury, Business & Charisma', hi: 'लक्ष्मी-योग, व्यापार और आकर्षण' },
-  '65': { quality: 'auspicious', en: 'Financial liquidity & Social connections', hi: 'व्यापारिक लाभ व सामाजिक प्रतिष्ठा' },
-  '28': { quality: 'caution', en: 'Moon-Saturn depression / Melancholy wave', hi: 'विष योग प्रभाव, मानसिक तनाव' },
-  '82': { quality: 'caution', en: 'Emotional burden & Hesitation', hi: 'भावनात्मक भारीपन व असमंजस' },
-};
 
 export const CHARGING_DIRECTIONS: Record<number, { en: string; hi: string; wallpaperEn: string; wallpaperHi: string }> = {
   1: { en: 'East (Surya direction)', hi: 'पूर्व दिशा (सूर्य की दिशा)', wallpaperEn: 'Rising Sun, Flying Eagle or Golden Crown', wallpaperHi: 'उगता हुआ सूर्य, स्वर्ण मुकुट या स्वर्णिम आभा' },
@@ -63,45 +60,83 @@ export function analyzeMobileNumber(mobile: string, userMulank: number = 1): Mob
   const cleanDigits = cleanStr.split('').map(Number);
   const digitSum = cleanDigits.reduce((acc, curr) => acc + curr, 0);
   const reducedTotal = reduceToSingleDigit(digitSum);
-  const compoundStr = digitSum > 9 ? `${digitSum}/${reducedTotal}` : `${reducedTotal}`;
+  const compound = digitSum;
+  const reduced = reducedTotal;
+  const compoundStr = digitSum > 9 ? `${digitSum}` : `${reducedTotal}`;
 
   // Numbers 1, 3, 5, 6 are generally favorable mobile totals in commercial numerology
   const isFavorableTotal = [1, 3, 5, 6].includes(reducedTotal);
 
   // Analyze pairs
   const pairs: MobilePairAnalysis[] = [];
-  let auspiciousCount = 0;
-  let cautionCount = 0;
 
   for (let i = 0; i < cleanDigits.length - 1; i++) {
-    const pairStr = `${cleanDigits[i]}${cleanDigits[i + 1]}`;
-    const sum = reduceToSingleDigit(cleanDigits[i] + cleanDigits[i + 1]);
+    const d1 = cleanDigits[i];
+    const d2 = cleanDigits[i + 1];
+    const pairStr = `${d1}${d2}`;
+    const positionLabel = `Digits ${i + 1}-${i + 2}`;
+    const rawSum = d1 + d2;
+    const reducedSum = reduceToSingleDigit(rawSum);
+    const sumDisplay = rawSum > 9 ? `Sum ${rawSum} → ${reducedSum}` : `Sum ${reducedSum}`;
 
-    if (PAIR_MEANINGS[pairStr]) {
-      const info = PAIR_MEANINGS[pairStr];
-      if (info.quality === 'auspicious') auspiciousCount++;
-      if (info.quality === 'caution') cautionCount++;
-
-      pairs.push({
-        pair: pairStr,
-        sum,
-        quality: info.quality,
-        meaningEn: info.en,
-        meaningHi: info.hi
-      });
-    } else {
-      // Default neutral pair analysis
-      const quality: 'auspicious' | 'neutral' | 'caution' = [1, 5, 6].includes(sum) ? 'auspicious' : 'neutral';
-      if (quality === 'auspicious') auspiciousCount++;
-      pairs.push({
-        pair: pairStr,
-        sum,
-        quality,
-        meaningEn: `Combined vibration of ${sum}. Balanced influence.`,
-        meaningHi: `संयुक्त कंपन ${sum}। संतुलित प्रभाव।`
-      });
+    let quality: 'auspicious' | 'neutral' | 'challenging' = 'neutral';
+    let titleEn = '';
+    let titleHi = '';
+    let descriptionEn = '';
+    let descriptionHi = '';
+    interface PairInfo {
+      quality: 'auspicious' | 'neutral' | 'challenging';
+      titleEn: string;
+      titleHi: string;
+      descriptionEn: string;
+      descriptionHi: string;
     }
+
+    const specificMap = (pairMeaningsData.specificPairs as unknown as Record<string, PairInfo>) || {};
+    const sumMap = (pairMeaningsData.sums as unknown as Record<string, PairInfo>) || {};
+
+    if (specificMap[pairStr]) {
+      const specific = specificMap[pairStr];
+      quality = specific.quality;
+      titleEn = specific.titleEn;
+      titleHi = specific.titleHi;
+      descriptionEn = specific.descriptionEn;
+      descriptionHi = specific.descriptionHi;
+    } else {
+      const sumInfo = sumMap[String(reducedSum)] || {
+        quality: 'neutral',
+        titleEn: `Balanced Digit Synergy ${reducedSum}`,
+        titleHi: `संतुलित अंक ऊर्जा ${reducedSum}`,
+        descriptionEn: 'Provides steady operational focus without acute stress.',
+        descriptionHi: 'स्थिर ऊर्जा व व्यावहारिक संतुलन प्रदान करता है।'
+      };
+      quality = sumInfo.quality;
+      titleEn = sumInfo.titleEn;
+      titleHi = sumInfo.titleHi;
+      descriptionEn = sumInfo.descriptionEn;
+      descriptionHi = sumInfo.descriptionHi;
+    }
+
+    pairs.push({
+      pair: pairStr,
+      positionLabel,
+      rawSum,
+      reducedSum,
+      sumDisplay,
+      quality,
+      titleEn,
+      titleHi,
+      descriptionEn,
+      descriptionHi,
+      sum: reducedSum,
+      meaningEn: descriptionEn,
+      meaningHi: descriptionHi
+    });
   }
+
+  const auspiciousPairs = pairs.filter((p) => p.quality === 'auspicious');
+  const neutralPairs = pairs.filter((p) => p.quality === 'neutral');
+  const challengingPairs = pairs.filter((p) => p.quality === 'challenging');
 
   const dirInfo = CHARGING_DIRECTIONS[userMulank] || CHARGING_DIRECTIONS[1];
 
@@ -118,6 +153,8 @@ export function analyzeMobileNumber(mobile: string, userMulank: number = 1): Mob
     cleanDigits,
     digitSum,
     reducedTotal,
+    compound,
+    reduced,
     compoundStr,
     isFavorableTotal,
     chargingDirectionEn: dirInfo.en,
@@ -125,8 +162,13 @@ export function analyzeMobileNumber(mobile: string, userMulank: number = 1): Mob
     screensaverSuggestionEn: dirInfo.wallpaperEn,
     screensaverSuggestionHi: dirInfo.wallpaperHi,
     pairs,
-    auspiciousPairsCount: auspiciousCount,
-    cautionPairsCount: cautionCount,
+    auspiciousPairs,
+    neutralPairs,
+    challengingPairs,
+    auspiciousPairsCount: auspiciousPairs.length,
+    neutralPairsCount: neutralPairs.length,
+    cautionPairsCount: challengingPairs.length,
+    challengingPairsCount: challengingPairs.length,
     generalVerdictEn,
     generalVerdictHi
   };

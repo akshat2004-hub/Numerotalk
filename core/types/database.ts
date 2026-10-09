@@ -6,7 +6,6 @@ export interface DbProfile {
   dob: string; // YYYY-MM-DD
   birth_time?: string | null;
   image_url?: string | null;
-  destiny_system: 'chaldean' | 'pythagorean';
   is_self: boolean;
   notes?: string | null;
   created_at: string;

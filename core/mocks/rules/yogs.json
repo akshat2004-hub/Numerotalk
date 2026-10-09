@@ -3,7 +3,7 @@
     {
       "id": "mental",
       "name": { "en": "Mental Plane (Thought / Gyana)", "hi": "ज्ञान / विचार तल (मानसिक योग)" },
-      "numbers": [4, 9, 2],
+      "numbers": [3, 1, 9],
       "category": { "en": "Intellect & Analysis", "hi": "बुद्धि एवं विश्लेषण" },
       "description": {
         "en": "Exceptional analytical depth, photographic memory, and strategic foresight.",
@@ -21,7 +21,7 @@
     {
       "id": "emotional",
       "name": { "en": "Emotional Plane (Will / Sankalpa)", "hi": "इच्छाशक्ति / संकल्प तल (भावनात्मक योग)" },
-      "numbers": [3, 5, 7],
+      "numbers": [6, 7, 5],
       "category": { "en": "Heart & Intuition", "hi": "हृदय एवं अंतर्ज्ञान" },
       "description": {
         "en": "Unshakable perseverance, spiritual intuition, and profound heart-centered resilience.",
@@ -39,7 +39,7 @@
     {
       "id": "practical",
       "name": { "en": "Practical Plane (Action / Karma)", "hi": "कर्म / क्रियान्वयन तल (व्यावहारिक योग)" },
-      "numbers": [8, 1, 6],
+      "numbers": [2, 8, 4],
       "category": { "en": "Materialization", "hi": "भौतिक सफलता" },
       "description": {
         "en": "Supreme capacity to materialize theoretical visions into physical, commercial wealth.",
@@ -57,7 +57,7 @@
     {
       "id": "vision",
       "name": { "en": "Visionary Column (Prosperity & Planning)", "hi": "योजना एवं दूरदर्शिता रेखा" },
-      "numbers": [4, 3, 8],
+      "numbers": [3, 6, 2],
       "category": { "en": "Foundation", "hi": "आधारशिला" },
       "description": {
         "en": "Exemplary architectural and organizational mindset; executes multi-decade horizons.",
@@ -75,7 +75,7 @@
     {
       "id": "willpower",
       "name": { "en": "Willpower Column (Courage & Balance)", "hi": "धैर्य एवं पराक्रम रेखा" },
-      "numbers": [9, 5, 1],
+      "numbers": [1, 7, 8],
       "category": { "en": "Dynamic Core", "hi": "ऊर्जा केंद्र" },
       "description": {
         "en": "Unbreakable core stability, radiant optimism, and ability to steer through crises.",
@@ -93,7 +93,7 @@
     {
       "id": "action",
       "name": { "en": "Action Column (Execution & Grace)", "hi": "कर्म एवं सिद्धि रेखा" },
-      "numbers": [2, 7, 6],
+      "numbers": [9, 5, 4],
       "category": { "en": "Delivery", "hi": "क्रियान्वयन" },
       "description": {
         "en": "Instantaneous execution of inspiration; bridge between imagination and final art.",
@@ -111,7 +111,7 @@
     {
       "id": "rajayoga_golden",
       "name": { "en": "Golden Rajayoga Diagonal (Mahalaxmi Yoga)", "hi": "स्वर्ण राजयोग (महालक्ष्मी योग)" },
-      "numbers": [4, 5, 6],
+      "numbers": [3, 7, 4],
       "category": { "en": "Royal Fortune", "hi": "राजयोग एवं ऐश्वर्य" },
       "description": {
         "en": "The supreme prosperity diagonal. Brings effortless fortune, regal elegance, and continuous flow of wealth.",
@@ -129,7 +129,7 @@
     {
       "id": "silver_rajayoga",
       "name": { "en": "Silver Rajayoga Diagonal (Vidya & Kirti)", "hi": "रजत राजयोग (विद्या एवं कीर्ति योग)" },
-      "numbers": [2, 5, 8],
+      "numbers": [9, 7, 2],
       "category": { "en": "Wisdom & Land", "hi": "विद्या एवं भूमि सुख" },
       "description": {
         "en": "Immense real-estate blessings, patience, and ancestral wisdom.",

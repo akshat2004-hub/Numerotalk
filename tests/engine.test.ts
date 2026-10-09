@@ -3,12 +3,14 @@ import {
   calculateMulank,
   calculateBhagyank,
   calculateDestinyNumber,
+  nameNumber,
+  suggestNameVariants,
   reduceToSingleDigit,
   parseDob
 } from '../core/engine/numerology';
-import { calculateVedicGrid, LO_SHU_LAYOUT } from '../core/engine/grid';
+import { calculateVedicGrid, VEDIC_INDIAN_LAYOUT } from '../core/engine/grid';
 import { detectYogas } from '../core/engine/yogas';
-import { getNumberRelationship, calculateMatchMaking } from '../core/engine/compatibility';
+import { getNumberRelationship, calculateMatchMaking, matchScore } from '../core/engine/compatibility';
 import { calculateYearlyPrediction, calculatePersonalYear } from '../core/engine/dasha';
 import { analyzeMobileNumber } from '../core/engine/mobile';
 import { transliterateDevanagari } from '../core/engine/transliteration';
@@ -16,7 +18,15 @@ import { getNumberMeaning } from '../core/engine/meanings108';
 import { calculateTimeNumerology } from '../core/engine/timeNumerology';
 import { calculateVastuNumerology } from '../core/engine/vastu';
 import { calculateEventPredictions } from '../core/engine/events';
-import { generatePasswordByProfession, generatePinByNumerology } from '../core/engine/security';
+import {
+  generateSecurePin,
+  generateSecurePassword
+} from '../core/engine/security';
+import { recommendProfessions, evaluateSingleProfession } from '../core/engine/profession';
+
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { CompoundNumber } from '../frontend/components/ui/CompoundNumber';
 
 describe('Vedic Numerology Engine', () => {
   describe('DOB & Driver / Conductor Calculations', () => {
@@ -32,22 +42,39 @@ describe('Vedic Numerology Engine', () => {
       expect(p2.day).toBe(23);
     });
 
-    it('calculates Mulank (Driver Number) accurately', () => {
+    it('calculates Mulank (Driver Number) accurately with compound & reduced', () => {
       // 23rd -> 2 + 3 = 5
       const res1 = calculateMulank('1995-10-23');
       expect(res1.mulank).toBe(5);
       expect(res1.dayNumber).toBe(23);
-      expect(res1.compoundStr).toBe('23/5');
+      expect(res1.compound).toBe(23);
+      expect(res1.reduced).toBe(5);
 
       // 29th -> 2 + 9 = 11 -> 1 + 1 = 2
       const res2 = calculateMulank('1990-08-29');
       expect(res2.mulank).toBe(2);
-      expect(res2.compoundStr).toBe('29/2');
+      expect(res2.compound).toBe(29);
+      expect(res2.reduced).toBe(2);
 
       // 7th -> single digit 7
       const res3 = calculateMulank('2001-01-07');
       expect(res3.mulank).toBe(7);
-      expect(res3.compoundStr).toBe('7');
+      expect(res3.compound).toBe(7);
+      expect(res3.reduced).toBe(7);
+    });
+
+    it('compound(23-10-1995) returns { compound, reduced } and the rendered UI contains no "/" between the two numbers', () => {
+      const res = calculateMulank('1995-10-23');
+      expect(res.compound).toBe(23);
+      expect(res.reduced).toBe(5);
+      expect(res.mulank).toBe(5);
+
+      const html = renderToString(React.createElement(CompoundNumber, { compound: res.compound, reduced: res.reduced }));
+      // Extract text content from the rendered HTML
+      const textContent = html.replace(/<[^>]*>/g, '');
+      expect(textContent).toContain('23');
+      expect(textContent).toContain('5');
+      expect(textContent).not.toContain('/');
     });
 
     it('calculates Bhagyank (Conductor Number / Life Path) accurately', () => {
@@ -55,7 +82,8 @@ describe('Vedic Numerology Engine', () => {
       const res = calculateBhagyank('1995-10-23');
       expect(res.rawSum).toBe(30);
       expect(res.bhagyank).toBe(3);
-      expect(res.compoundStr).toBe('30/3');
+      expect(res.compound).toBe(30);
+      expect(res.reduced).toBe(3);
     });
 
     it('reduces multi-digit numbers to single digit', () => {
@@ -66,20 +94,71 @@ describe('Vedic Numerology Engine', () => {
   });
 
   describe('Name & Destiny Calculations with Transliteration', () => {
-    it('calculates Chaldean Destiny for English name "RAHUL"', () => {
-      // R(2) + A(1) + H(5) + U(6) + L(3) = 17 -> 1+7 = 8
-      const res = calculateDestinyNumber('RAHUL', 'chaldean');
-      expect(res.compoundNumber).toBe(17);
-      expect(res.destinyNumber).toBe(8);
-      expect(res.compoundStr).toBe('17/8');
+    it('nameNumber("RAHUL SHARMA") -> words RAHUL = 17 -> 8, SHARMA = 16 -> 7, compound 33, reduced 6', () => {
+      const res = nameNumber('RAHUL SHARMA');
+      expect(res.words.length).toBe(2);
+
+      const rahul = res.words[0];
+      expect(rahul.word).toBe('RAHUL');
+      expect(rahul.subtotal).toBe(17);
+      expect(rahul.reduced).toBe(8);
+
+      const sharma = res.words[1];
+      expect(sharma.word).toBe('SHARMA');
+      expect(sharma.subtotal).toBe(16);
+      expect(sharma.reduced).toBe(7);
+
+      expect(res.compound).toBe(33);
+      expect(res.reduced).toBe(6);
     });
 
-    it('calculates Pythagorean Destiny for English name "RAHUL"', () => {
-      // R(9) + A(1) + H(8) + U(3) + L(3) = 24 -> 2+4 = 6
-      const res = calculateDestinyNumber('RAHUL', 'pythagorean');
-      expect(res.compoundNumber).toBe(24);
-      expect(res.destinyNumber).toBe(6);
-      expect(res.compoundStr).toBe('24/6');
+    it('calculates nameNumber for two more names accurately', () => {
+      // 1. "ABHISHEK VERMA"
+      const res1 = nameNumber('ABHISHEK VERMA');
+      expect(res1.words[0].word).toBe('ABHISHEK');
+      expect(res1.words[0].subtotal).toBe(24);
+      expect(res1.words[0].reduced).toBe(6);
+      expect(res1.words[1].word).toBe('VERMA');
+      expect(res1.words[1].subtotal).toBe(18);
+      expect(res1.words[1].reduced).toBe(9);
+      expect(res1.compound).toBe(42);
+      expect(res1.reduced).toBe(6);
+
+      // 2. "AMIT KUMAR"
+      const res2 = nameNumber('AMIT KUMAR');
+      expect(res2.words[0].word).toBe('AMIT');
+      expect(res2.words[0].subtotal).toBe(10);
+      expect(res2.words[0].reduced).toBe(1);
+      expect(res2.words[1].word).toBe('KUMAR');
+      expect(res2.words[1].subtotal).toBe(15);
+      expect(res2.words[1].reduced).toBe(6);
+      expect(res2.compound).toBe(25);
+      expect(res2.reduced).toBe(7);
+    });
+
+    it('suggestNameVariants returns only variants friendly with both birth numbers', () => {
+      // Profile with DOB 1995-10-23: Mulank 5, Bhagyank 3
+      const profile = { dob: '1995-10-23', mulank: 5, bhagyank: 3 };
+      const suggestions = suggestNameVariants('Rahul Sharma', profile);
+
+      expect(suggestions.length).toBeGreaterThan(0);
+      expect(suggestions.length).toBeLessThanOrEqual(5);
+
+      for (const sug of suggestions) {
+        expect(sug.harmonyMulank).toBe('friendly');
+        expect(sug.harmonyBhagyank).toBe('friendly');
+        expect(sug.changeMade).toBeDefined();
+        expect(sug.suggestedName).not.toBe('Rahul Sharma');
+      }
+    });
+
+    it('UI renders no "/" between compound and reduced for name number', () => {
+      const res = nameNumber('RAHUL SHARMA');
+      const html = renderToString(React.createElement(CompoundNumber, { compound: res.compound, reduced: res.reduced }));
+      const textContent = html.replace(/<[^>]*>/g, '');
+      expect(textContent).toContain('33');
+      expect(textContent).toContain('6');
+      expect(textContent).not.toContain('/');
     });
 
     it('transliterates Devanagari "राहुल" and computes same destiny', () => {
@@ -87,18 +166,18 @@ describe('Vedic Numerology Engine', () => {
       expect(translit.isDevanagari).toBe(true);
       expect(translit.transliterated).toBe('RAHUL');
 
-      const res = calculateDestinyNumber('राहुल', 'chaldean');
+      const res = calculateDestinyNumber('राहुल');
       expect(res.transliteratedName).toBe('RAHUL');
       expect(res.destinyNumber).toBe(8);
     });
   });
 
-  describe('Lo Shu / Vedic 3x3 Grid', () => {
+  describe('Indian Vedic 3x3 Grid', () => {
     it('generates 3x3 layout with correct coordinates', () => {
-      expect(LO_SHU_LAYOUT).toEqual([
-        [4, 9, 2],
-        [3, 5, 7],
-        [8, 1, 6]
+      expect(VEDIC_INDIAN_LAYOUT).toEqual([
+        [3, 1, 9],
+        [6, 7, 5],
+        [2, 8, 4]
       ]);
     });
 
@@ -128,12 +207,19 @@ describe('Vedic Numerology Engine', () => {
       expect(grid.matrix[0][2].number).toBe(9);
       expect(grid.matrix[0][2].count).toBe(2);
 
-      // Also test Lo Shu layout option
-      const loShuGrid = calculateVedicGrid('1995-10-23', true, 'loshu');
-      expect(loShuGrid.matrix[0][0].number).toBe(4);
-      expect(loShuGrid.matrix[0][0].isPresent).toBe(false);
-      expect(loShuGrid.matrix[0][1].number).toBe(9);
-      expect(loShuGrid.matrix[0][1].count).toBe(2);
+      expect(grid.matrix[1][0].number).toBe(6);
+      expect(grid.matrix[1][0].isPresent).toBe(false);
+      expect(grid.matrix[1][1].number).toBe(7);
+      expect(grid.matrix[1][1].isPresent).toBe(false);
+      expect(grid.matrix[1][2].number).toBe(5);
+      expect(grid.matrix[1][2].count).toBe(2);
+
+      expect(grid.matrix[2][0].number).toBe(2);
+      expect(grid.matrix[2][0].isPresent).toBe(true);
+      expect(grid.matrix[2][1].number).toBe(8);
+      expect(grid.matrix[2][1].isPresent).toBe(false);
+      expect(grid.matrix[2][2].number).toBe(4);
+      expect(grid.matrix[2][2].isPresent).toBe(false);
     });
   });
 
@@ -144,17 +230,17 @@ describe('Vedic Numerology Engine', () => {
 
       expect(yogas.length).toBe(8);
 
-      // Will Power Plane: 9 - 5 - 1 -> all three present!
-      const willPlane = yogas.find(y => y.id === 'will_plane');
-      expect(willPlane).toBeDefined();
-      expect(willPlane?.status).toBe('full');
-      expect(willPlane?.percentage).toBe(100);
-      expect(fullYogas.some(y => y.id === 'will_plane')).toBe(true);
+      // Mental Plane: 3 - 1 - 9 -> all three present!
+      const mentalPlane = yogas.find(y => y.id === 'mental_plane');
+      expect(mentalPlane).toBeDefined();
+      expect(mentalPlane?.status).toBe('full');
+      expect(mentalPlane?.percentage).toBe(100);
+      expect(fullYogas.some(y => y.id === 'mental_plane')).toBe(true);
 
-      // Emotional plane: 3 - 5 - 7 -> 3 & 5 present, 7 missing -> partial
-      const emotional = yogas.find(y => y.id === 'emotional_plane');
-      expect(emotional?.status).toBe('partial');
-      expect(partialYogas.some(y => y.id === 'emotional_plane')).toBe(true);
+      // Thought plane: 3 - 6 - 2 -> 3 & 2 present, 6 missing -> partial
+      const thoughtPlane = yogas.find(y => y.id === 'thought_plane');
+      expect(thoughtPlane?.status).toBe('partial');
+      expect(partialYogas.some(y => y.id === 'thought_plane')).toBe(true);
     });
   });
 
@@ -179,6 +265,48 @@ describe('Vedic Numerology Engine', () => {
       expect(result.verdictEn).toBeDefined();
       expect(result.verdictHi).toBeDefined();
     });
+
+    it('computes matchScore for 3 distinct couples across 5 pillars, exchangeable, common, and tiers', () => {
+      const couple1 = matchScore(
+        { name: 'Rahul Sharma', dob: '1995-10-23' },
+        { name: 'Priya Patel', dob: '1997-06-15' }
+      );
+      expect(couple1.pillars.length).toBe(5);
+      expect(couple1.total).toBeGreaterThanOrEqual(0);
+      expect(couple1.total).toBeLessThanOrEqual(100);
+      expect(couple1.tier).toBeDefined();
+      expect(couple1.pillars.map((p) => p.id)).toEqual([
+        'driver',
+        'lifepath',
+        'destiny',
+        'exchangeable',
+        'common'
+      ]);
+      expect(couple1.exchangeable.exchange1.boyNumber).toBe(couple1.pillars[0].boyNumber);
+      expect(couple1.common.commonNumbers).toBeDefined();
+      expect(couple1.missingInBoth).toBeDefined();
+
+      const couple2 = matchScore(
+        { name: 'Amit Verma', dob: '1990-01-01' },
+        { name: 'Sneha Singh', dob: '1992-04-04' }
+      );
+      expect(couple2.pillars.length).toBe(5);
+      expect(couple2.total).toBeGreaterThanOrEqual(0);
+      expect(couple2.total).toBeLessThanOrEqual(100);
+      expect(['Excellent', 'Good', 'Moderate', 'Needs care']).toContain(couple2.tier);
+
+      const couple3 = matchScore(
+        { name: 'Vikram Malhotra', dob: '1988-12-09' },
+        { name: 'Ananya Das', dob: '1994-03-27' }
+      );
+      expect(couple3.pillars.length).toBe(5);
+      expect(couple3.total).toBeGreaterThanOrEqual(0);
+      expect(couple3.total).toBeLessThanOrEqual(100);
+      expect(couple3.summaryEn).toBeDefined();
+      expect(couple3.summaryHi).toBeDefined();
+      expect(couple3.topStrengthsEn.length).toBeGreaterThanOrEqual(2);
+      expect(couple3.topCautionsEn.length).toBeGreaterThanOrEqual(2);
+    });
   });
 
   describe('Dasha & Yearly Predictions', () => {
@@ -201,18 +329,80 @@ describe('Vedic Numerology Engine', () => {
       const res = analyzeMobileNumber('9876543210', 5);
       expect(res.cleanDigits.length).toBe(10);
       expect(res.reducedTotal).toBe(9); // 45 -> 9
+      expect(res.compound).toBe(45);
+      expect(res.reduced).toBe(9);
       expect(res.pairs.length).toBe(9);
       expect(res.chargingDirectionEn).toBeDefined();
     });
 
-    it('generates secure profession-based passwords and pins', () => {
-      const pwd = generatePasswordByProfession('finance');
-      expect(pwd.password.length).toBeGreaterThan(6);
-      expect(pwd.profession).toBeDefined();
+    it('generates secure profession-based passwords and pins with lucky digit sum reduction constraint', () => {
+      // PIN 4-digit constraint to lucky sum 5
+      const pin4 = generateSecurePin(4, 5);
+      expect(pin4.pin.length).toBe(4);
+      expect(reduceToSingleDigit(pin4.sum)).toBe(5);
+      expect(pin4.reduced).toBe(5);
 
-      const pin = generatePinByNumerology(4, 5);
-      expect(pin.pin.length).toBe(4);
-      expect(pin.reduced).toBe(5);
+      // PIN 6-digit constraint to lucky sum 8
+      const pin6 = generateSecurePin(6, 8);
+      expect(pin6.pin.length).toBe(6);
+      expect(reduceToSingleDigit(pin6.sum)).toBe(8);
+      expect(pin6.reduced).toBe(8);
+
+      // Password with lengths 8, 14, 20
+      const pwd8 = generateSecurePassword({ length: 8, includeUppercase: true, includeSymbols: true, targetLuckyNumber: 3 });
+      expect(pwd8.password.length).toBe(8);
+      expect(pwd8.reduced).toBe(3);
+
+      const pwd14 = generateSecurePassword({ length: 14, includeUppercase: false, includeSymbols: true, targetLuckyNumber: 6 });
+      expect(pwd14.password.length).toBe(14);
+      expect(pwd14.reduced).toBe(6);
+      expect(/[A-Z]/.test(pwd14.password)).toBe(false);
+
+      const pwd20 = generateSecurePassword({ length: 20, includeUppercase: true, includeSymbols: false, targetLuckyNumber: 1 });
+      expect(pwd20.password.length).toBe(20);
+      expect(pwd20.reduced).toBe(1);
+    });
+  });
+
+  describe('Profession Recommendation Engine', () => {
+    it('recommends top 3 ranked professions for profile with birth time', () => {
+      const profile = {
+        name: 'Rahul Sharma',
+        dob: '1995-10-23',
+        birthTime: '10:30'
+      };
+      const recs = recommendProfessions(profile, 3);
+      expect(recs.length).toBe(3);
+      expect(recs[0].score).toBeGreaterThanOrEqual(recs[1].score);
+      expect(recs[1].score).toBeGreaterThanOrEqual(recs[2].score);
+      expect(recs[0].reasonsEn.length).toBeGreaterThanOrEqual(2);
+      expect(recs[0].reasonsHi.length).toBeGreaterThanOrEqual(2);
+      expect(recs[0].luckyWorkNumbers.length).toBeGreaterThan(0);
+    });
+
+    it('recommends professions deterministically for profile without birth time', () => {
+      const profileNoTime = {
+        name: 'Priya Patel',
+        dob: '1997-06-15',
+        birthTime: ''
+      };
+      const recs = recommendProfessions(profileNoTime, 3);
+      expect(recs.length).toBe(3);
+      expect(recs[0].score).toBeGreaterThan(50);
+      expect(recs[0].reasonsEn[0]).toBeDefined();
+    });
+
+    it('evaluates another single profession against profile', () => {
+      const profile = {
+        name: 'Amit Verma',
+        dob: '1990-01-01',
+        birthTime: '14:15'
+      };
+      const evaluated = evaluateSingleProfession('investment_banker', profile);
+      expect(evaluated).not.toBeNull();
+      expect(evaluated?.profession.id).toBe('investment_banker');
+      expect(evaluated?.score).toBeGreaterThanOrEqual(50);
+      expect(evaluated?.score).toBeLessThanOrEqual(100);
     });
   });
 
@@ -233,7 +423,7 @@ describe('Vedic Numerology Engine', () => {
       expect(t.planetaryHourEn).toContain('Shani');
     });
 
-    it('evaluates vastu directions from Lo Shu grid', () => {
+    it('evaluates vastu directions from Vedic grid', () => {
       const vastu = calculateVastuNumerology('1995-10-23');
       expect(vastu.directions.length).toBe(9);
       expect(vastu.brahmasthanBalanceEn).toBeDefined();

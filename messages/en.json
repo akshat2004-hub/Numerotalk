@@ -1,7 +1,7 @@
 {
   "common": {
     "brandName": "NumeroTalk",
-    "brandTagline": "Vedic & Lo Shu Numerology Intelligence",
+    "brandTagline": "Vedic Numerology Intelligence",
     "disclaimer": "For guidance and entertainment only. Predictions represent ancient mathematical heuristics.",
     "save": "Save Changes",
     "calculate": "Calculate Reading",
@@ -38,7 +38,7 @@
   "nav": {
     "dashboard": "User Detail",
     "destiny": "Destiny (Namank)",
-    "combination": "Destiny x Life Path",
+    "combination": "Combination Prediction",
     "missing": "Missing Numbers",
     "repeating": "Repeating Numbers",
     "yogas": "Yogas Grid",
@@ -58,7 +58,7 @@
   },
   "profile": {
     "title": "User Detail & Grid Analysis",
-    "subtitle": "Enter your birth details and name to generate your personalized Vedic & Lo Shu energy map.",
+    "subtitle": "Enter your birth details and name to generate your personalized Vedic energy map.",
     "fullName": "Full Name",
     "namePlaceholder": "Enter name in English or हिन्दी (e.g. Rahul Sharma / राहुल शर्मा)",
     "transliterationInfo": "Transliterated to Latin:",
@@ -69,9 +69,6 @@
     "uploadPhoto": "Upload Image",
     "changePhoto": "Change Image",
     "removePhoto": "Remove",
-    "systemToggle": "Destiny System",
-    "chaldean": "Chaldean (Vedic Sound)",
-    "pythagorean": "Pythagorean (Western)",
     "dpdpConsent": "I consent to store my numerological birth details locally on this device in accordance with DPDP privacy guidelines.",
     "deleteMyData": "Clear My Data",
     "submitBtn": "Calculate Dashboard",
@@ -95,8 +92,8 @@
     "gemstone": "Gemstone Frequency"
   },
   "grid": {
-    "title": "3x3 Lo Shu / Vedic Energy Grid",
-    "subtitle": "Cosmic layout of numbers: Row 1 (4-9-2), Row 2 (3-5-7), Row 3 (8-1-6)",
+    "title": "3x3 Vedic Energy Grid",
+    "subtitle": "Indian Vedic layout: Row 1 (3-1-9), Row 2 (6-7-5), Row 3 (2-8-4)",
     "presentNumbers": "Present Digits",
     "missingNumbers": "Missing Digits",
     "repeatingNumbers": "Repeating Digits",
@@ -118,11 +115,44 @@
     "careerTitle": "Optimal Career Avenues",
     "relationshipTitle": "Relationship & Social Persona"
   },
+  "namePage": {
+    "title": "Name Numerology (Namank)",
+    "subtitle": "Analyze the sound vibration of your name and optimize it for harmony with your birth numbers.",
+    "nameToEvaluate": "Name to Evaluate",
+    "resetToProfile": "Reset to Profile",
+    "calculatedAs": "Calculated as:",
+    "nameNumber": "Name Number",
+    "harmonyTitle": "Harmony with your birth numbers",
+    "vsMulank": "Name Number vs Mulank",
+    "vsBhagyank": "Name Number vs Bhagyank",
+    "harmonious": "Harmonious",
+    "balanced": "Balanced",
+    "needsAttention": "Needs Attention",
+    "letterBreakdown": "Letter Breakdown",
+    "grandTotal": "Grand Total",
+    "predictionTitle": "Predictions & Analysis",
+    "personalityNature": "Personality & Nature",
+    "careerFinance": "Career & Finance",
+    "relationships": "Relationships",
+    "strengthsCautions": "Strengths & Cautions",
+    "luckyNumbersTitle": "Lucky name numbers for you",
+    "luckyLettersTitle": "Lucky letters",
+    "correctionTitle": "Name Correction Suggestions",
+    "suggestedSpelling": "Suggested Spelling",
+    "totalReduced": "Total → Reduced",
+    "harmonyBadges": "Harmony",
+    "changeMade": "Change Made",
+    "emptySuggestions": "Your current name is harmoniously aligned with your birth numbers.",
+    "guidanceNote": "Spelling suggestions are for guidance only.",
+    "remediesTitle": "Harmonizing Remedies",
+    "addToReport": "Add to Report",
+    "addedToReport": "Added to Report"
+  },
   "combinationPage": {
-    "title": "Destiny x Life Path Synergy",
+    "title": "Combination Prediction (Destiny & Life Path)",
     "subtitle": "Analysis of the interplay between your Driver (Mulank) and Conductor (Bhagyank).",
     "harmonyScore": "Planetary Harmony Index",
-    "synergyTitle": "Energetic Synergy Analysis",
+    "synergyTitle": "Combined Energy Analysis",
     "careerGuidanceTitle": "Strategic Career Alignment",
     "personalLifeTitle": "Personal & Domestic Sphere",
     "recommendedRemedies": "Harmonizing Recommendations"
@@ -144,7 +174,7 @@
     "groundingTitle": "Grounding Practice"
   },
   "yogasPage": {
-    "title": "Vedic & Lo Shu Grid Yogas",
+    "title": "Vedic Grid Yogas",
     "subtitle": "Discovery of the 8 classical horizontal, vertical, and diagonal planes of energy.",
     "fullYogasCount": "Full Yogas Active",
     "partialYogasCount": "Partial Yogas",
@@ -154,16 +184,15 @@
   },
   "namePage": {
     "title": "Name Numerology Analyzer",
-    "subtitle": "Compare Chaldean and Pythagorean sound calculations and evaluate alternate name spellings.",
+    "subtitle": "Evaluate Vedic sound vibrations and test alternate name spellings.",
     "inputNameLabel": "Name to Evaluate",
-    "chaldeanTotal": "Chaldean Total",
-    "pythagoreanTotal": "Pythagorean Total",
+    "nameTotal": "Name Total",
     "harmonyVerdict": "Vibrational Verdict",
     "suggestion": "Spell Check Recommendation"
   },
   "matchMakingPage": {
     "title": "Vedic Numerology Match Making",
-    "subtitle": "Comprehensive marital compatibility between Boy and Girl based on Lo Shu grids, Mulank, and Bhagyank.",
+    "subtitle": "Comprehensive marital compatibility between Boy and Girl based on Vedic grids, Mulank, and Bhagyank.",
     "boyDetails": "Boy's Profile",
     "girlDetails": "Girl's Profile",
     "boyName": "Boy's Name",
@@ -208,19 +237,23 @@
     "generateNew": "Generate Another Password"
   },
   "pinPasswordPage": {
-    "title": "Numerology PIN & Password Generator",
-    "subtitle": "Generate cryptographically secure passwords and 4/6-digit PINs tuned to your profession's lucky sum.",
-    "pinLength": "PIN Length",
-    "targetTotal": "Target Root Sum (1-9)",
-    "generatePinBtn": "Generate Lucky PIN",
-    "generatePasswordBtn": "Generate Lucky Password",
-    "generatedPin": "Your Auspicious PIN",
-    "generatedPassword": "Your Auspicious Password",
-    "sumVerification": "Calculated Numerological Value"
+    "title": "PIN & Password",
+    "subtitle": "Secure passwords and 4/6-digit PINs matched to your lucky numbers.",
+    "matchesTitle": "Password Matches",
+    "professionLabel": "Profession Alignment",
+    "lengthLabel": "Password Length",
+    "uppercaseLabel": "Uppercase Letters",
+    "symbolsLabel": "Special Symbols",
+    "generateBtn": "Generate",
+    "addToReport": "Add to Report",
+    "addedToReport": "Added to Report",
+    "copied": "Copied!",
+    "pinMatches": "PIN Matches",
+    "passwordMatches": "Password Matches"
   },
   "yearlyPage": {
     "title": "Yearly Prediction & Dasha Engine",
-    "subtitle": "Mahadasha, Antardasha, and Pratyantra Dasha timelines combined with the yearly Lo Shu grid.",
+    "subtitle": "Mahadasha, Antardasha, and Pratyantra Dasha timelines combined with the yearly Vedic grid.",
     "selectYear": "Select Target Year",
     "personalYearLabel": "Personal Year Number",
     "rulingPlanet": "Ruling Cosmic Planet",
@@ -275,7 +308,7 @@
   },
   "helpPage": {
     "title": "Numerology Prediction Guide & Rules",
-    "subtitle": "Master techniques, accuracy principles, and golden rules for Vedic & Lo Shu interpretations.",
+    "subtitle": "Master techniques, accuracy principles, and golden rules for Vedic interpretations.",
     "importance": "Principle Weight:"
   },
   "remediesPage": {

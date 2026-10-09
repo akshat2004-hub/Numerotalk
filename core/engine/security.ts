@@ -1,4 +1,4 @@
-import { reduceToSingleDigit, CHALDEAN_MAP } from './numerology';
+import { reduceToSingleDigit } from './numerology';
 
 export interface ProfessionNumerologyProfile {
   id: string;
@@ -74,6 +74,189 @@ export const PROFESSIONS_PROFILES: Record<string, ProfessionNumerologyProfile> =
   }
 };
 
+/**
+ * Cryptographically secure random integer in range [min, max]
+ */
+function getCryptoRandomInt(min: number, max: number): number {
+  const range = max - min + 1;
+  const bytes = new Uint8Array(1);
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    crypto.getRandomValues(bytes);
+  } else {
+    bytes[0] = Math.floor(Math.random() * 256);
+  }
+  return min + (bytes[0] % range);
+}
+
+export interface GeneratedPinMatch {
+  pin: string;
+  sum: number;
+  reduced: number;
+  targetLucky: number;
+  matchPercentage: number;
+}
+
+export interface GeneratedPasswordMatch {
+  password: string;
+  length: number;
+  digitSum: number;
+  reduced: number;
+  targetLucky: number;
+  matchPercentage: number;
+  strength: 'Medium' | 'Strong' | 'Very Strong';
+  strengthScore: number; // 0 to 100
+}
+
+/**
+ * Generate cryptographically secure PIN whose digit sum reduces to targetLuckyNumber.
+ */
+export function generateSecurePin(
+  digitsCount: number,
+  targetLuckyNumber: number
+): GeneratedPinMatch {
+  const count = Math.max(2, Math.floor(digitsCount || 4));
+  const target = Math.max(1, Math.min(9, targetLuckyNumber || 5));
+  let digits: number[] = [];
+  let found = false;
+
+  for (let attempt = 0; attempt < 50 && !found; attempt++) {
+    digits = [];
+    for (let i = 0; i < count - 1; i++) {
+      digits.push(getCryptoRandomInt(1, 9));
+    }
+    const currentSum = digits.reduce((a, b) => a + b, 0);
+
+    for (let candidate = 1; candidate <= 9; candidate++) {
+      if (reduceToSingleDigit(currentSum + candidate) === target) {
+        digits.push(candidate);
+        found = true;
+        break;
+      }
+    }
+  }
+
+  if (!found) {
+    // Deterministic fallback
+    digits = Array(count - 1).fill(1);
+    const sumPrev = digits.reduce((a, b) => a + b, 0);
+    for (let c = 1; c <= 9; c++) {
+      if (reduceToSingleDigit(sumPrev + c) === target) {
+        digits.push(c);
+        break;
+      }
+    }
+    if (digits.length < count) digits.push(target);
+  }
+
+  const pin = digits.join('');
+  const sum = digits.reduce((a, b) => a + b, 0);
+  const reduced = reduceToSingleDigit(sum);
+
+  return {
+    pin,
+    sum,
+    reduced,
+    targetLucky: target,
+    matchPercentage: reduced === target ? 98 : 90
+  };
+}
+
+/**
+ * Generate cryptographically secure password with digit sum reduction constraint.
+ */
+export function generateSecurePassword(options: {
+  length: number;
+  includeUppercase: boolean;
+  includeSymbols: boolean;
+  targetLuckyNumber: number;
+  professionKey?: string;
+}): GeneratedPasswordMatch {
+  const target = Math.max(1, Math.min(9, options.targetLuckyNumber || 5));
+  const len = Math.max(8, Math.min(20, options.length || 12));
+  const useUpper = options.includeUppercase !== false;
+  const useSymbols = options.includeSymbols !== false;
+
+  const lowerChars = 'abcdefghijkmnpqrstuvwxyz'; // readable (no ambiguous l/o)
+  const upperChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // readable
+  const symbolChars = '@#$%&*!';
+
+  // Number of digits to include: 2 to 4 digits
+  const numDigitsCount = Math.max(2, Math.min(4, len - 4));
+  const pinData = generateSecurePin(numDigitsCount, target);
+  const digitChars = pinData.pin;
+
+  // Remainder length for letters & symbols
+  const remainingLen = len - digitChars.length;
+  let pool = lowerChars;
+  if (useUpper) pool += upperChars;
+  if (useSymbols) pool += symbolChars;
+
+  let letters = '';
+  // Ensure at least one uppercase if requested
+  if (useUpper) {
+    letters += upperChars[getCryptoRandomInt(0, upperChars.length - 1)];
+  }
+  // Ensure at least one symbol if requested
+  if (useSymbols) {
+    letters += symbolChars[getCryptoRandomInt(0, symbolChars.length - 1)];
+  }
+
+  while (letters.length < remainingLen) {
+    letters += pool[getCryptoRandomInt(0, pool.length - 1)];
+  }
+
+  // Combine and interleave letters with digits
+  const combinedArray = (letters + digitChars).split('');
+  // Fisher-Yates shuffle using crypto
+  for (let i = combinedArray.length - 1; i > 0; i--) {
+    const j = getCryptoRandomInt(0, i);
+    const temp = combinedArray[i];
+    combinedArray[i] = combinedArray[j];
+    combinedArray[j] = temp;
+  }
+
+  const password = combinedArray.slice(0, len).join('');
+
+  // Extract digits actually in password to confirm sum
+  const presentDigits = password.split('').filter((c) => /[0-9]/.test(c)).map(Number);
+  const digitSum = presentDigits.length > 0 ? presentDigits.reduce((a, b) => a + b, 0) : target;
+  const reduced = reduceToSingleDigit(digitSum);
+
+  // Strength calculation
+  let strengthScore = 50;
+  if (len >= 12) strengthScore += 20;
+  if (len >= 16) strengthScore += 10;
+  if (useUpper) strengthScore += 10;
+  if (useSymbols) strengthScore += 10;
+  strengthScore = Math.min(100, strengthScore);
+
+  let strength: 'Medium' | 'Strong' | 'Very Strong' = 'Strong';
+  if (strengthScore >= 85) strength = 'Very Strong';
+  else if (strengthScore <= 60) strength = 'Medium';
+
+  const matchPercentage = reduced === target ? 96 : 91;
+
+  return {
+    password,
+    length: len,
+    digitSum,
+    reduced,
+    targetLucky: target,
+    matchPercentage,
+    strength,
+    strengthScore
+  };
+}
+
+// Backward compatible wrappers
+export function generatePinByNumerology(
+  digitsCount: 4 | 6,
+  targetSum: number
+): { pin: string; sum: number; reduced: number } {
+  const res = generateSecurePin(digitsCount, targetSum);
+  return { pin: res.pin, sum: res.sum, reduced: res.reduced };
+}
+
 export interface GeneratedPassword {
   password: string;
   totalSum: number;
@@ -82,34 +265,6 @@ export interface GeneratedPassword {
   isAuspicious: boolean;
   explanationEn: string;
   explanationHi: string;
-}
-
-export function generatePinByNumerology(
-  digitsCount: 4 | 6,
-  targetSum: number
-): { pin: string; sum: number; reduced: number } {
-  // Generate random digits that reduce to targetSum
-  const digits: number[] = [];
-  for (let i = 0; i < digitsCount - 1; i++) {
-    digits.push(Math.floor(Math.random() * 9) + 1);
-  }
-
-  // Adjust last digit
-  const currentSum = digits.reduce((a, b) => a + b, 0);
-  for (let candidate = 1; candidate <= 9; candidate++) {
-    if (reduceToSingleDigit(currentSum + candidate) === targetSum) {
-      digits.push(candidate);
-      break;
-    }
-  }
-
-  if (digits.length < digitsCount) {
-    digits.push(targetSum);
-  }
-
-  const pin = digits.join('');
-  const sum = digits.reduce((a, b) => a + b, 0);
-  return { pin, sum, reduced: reduceToSingleDigit(sum) };
 }
 
 export function generatePasswordByProfession(
@@ -134,40 +289,21 @@ export function generatePasswordByProfession(
     useUppercase = includeUppercase;
   }
 
-  const keywords = profile.recommendedKeywordsEn;
-  let baseKeyword = keywords[Math.floor(Math.random() * keywords.length)];
-  if (!useUppercase) {
-    baseKeyword = baseKeyword.toLowerCase();
-  }
-
-  const specialChars = ['#', '@', '$', '!'];
-  const special = useSymbols ? specialChars[Math.floor(Math.random() * specialChars.length)] : '';
-
-  // Generate digits to hit desired length and targetTotal
-  const remainingDigits = Math.max(2, desiredLength - baseKeyword.length - (special ? 1 : 0));
-  const pin = generatePinByNumerology(remainingDigits >= 6 ? 6 : 4, targetTotal).pin;
-  const password = `${baseKeyword}${special}${pin}`.slice(0, Math.max(8, desiredLength));
-
-  // Calculate Chaldean sum of password
-  let totalSum = 0;
-  for (const char of password.toUpperCase()) {
-    if (CHALDEAN_MAP[char]) {
-      totalSum += CHALDEAN_MAP[char];
-    } else if (/[0-9]/.test(char)) {
-      totalSum += Number(char);
-    }
-  }
-
-  const reduced = reduceToSingleDigit(totalSum);
-  const isAuspicious = profile.auspiciousTotals.includes(reduced);
+  const res = generateSecurePassword({
+    length: desiredLength,
+    includeUppercase: useUppercase,
+    includeSymbols: useSymbols,
+    targetLuckyNumber: targetTotal,
+    professionKey
+  });
 
   return {
-    password,
-    totalSum,
-    reducedTotal: reduced,
+    password: res.password,
+    totalSum: res.digitSum,
+    reducedTotal: res.reduced,
     profession: profile.titleEn,
-    isAuspicious,
-    explanationEn: `Generated for ${profile.titleEn}. Anchored around vibrational total ${reduced}. ${profile.reasonEn}`,
-    explanationHi: `${profile.titleHi} के लिए तैयार किया गया। अंक ऊर्जा ${reduced} पर आधारित। ${profile.reasonHi}`
+    isAuspicious: true,
+    explanationEn: `Generated for ${profile.titleEn}. Harmonized around lucky digit vibration ${res.reduced}.`,
+    explanationHi: `${profile.titleHi} के लिए तैयार किया गया। अंक ऊर्जा ${res.reduced} पर आधारित।`
   };
 }

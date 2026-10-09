@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Calendar } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { DashaPeriod } from '@/lib/engine/dasha';
+import { cn } from '@/frontend/utils';
+import { DashaPeriod } from '@/core/engine/dasha';
 
 interface PeriodTimelineProps {
   periods: DashaPeriod[];

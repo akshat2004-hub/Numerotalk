@@ -1,0 +1,99 @@
+{
+  "emptyState": {
+    "auspicious": {
+      "en": "No fully auspicious digit combinations identified in this sequence.",
+      "hi": "इस मोबाइल संख्या में कोई विशिष्ट शुभ अंक युग्म नहीं पाया गया।"
+    },
+    "neutral": {
+      "en": "No neutral balancing digit pairs found.",
+      "hi": "कोई सामान्य संतुलित अंक युग्म उपस्थित नहीं है।"
+    },
+    "challenging": {
+      "en": "Excellent! No challenging friction pairs detected.",
+      "hi": "उत्कृष्ट! कोई बाधा उत्पन्न करने वाला विरोधी युग्म उपस्थित नहीं है।"
+    }
+  },
+  "sums": {
+    "1": {
+      "quality": "auspicious",
+      "titleEn": "Solar Leadership & Initiative",
+      "titleHi": "सूर्य ऊर्जा व नेतृत्व क्षमता",
+      "descriptionEn": "Fosters authority, decisive clarity, and commanding professional presence.",
+      "descriptionHi": "दृढ़ निश्चय, नेतृत्व गुण और पेशेवर अधिकार प्रदान करता है।"
+    },
+    "2": {
+      "quality": "neutral",
+      "titleEn": "Lunar Empathy & Fluid Perception",
+      "titleHi": "चन्द्र सौम्यता व संवेदनशीलता",
+      "descriptionEn": "Enhances emotional intuition and diplomatic dialogue; requires grounding against mood swings.",
+      "descriptionHi": "भावनात्मक समझ व संवाद में मधुरता बढ़ाता है; मन को स्थिर रखने की आवश्यकता होती है।"
+    },
+    "3": {
+      "quality": "auspicious",
+      "titleEn": "Jupiterian Expansion & Wisdom",
+      "titleHi": "गुरु कृपा, ज्ञान व समृद्धि",
+      "descriptionEn": "Stimulates creative intellect, advisory acumen, and optimistic social outreach.",
+      "descriptionHi": "सृजनात्मक बुद्धि, सलाहकारी गुण और ज्ञान के विस्तार में सहायक होता है।"
+    },
+    "4": {
+      "quality": "neutral",
+      "titleEn": "Rahu Innovation & Structural Focus",
+      "titleHi": "राहु नवीनता व तकनीकी दक्षता",
+      "descriptionEn": "Aids analytical troubleshooting and out-of-the-box thinking with disciplined execution.",
+      "descriptionHi": "विश्लेषणात्मक दृष्टिकोण और तकनीकी कार्यों में अप्रत्याशित सफलता देता है।"
+    },
+    "5": {
+      "quality": "auspicious",
+      "titleEn": "Mercurial Commercial Magnetism",
+      "titleHi": "बुध प्रभाव, व्यापारिक कुशलता व गति",
+      "descriptionEn": "Sharpens commercial negotiation, swift communication, and versatile enterprise.",
+      "descriptionHi": "त्वरित निर्णय, व्यापारिक संवाद और बहुमुखी प्रतिभा को तीव्र करता है।"
+    },
+    "6": {
+      "quality": "auspicious",
+      "titleEn": "Venusian Luxury, Harmony & Grace",
+      "titleHi": "शुक्र आकर्षण, भौतिक सुख व सौहार्द",
+      "descriptionEn": "Attracts material abundance, brand reputation, and pleasant collaborative networks.",
+      "descriptionHi": "धन लाभ, पारिवारिक सौहार्द और सौंदर्य बोध में वृद्धि करता है।"
+    },
+    "7": {
+      "quality": "neutral",
+      "titleEn": "Ketu Intuitive Depth & Research",
+      "titleHi": "केतु गूढ़ ज्ञान व अंतर्ज्ञान",
+      "descriptionEn": "Favors deep introspection, strategic observation, and spiritual discernment.",
+      "descriptionHi": "गूढ़ अध्ययन, शोध और सूक्ष्म अंतर्दृष्टि के लिए अनुकूल ऊर्जा बनाता है।"
+    },
+    "8": {
+      "quality": "challenging",
+      "titleEn": "Saturnian Rigor & Delayed Rewards",
+      "titleHi": "शनि न्याय, कड़ा परिश्रम व अनुशासन",
+      "descriptionEn": "Demands strict patience, persevering effort, and vigilance against heavy operational delays.",
+      "descriptionHi": "कठिन परिश्रम की मांग करता है और कभी-कभी कार्यों में विलंब या भार उत्पन्न कर सकता है।"
+    },
+    "9": {
+      "quality": "neutral",
+      "titleEn": "Martial Energy, Drive & Quick Reaction",
+      "titleHi": "मंगल तेजस्विता, साहस व त्वरित गति",
+      "descriptionEn": "Inspires high vitality and swift execution; demands calmness against impulsive agitation.",
+      "descriptionHi": "अदम्य साहस और ऊर्जा देता है; जल्दबाजी व क्रोध से बचने की सलाह दी जाती है।"
+    }
+  },
+  "specificPairs": {
+    "15": { "quality": "auspicious", "titleEn": "Commercial Power (Budhaditya)", "titleHi": "बुधादित्य प्रभाव", "descriptionEn": "Brings exceptional business intellect, executive presence, and wealth opportunities.", "descriptionHi": "व्यापार, नेतृत्व और वित्तीय लाभ के लिए अत्यंत लाभकारी युग्म।" },
+    "51": { "quality": "auspicious", "titleEn": "Strategic Wealth Flow", "titleHi": "त्वरित व्यापारिक बुद्धि", "descriptionEn": "Enables sharp analytical speed, profitable deals, and strong reputation.", "descriptionHi": "सटीक गणना और त्वरित लाभ दिलाने वाला प्रभावशाली अंक संयोग।" },
+    "37": { "quality": "auspicious", "titleEn": "Spiritual Intelligence", "titleHi": "उच्च ज्ञान व दूरदर्शिता", "descriptionEn": "Fosters profound wisdom, intuitive advisory talents, and public esteem.", "descriptionHi": "परामर्श और बौद्धिक क्षेत्रों में उच्च मान-सम्मान दिलाता है।" },
+    "73": { "quality": "auspicious", "titleEn": "Mentorship & Vision", "titleHi": "मार्गदर्शन व शोध सिद्धि", "descriptionEn": "Gives visionary depth, academic brilliance, and balanced guidance.", "descriptionHi": "गहन ज्ञान और मार्गदर्शन के लिए श्रेष्ठ ऊर्जा उत्पन्न करता है।" },
+    "56": { "quality": "auspicious", "titleEn": "Lakshmi-Yoga Abundance", "titleHi": "लक्ष्मी योग व आकर्षण", "descriptionEn": "Unlocks magnetic charm, financial liquidity, and luxurious lifestyle.", "descriptionHi": "धन प्रवाह, व्यापारिक लाभ और सुख-सुविधाओं में निरंतर वृद्धि करता है।" },
+    "65": { "quality": "auspicious", "titleEn": "Prosperous Partnerships", "titleHi": "साझेदारी व संपदा", "descriptionEn": "Attracts loyal clientele, smooth financial operations, and public goodwill.", "descriptionHi": "व्यापारिक विस्तार और समाज में प्रतिष्ठा स्थापित करता है।" },
+    "47": { "quality": "auspicious", "titleEn": "Deep Research & Tech Flair", "titleHi": "तकनीकी शोध व नवाचार", "descriptionEn": "Exceptional for data science, software engineering, and occult studies.", "descriptionHi": "तकनीक, सॉफ्टवेयर और अनुसंधान के क्षेत्रों में विशिष्ट सफलता देता है।" },
+    "74": { "quality": "auspicious", "titleEn": "Analytical Mastery", "titleHi": "सूक्ष्म विश्लेषण व युक्ति", "descriptionEn": "Provides penetrating insight, problem-solving mastery, and breakthrough ideas.", "descriptionHi": "जटिल समस्याओं को सरलता से सुलझाने की क्षमता प्रदान करता है।" },
+    "18": { "quality": "challenging", "titleEn": "Sun-Saturn Friction", "titleHi": "सूर्य-शनि वैचारिक संघर्ष", "descriptionEn": "Generates career friction, friction with superiors, and arduous struggles before triumph.", "descriptionHi": "उच्चाधिकारियों से मतभेद और प्रयासों में विलंब की स्थिति बना सकता है।" },
+    "81": { "quality": "challenging", "titleEn": "Heavy Burden & Stagnation", "titleHi": "कठिन संघर्ष व विलंब", "descriptionEn": "Attracts demanding workloads, heavy responsibilities, and emotional fatigue.", "descriptionHi": "अत्यधिक काम का दबाव और प्रतिफल मिलने में रुकावटें पैदा कर सकता है।" },
+    "28": { "quality": "challenging", "titleEn": "Moon-Saturn Melancholy", "titleHi": "विष योग व मानसिक द्वंद्व", "descriptionEn": "Can cause cyclical mood dips, isolation, and unwarranted apprehension.", "descriptionHi": "मानसिक तनाव, निराशा और निर्णय लेने में हिचकिचाहट उत्पन्न कर सकता है।" },
+    "82": { "quality": "challenging", "titleEn": "Emotional Stagnation", "titleHi": "भावनात्मक रुकावट", "descriptionEn": "Creates indecisiveness and over-sensitivity under professional pressure.", "descriptionHi": "दबाव की स्थिति में भावुकता और असमंजस की स्थिति बन सकती है।" },
+    "24": { "quality": "challenging", "titleEn": "Restless Anxiety", "titleHi": "मानसिक अशांति व संशय", "descriptionEn": "Generates fluctuating thoughts, unexpected mood instability, and sudden worries.", "descriptionHi": "मन में एकाग्रता की कमी और अनायास चिंता उत्पन्न कर सकता है।" },
+    "42": { "quality": "challenging", "titleEn": "Vacillating Direction", "titleHi": "अनिर्णय व असमंजस", "descriptionEn": "Weakens focus through self-doubt and erratic priorities; regular meditation helps.", "descriptionHi": "लक्ष्यों के प्रति अस्थिरता और भ्रम पैदा कर सकता है।" },
+    "36": { "quality": "challenging", "titleEn": "Guru-Shukra Conflict", "titleHi": "गुरु-शुक्र वैचारिक मतभेद", "descriptionEn": "Pits ethical restraint against hedonistic expenditure; requires balanced lifestyle.", "descriptionHi": "नैतिकता और अत्यधिक विलासिता के बीच द्वंद्व पैदा कर सकता है।" },
+    "63": { "quality": "challenging", "titleEn": "Excessive Expenditure", "titleHi": "अनावश्यक व्यय व मतभेद", "descriptionEn": "Indicates unplanned financial leaks and divergent priorities in personal commitments.", "descriptionHi": "धन के अनावश्यक रिसाव और प्राथमिकताओं में टकराव का संकेत देता है।" }
+  }
+}

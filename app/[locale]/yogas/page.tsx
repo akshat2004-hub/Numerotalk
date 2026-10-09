@@ -3,12 +3,12 @@
 import React, { useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Grid, Sparkles, CheckCircle2, Clock, XCircle, Table } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { VedicGrid } from '@/components/VedicGrid';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateVedicGrid, detectYogas } from '@/lib';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateVedicGrid, detectYogas } from '@/frontend';
 
 export default function YogasPage() {
   const t = useTranslations('yogasPage');
@@ -24,7 +24,6 @@ export default function YogasPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'वैदिक योग 06' : 'GRID YOGAS 06'}
         icon={<Grid className="w-5 h-5 stroke-[1.5]" />}
       />
 

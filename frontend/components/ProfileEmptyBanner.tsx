@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from '@/i18n/routing';
 import { User, AlertCircle, ArrowRight } from 'lucide-react';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { useLocale } from 'next-intl';
 
 export function ProfileEmptyBanner({ locale: propLocale }: { locale?: 'en' | 'hi' } = {}) {
@@ -27,8 +27,8 @@ export function ProfileEmptyBanner({ locale: propLocale }: { locale?: 'en' | 'hi
           </h4>
           <p className="text-[11px] text-[var(--text-muted)]">
             {locale === 'hi'
-              ? 'सटीक वैदिक भविष्यवाणियों के लिए मॉड्यूल 01 में अपना नाम और जन्मतिथि दर्ज करें।'
-              : 'Enter your name and DOB in Module 1 to unlock personalized readings across all modules.'}
+              ? 'सटीक वैदिक भविष्यवाणियों के लिए उपयोगकर्ता विवरण में अपना नाम और जन्मतिथि दर्ज करें।'
+              : 'Enter your name and DOB in User Detail to unlock personalized readings across all sections.'}
           </p>
         </div>
       </div>
@@ -37,7 +37,7 @@ export function ProfileEmptyBanner({ locale: propLocale }: { locale?: 'en' | 'hi
         href="/"
         className="btn-gold-gradient px-3.5 py-1.5 rounded-xl text-xs font-semibold shrink-0 flex items-center gap-1.5 shadow-xs"
       >
-        <span>{locale === 'hi' ? 'मॉड्यूल 01 पर जाएं' : 'Go to Module 1'}</span>
+        <span>{locale === 'hi' ? 'उपयोगकर्ता विवरण पर जाएं' : 'Go to User Detail'}</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </Link>
     </div>

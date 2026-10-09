@@ -8,7 +8,6 @@ const profileSchema = z.object({
   dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'DOB must be in YYYY-MM-DD format'),
   birth_time: z.string().optional().nullable(),
   image_url: z.string().optional().nullable(),
-  destiny_system: z.enum(['chaldean', 'pythagorean']).default('chaldean'),
   is_self: z.boolean().default(false),
   notes: z.string().optional().nullable(),
 });

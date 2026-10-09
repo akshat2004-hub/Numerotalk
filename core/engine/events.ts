@@ -2,8 +2,8 @@ import { calculateVedicGrid, VedicGridResult } from './grid';
 import { calculateMulank, calculateBhagyank, parseDob } from './numerology';
 import { calculatePersonalYear } from './dasha';
 import { detectYogas } from './yogas';
-import eventsConfig from '@/mocks/rules/events.json';
-import friendlyEnemyConfig from '@/mocks/rules/friendly_enemy.json';
+import eventsConfig from '@/core/mocks/rules/events.json';
+import friendlyEnemyConfig from '@/core/mocks/rules/friendly_enemy.json';
 
 export interface EventRule {
   id: string;

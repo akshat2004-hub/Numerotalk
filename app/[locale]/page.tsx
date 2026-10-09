@@ -20,20 +20,24 @@ import {
   Check
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { VedicGrid } from '@/components/VedicGrid';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { Input } from '@/frontend/components/ui/Input';
+import { DateInput } from '@/frontend/components/ui/DateInput';
+import { Button } from '@/frontend/components/ui/Button';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import {
   calculateMulank,
   calculateBhagyank,
   calculateDestinyNumber,
   transliterateDevanagari,
   numerologyService
-} from '@/lib';
+} from '@/frontend';
 import { NumberReading } from '@/types';
-import { cn } from '@/lib/utils';
+import { cn } from '@/frontend/utils';
 
 export default function UserDetailPage() {
   const t = useTranslations('profile');
@@ -50,8 +54,7 @@ export default function UserDetailPage() {
     mobile: z.string().regex(/^\d{10}$/, { message: locale === 'hi' ? '10 अंकों का वैध मोबाइल नंबर दर्ज करें' : 'Enter a valid 10-digit mobile number' }),
     dob: z.string().min(1, { message: locale === 'hi' ? 'जन्म तिथि आवश्यक है' : 'Date of Birth is required' }),
     birthTime: z.string().optional(),
-    consent: z.boolean().refine(val => val === true, { message: tc('consentRequired') }),
-    destinySystem: z.enum(['chaldean', 'pythagorean'])
+    consent: z.boolean().refine(val => val === true, { message: tc('consentRequired') })
   });
 
   type FormValues = z.infer<typeof profileSchema>;
@@ -69,14 +72,12 @@ export default function UserDetailPage() {
       mobile: profile.mobile || '9876543210',
       dob: profile.dob || '1995-10-23',
       birthTime: profile.birthTime || '10:30',
-      consent: profile.consent ?? true,
-      destinySystem: profile.destinySystem || 'chaldean'
+      consent: profile.consent ?? true
     }
   });
 
   const watchedName = watch('name');
   const watchedDob = watch('dob');
-  const watchedSystem = watch('destinySystem');
   const watchedConsent = watch('consent');
 
   // Live transliteration — only rerun when name changes
@@ -87,16 +88,16 @@ export default function UserDetailPage() {
 
   // Core numbers — each memoized to its own dependency
   const mulankData = useMemo(
-    () => watchedDob ? calculateMulank(watchedDob) : { mulank: 5, compoundStr: '23/5', dayNumber: 23 },
+    () => watchedDob ? calculateMulank(watchedDob) : { mulank: 5, compound: 23, reduced: 5, dayNumber: 23 },
     [watchedDob]
   );
   const bhagyankData = useMemo(
-    () => watchedDob ? calculateBhagyank(watchedDob) : { bhagyank: 3, compoundStr: '30/3', rawSum: 30 },
+    () => watchedDob ? calculateBhagyank(watchedDob) : { bhagyank: 3, compound: 30, reduced: 3, rawSum: 30 },
     [watchedDob]
   );
   const destinyData = useMemo(
-    () => calculateDestinyNumber(watchedName || 'Rahul Sharma', watchedSystem || 'chaldean'),
-    [watchedName, watchedSystem]
+    () => calculateDestinyNumber(watchedName || 'Rahul Sharma'),
+    [watchedName]
   );
 
   useEffect(() => {
@@ -128,7 +129,6 @@ export default function UserDetailPage() {
       dob: data.dob,
       birthTime: data.birthTime,
       consent: data.consent,
-      destinySystem: data.destinySystem,
       image: imagePreview
     });
   };
@@ -141,10 +141,9 @@ export default function UserDetailPage() {
         goldTitle={locale === 'hi' ? 'ग्रिड विश्लेषण' : 'Grid Analysis'}
         subtitle={
           locale === 'hi'
-            ? 'अपनी जन्म तिथि और नाम दर्ज करके व्यक्तिगत वैदिक एवं लो शू ऊर्जा मानचित्र तैयार करें।'
-            : 'Enter your birth details and name to generate your personalized Vedic & Lo Shu energy map.'
+            ? 'अपनी जन्म तिथि और नाम दर्ज करके व्यक्तिगत वैदिक ऊर्जा मानचित्र तैयार करें।'
+            : 'Enter your birth details and name to generate your personalized Vedic energy map.'
         }
-        badge={locale === 'hi' ? 'वैदिक अंकशास्त्र · मॉड्यूल 01' : 'VEDIC ALMANAC · MODULE 01'}
         showOrbit={true}
       />
 
@@ -212,156 +211,95 @@ export default function UserDetailPage() {
               
               {/* 1. Full Name * */}
               <div>
-                <label className="block text-[11.5px] font-medium text-[#475569] mb-1">
-                  {locale === 'hi' ? 'पूरा नाम *' : 'Full Name *'}
-                </label>
-                <div className="h-[38px] rounded-lg bg-white border border-[#E5E7EB] flex items-center px-3 focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#FDE68A] transition-all">
-                  <User className="w-3.5 h-3.5 text-[#D97706] stroke-[2] shrink-0" />
-                  <input
-                    type="text"
-                    {...register('name')}
-                    placeholder={locale === 'hi' ? 'जैसे: राहुल शर्मा' : 'e.g. Rahul Sharma'}
-                    className="w-full pl-2 pr-1 text-[12.5px] text-[#0F172A] placeholder:text-[#94A3B8] bg-transparent outline-none"
-                  />
-                </div>
-                {errors.name && (
-                  <p className="text-[#EF4444] text-[11px] mt-0.5">{errors.name.message}</p>
-                )}
+                <Input
+                  label={locale === 'hi' ? 'पूरा नाम *' : 'Full Name *'}
+                  icon={<User className="w-4 h-4 text-[var(--gold)] stroke-[2]" />}
+                  placeholder={locale === 'hi' ? 'जैसे: राहुल शर्मा' : 'e.g. Rahul Sharma'}
+                  error={errors.name?.message}
+                  {...register('name')}
+                />
                 {translitInfo.isDevanagari && (
-                  <p className="text-[11px] text-[#D97706] mt-1 flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5 stroke-[1.5] shrink-0" />
+                  <p className="text-xs text-[var(--gold)] mt-1 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 stroke-[1.5] shrink-0" />
                     <span>{locale === 'hi' ? 'रोमनीकृत नाम:' : 'Transliteration:'}</span>
-                    <strong className="underline decoration-[#D97706] font-medium">{translitInfo.transliterated}</strong>
+                    <strong className="underline decoration-[var(--gold)] font-medium">{translitInfo.transliterated}</strong>
                   </p>
                 )}
               </div>
 
               {/* 2. Mobile Number * */}
               <div>
-                <label className="block text-[11.5px] font-medium text-[#475569] mb-1">
-                  {locale === 'hi' ? 'मोबाइल नंबर *' : 'Mobile Number *'}
-                </label>
-                <div className="h-[38px] rounded-lg bg-white border border-[#E5E7EB] flex items-center px-3 focus-within:border-[#D97706] focus-within:ring-2 focus-within:ring-[#FDE68A] transition-all">
-                  <Phone className="w-3.5 h-3.5 text-[#D97706] stroke-[2] shrink-0" />
-                  <input
-                    type="text"
-                    maxLength={10}
-                    {...register('mobile')}
-                    placeholder="9876543210"
-                    className="w-full pl-2 pr-1 text-[12.5px] text-[#0F172A] placeholder:text-[#94A3B8] bg-transparent outline-none font-mono"
-                  />
-                </div>
-                {errors.mobile && (
-                  <p className="text-[#EF4444] text-[11px] mt-0.5">{errors.mobile.message}</p>
-                )}
+                <Input
+                  label={locale === 'hi' ? 'मोबाइल नंबर *' : 'Mobile Number *'}
+                  icon={<Phone className="w-4 h-4 text-[var(--gold)] stroke-[2]" />}
+                  placeholder="9876543210"
+                  maxLength={10}
+                  error={errors.mobile?.message}
+                  {...register('mobile')}
+                />
               </div>
 
               {/* 3. Date of Birth * */}
               <div>
-                <label className="block text-[11.5px] font-medium text-[var(--text)] mb-1">
-                  {locale === 'hi' ? 'जन्म तिथि *' : 'Date of Birth *'}
-                </label>
-                <div className="h-[38px] rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center px-3 focus-within:border-[var(--gold)] focus-within:ring-2 focus-within:ring-[var(--chip-bg)] transition-all">
-                  <Calendar className="w-3.5 h-3.5 text-[var(--gold)] stroke-[2] shrink-0" />
-                  <input
-                    type="date"
-                    {...register('dob')}
-                    className="w-full pl-2 pr-1 text-[12.5px] text-[var(--heading)] bg-transparent outline-none cursor-pointer"
-                  />
-                </div>
-                {errors.dob && (
-                  <p className="text-rose-600 text-[11px] mt-0.5">{errors.dob.message}</p>
-                )}
+                <DateInput
+                  label={locale === 'hi' ? 'जन्म तिथि *' : 'Date of Birth *'}
+                  value={watchedDob}
+                  onChange={(iso) => setValue('dob', iso, { shouldValidate: true })}
+                  error={errors.dob?.message}
+                />
               </div>
 
               {/* 4. Birth Time (Optional) */}
               <div>
-                <label className="block text-[11.5px] font-medium text-[var(--text)] mb-1">
-                  {locale === 'hi' ? 'जन्म समय (वैकल्पिक)' : 'Birth Time (Optional)'}
-                </label>
-                <div className="h-[38px] rounded-lg bg-[var(--surface)] border border-[var(--border)] flex items-center px-3 focus-within:border-[var(--gold)] focus-within:ring-2 focus-within:ring-[var(--chip-bg)] transition-all">
-                  <input
-                    type="time"
-                    {...register('birthTime')}
-                    className="w-full pl-1 pr-1 text-[12.5px] text-[var(--heading)] bg-transparent outline-none cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              {/* 5. Destiny System (Compact Segmented Control) */}
-              <div className="sm:col-span-2">
-                <label className="block text-[11.5px] font-medium text-[var(--text)] mb-1">
-                  {locale === 'hi' ? 'नामांक पद्धति (सिस्टम)' : 'Destiny Calculation System'}
-                </label>
-                <div className="h-[38px] p-0.5 rounded-lg bg-[var(--seg-inactive)] border border-[var(--border)] flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setValue('destinySystem', 'chaldean')}
-                    className={cn(
-                      'h-full flex-1 rounded-md text-[11px] font-semibold transition-all flex items-center justify-center cursor-pointer',
-                      watchedSystem === 'chaldean'
-                        ? 'bg-[var(--seg-active)] text-[var(--heading)] shadow-xs'
-                        : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
-                    )}
-                  >
-                    Chaldean (Vedic Sacred)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setValue('destinySystem', 'pythagorean')}
-                    className={cn(
-                      'h-full flex-1 rounded-md text-[11px] font-semibold transition-all flex items-center justify-center cursor-pointer',
-                      watchedSystem === 'pythagorean'
-                        ? 'bg-[var(--seg-active)] text-[var(--heading)] shadow-xs'
-                        : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
-                    )}
-                  >
-                    Pythagorean
-                  </button>
-                </div>
+                <Input
+                  type="time"
+                  label={locale === 'hi' ? 'जन्म समय (वैकल्पिक)' : 'Birth Time (Optional)'}
+                  {...register('birthTime')}
+                />
               </div>
             </div>
 
-            {/* 10. CONSENT: Small professional checkbox */}
+            {/* 10. CONSENT */}
             <div>
-              <label className="flex items-start gap-2 cursor-pointer select-none">
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
                 <div
                   onClick={() => setValue('consent', !watchedConsent, { shouldValidate: true })}
                   className={cn(
-                    'w-3.5 h-3.5 rounded mt-0.5 flex items-center justify-center transition-colors shrink-0 border cursor-pointer',
+                    'w-4 h-4 rounded mt-0.5 flex items-center justify-center transition-colors shrink-0 border cursor-pointer',
                     watchedConsent
-                      ? 'bg-[#D97706] border-[#D97706] text-white'
-                      : 'border-[#CBD5E1] bg-white'
+                      ? 'bg-[var(--gold)] border-[var(--gold)] text-white'
+                      : 'border-[var(--border)] bg-[var(--surface)]'
                   )}
                 >
-                  {watchedConsent && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                  {watchedConsent && <Check className="w-3 h-3 stroke-[3]" />}
                 </div>
                 <input
                   type="checkbox"
                   {...register('consent')}
                   className="hidden"
                 />
-                <span className="text-[11px] text-[#64748B] leading-normal">
+                <span className="text-xs text-[var(--text-muted)] leading-normal">
                   {locale === 'hi'
                     ? 'मैं DPDP दिशानिर्देशों के अनुसार अपना अंकशास्त्रीय जन्म विवरण सुरक्षित रूप से स्थानीय रूप से संग्रहीत करने की सहमति देता/देती हूँ।'
                     : 'I consent to store my numerological birth details locally on this device in accordance with DPDP privacy guidelines.'}
                 </span>
               </label>
               {errors.consent && (
-                <p className="text-[#EF4444] text-[10.5px] mt-0.5">{errors.consent.message}</p>
+                <p className="text-rose-600 text-xs mt-1">{errors.consent.message}</p>
               )}
             </div>
 
-            {/* 11. CALCULATE BUTTON (Compact Primary CTA) */}
-            <div className="flex items-center justify-end pt-0.5">
-              <button
+            {/* 11. CALCULATE BUTTON */}
+            <div className="flex items-center justify-end pt-1">
+              <Button
                 type="submit"
-                className="btn-gold-gradient h-[38px] px-5 rounded-lg text-xs font-semibold text-white flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                size="lg"
+                className="flex items-center gap-2"
               >
-                <Sparkles className="w-3.5 h-3.5 stroke-[2]" />
+                <Sparkles className="w-4 h-4 stroke-[2]" />
                 <span>{locale === 'hi' ? 'गणना करें' : 'Calculate Dashboard'}</span>
-                <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
-              </button>
+                <ArrowRight className="w-4 h-4 stroke-[2]" />
+              </Button>
             </div>
           </div>
         </div>
@@ -378,30 +316,30 @@ export default function UserDetailPage() {
           {/* Mulank Card */}
           <div className="vedic-card p-4 text-center flex flex-col items-center justify-between rounded-[24px]">
             <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider">
-              {locale === 'hi' ? 'मूलांक (ड्राइवर)' : 'Mulank (Driver)'}
+              {locale === 'hi' ? 'ड्राइवर (मूलांक)' : 'Driver (Mulank)'}
             </span>
             <div className="my-1.5">
               <NumberBadge number={mulankData.mulank} size="md" />
             </div>
-            <div className="text-[11px] text-[var(--text-muted)] font-mono">
-              <span>Day: {mulankData.dayNumber}</span>
-              <span className="mx-1">•</span>
-              <span className="text-[var(--gold)] font-bold">{mulankData.compoundStr}</span>
+            <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-1 font-mono">
+              <span>{locale === 'hi' ? 'दिन:' : 'Day:'} {mulankData.dayNumber}</span>
+              <span>•</span>
+              <CompoundNumber compound={mulankData.compound} reduced={mulankData.reduced} size="sm" />
             </div>
           </div>
 
           {/* Bhagyank Card */}
           <div className="vedic-card p-4 text-center flex flex-col items-center justify-between rounded-[24px]">
             <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider">
-              {locale === 'hi' ? 'भाग्यांक (कंडक्टर)' : 'Bhagyank (Conductor)'}
+              {locale === 'hi' ? 'कंडक्टर (भाग्यांक)' : 'Conductor (Bhagyank)'}
             </span>
             <div className="my-1.5">
               <NumberBadge number={bhagyankData.bhagyank} size="md" />
             </div>
-            <div className="text-[11px] text-[var(--text-muted)] font-mono">
-              <span>Sum: {bhagyankData.rawSum}</span>
-              <span className="mx-1">•</span>
-              <span className="text-[var(--gold)] font-bold">{bhagyankData.compoundStr}</span>
+            <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-1 font-mono">
+              <span>{locale === 'hi' ? 'योग:' : 'Sum:'} {bhagyankData.rawSum}</span>
+              <span>•</span>
+              <CompoundNumber compound={bhagyankData.compound} reduced={bhagyankData.reduced} size="sm" />
             </div>
           </div>
 
@@ -413,25 +351,21 @@ export default function UserDetailPage() {
             <div className="my-1.5">
               <NumberBadge number={destinyData.destinyNumber} size="md" />
             </div>
-            <div className="text-[11px] text-[var(--text-muted)] font-mono">
-              <span className="capitalize">{watchedSystem}</span>
-              <span className="mx-1">•</span>
-              <span className="text-[var(--gold)] font-bold">{destinyData.compoundStr}</span>
+            <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-1 font-mono">
+              <CompoundNumber compound={destinyData.compound} reduced={destinyData.reduced} size="sm" />
             </div>
           </div>
 
           {/* Compound Card */}
           <div className="vedic-card p-4 text-center flex flex-col items-center justify-between rounded-[24px]">
             <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider">
-              {locale === 'hi' ? 'संयुक्त ऊर्जा' : 'Compound Vibration'}
+              {locale === 'hi' ? 'संयुक्त अंक' : 'Compound Vibration'}
             </span>
-            <div className="my-1.5 flex items-center justify-center">
-              <span className="font-serif text-2xl font-bold text-[var(--gold)]">
-                {mulankData.compoundStr}
-              </span>
+            <div className="my-2 flex items-center justify-center">
+              <CompoundNumber compound={mulankData.compound} reduced={mulankData.reduced} size="lg" />
             </div>
             <div className="text-[11px] text-[var(--text-muted)]">
-              <span>{locale === 'hi' ? 'दैनिक व भाग्यांक तरंग' : 'Day & Life Path'}</span>
+              <span>{locale === 'hi' ? 'दिन और भाग्यांक' : 'Day & Life Path'}</span>
             </div>
           </div>
         </div>
@@ -453,18 +387,15 @@ export default function UserDetailPage() {
               reportSectionKey="module1_mulank"
               icon={<Sun className="w-4 h-4 text-[var(--gold)] stroke-[1.75]" />}
               footer={
-                <div className="w-full flex items-center justify-between">
+                <div className="w-full flex items-center justify-between text-xs text-[var(--text-muted)]">
                   <span>
                     {locale === 'hi' ? 'शासक तत्व:' : 'Cosmic Element:'}{' '}
                     <strong className="text-[var(--heading)]">{locale === 'hi' ? reading.element.hi : reading.element.en}</strong>
                   </span>
-                  <Link
-                    href="/destiny"
-                    className="text-[var(--gold)] hover:underline font-semibold flex items-center gap-1"
-                  >
-                    <span>{locale === 'hi' ? 'नामांक विश्लेषण देखें' : 'View Destiny'}</span>
-                    <ArrowRight className="w-3 h-3 stroke-[2]" />
-                  </Link>
+                  <span>
+                    {locale === 'hi' ? 'ग्रह देवता:' : 'Governing Deity:'}{' '}
+                    <strong className="text-[var(--gold)]">{locale === 'hi' ? reading.deity.hi : reading.deity.en}</strong>
+                  </span>
                 </div>
               }
             >

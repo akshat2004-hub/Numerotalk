@@ -1,11 +1,11 @@
-import { Locale, NumberReading, DestinyReading, CombinationReading, MissingNumberReading, RepeatingNumberReading, RemedyMasterItem, HelpTipItem } from '@/types';
-import numbersData from '@/mocks/numbers.json';
-import destinyData from '@/mocks/destiny.json';
-import combinationsData from '@/mocks/combinations.json';
-import missingData from '@/mocks/missing.json';
-import repeatingData from '@/mocks/repeating.json';
-import remediesData from '@/mocks/remedies.json';
-import helpData from '@/mocks/help.json';
+import { Locale, NumberReading, DestinyReading, CombinationReading, MissingNumberReading, RepeatingNumberReading, RemedyMasterItem, HelpTipItem } from '@/core/types';
+import numbersData from '@/core/mocks/numbers.json';
+import destinyData from '@/core/mocks/destiny.json';
+import combinationsData from '@/core/mocks/combinations.json';
+import missingData from '@/core/mocks/missing.json';
+import repeatingData from '@/core/mocks/repeating.json';
+import remediesData from '@/core/mocks/remedies.json';
+import helpData from '@/core/mocks/help.json';
 import {
   calculateMulank,
   calculateBhagyank,
@@ -14,6 +14,8 @@ import {
   detectYogas,
   getNumberRelationship,
   calculateMatchMaking,
+  matchScore,
+  recommendProfessions,
   calculateYearlyPrediction,
   analyzeMobileNumber,
   calculateTimeNumerology,
@@ -23,7 +25,7 @@ import {
   generatePasswordByProfession,
   generatePinByNumerology,
   MatchProfileInput
-} from '@/lib/engine';
+} from '@/core/engine';
 
 export const numerologyService = {
   /**
@@ -36,9 +38,9 @@ export const numerologyService = {
   },
 
   /**
-   * Fetches Destiny Number reading by Chaldean / Pythagorean system.
+   * Fetches Destiny Number reading.
    */
-  async getDestinyReading(destinyNum: number, _system: 'chaldean' | 'pythagorean' = 'chaldean', _locale: Locale = 'en'): Promise<DestinyReading | null> {
+  async getDestinyReading(destinyNum: number, _locale: Locale = 'en'): Promise<DestinyReading | null> {
     const safeNum = Math.min(9, Math.max(1, destinyNum));
     const found = (destinyData as any[]).find(item => item.number === safeNum);
     return found || null;
@@ -171,8 +173,12 @@ export const numerologyService = {
     return calculateBhagyank(dob);
   },
 
-  calculateDestinyNumber(name: string, system: 'chaldean' | 'pythagorean' = 'chaldean') {
-    return calculateDestinyNumber(name, system);
+  nameNumber(name: string) {
+    return calculateDestinyNumber(name);
+  },
+
+  calculateDestinyNumber(name: string) {
+    return calculateDestinyNumber(name);
   },
 
   calculateVedicGrid(dob: string, includeMulankBhagyank: boolean = true) {
@@ -185,6 +191,14 @@ export const numerologyService = {
 
   calculateMatchMaking(boy: MatchProfileInput, girl: MatchProfileInput) {
     return calculateMatchMaking(boy, girl);
+  },
+
+  matchScore(boy: MatchProfileInput, girl: MatchProfileInput) {
+    return matchScore(boy, girl);
+  },
+
+  recommendProfessions(profile: any, n: number = 3) {
+    return recommendProfessions(profile, n);
   },
 
   calculateYearlyPrediction(dob: string, targetYear: number) {

@@ -28,12 +28,13 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { PdfSectionPicker, SectionPickerItem } from '@/components/ui/PdfSectionPicker';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { VedicGrid } from '@/components/VedicGrid';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { PdfSectionPicker, SectionPickerItem } from '@/frontend/components/ui/PdfSectionPicker';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import {
   calculateMulank,
   calculateBhagyank,
@@ -51,7 +52,7 @@ import {
   NUMBER_RELATIONSHIPS,
   calculateAllEventScores,
   numerologyService
-} from '@/lib';
+} from '@/frontend';
 import {
   DestinyReading,
   CombinationReading,
@@ -85,16 +86,16 @@ export default function FinalReportPage() {
 
   // Core Math Calculations
   const mulank = useMemo(
-    () => profile.dob ? calculateMulank(profile.dob) : { mulank: 5, compoundStr: '23/5', dayNumber: 23 },
+    () => profile.dob ? calculateMulank(profile.dob) : { mulank: 5, compound: 23, reduced: 5, dayNumber: 23 },
     [profile.dob]
   );
   const bhagyank = useMemo(
-    () => profile.dob ? calculateBhagyank(profile.dob) : { bhagyank: 3, compoundStr: '30/3', rawSum: 30 },
+    () => profile.dob ? calculateBhagyank(profile.dob) : { bhagyank: 3, compound: 30, reduced: 3, rawSum: 30 },
     [profile.dob]
   );
   const destiny = useMemo(
-    () => calculateDestinyNumber(profile.name || 'Rahul Sharma', profile.destinySystem || 'chaldean'),
-    [profile.name, profile.destinySystem]
+    () => calculateDestinyNumber(profile.name || 'Rahul Sharma'),
+    [profile.name]
   );
   const grid = useMemo(
     () => calculateVedicGrid(profile.dob || '1995-10-23'),
@@ -164,18 +165,18 @@ export default function FinalReportPage() {
   const [remediesMasterList, setRemediesMasterList] = useState<RemedyMasterItem[]>([]);
 
   useEffect(() => {
-    numerologyService.getDestinyReading(destiny.destinyNumber, profile.destinySystem || 'chaldean', exportLanguage).then(setDestinyReading);
+    numerologyService.getDestinyReading(destiny.destinyNumber, exportLanguage).then(setDestinyReading);
     numerologyService.getCombinationReading(mulank.mulank, bhagyank.bhagyank, exportLanguage).then(setCombinationReading);
     numerologyService.getMissingNumberRemedies(grid.missingNumbers, exportLanguage).then(setMissingRemedies);
     numerologyService.getRepeatingNumberReadings(grid.repeatingNumbers, exportLanguage).then(setRepeatingReadings);
     numerologyService.getRemediesMasterList({ number: mulank.mulank }, exportLanguage).then(setRemediesMasterList);
-  }, [destiny.destinyNumber, mulank.mulank, bhagyank.bhagyank, grid.missingNumbers, grid.repeatingNumbers, profile.destinySystem, exportLanguage]);
+  }, [destiny.destinyNumber, mulank.mulank, bhagyank.bhagyank, grid.missingNumbers, grid.repeatingNumbers, exportLanguage]);
 
   // Sections list according to prompt: 1 to 16, and 18 (17 is Help popup)
   const sectionsList: SectionPickerItem[] = [
     { id: 'userDetail', number: 1, labelEn: 'User Detail & 3x3 Grid', labelHi: 'उपयोगकर्ता विवरण व ग्रिड', checked: !!reportSections.userDetail },
     { id: 'destiny', number: 2, labelEn: 'Destiny (Namank)', labelHi: 'नामांक विश्लेषण', checked: !!reportSections.destiny },
-    { id: 'combination', number: 3, labelEn: 'Destiny x Life Path', labelHi: 'मूलांक x भाग्यांक समन्वय', checked: !!reportSections.combination },
+    { id: 'combination', number: 3, labelEn: 'Combination Prediction (Destiny & Life Path)', labelHi: 'संयोजन भविष्यफल (नामांक और भाग्यांक)', checked: !!reportSections.combination },
     { id: 'missing', number: 4, labelEn: 'Missing Numbers & Remedies', labelHi: 'अनुपस्थित अंक व उपाय', checked: !!reportSections.missing },
     { id: 'repeating', number: 5, labelEn: 'Repeating Numbers', labelHi: 'दोहराए गए अंक', checked: !!reportSections.repeating },
     { id: 'yogas', number: 6, labelEn: 'Vedic Yogas Grid', labelHi: 'वैदिक योग (8 ऊर्जा तल)', checked: !!reportSections.yogas },
@@ -295,7 +296,6 @@ export default function FinalReportPage() {
               ? 'सभी 17 अनुभागों का विस्तृत डेटा, कुंडली विश्लेषण, दशा, वास्तु एवं उपाय एक ही दस्तावेज में'
               : 'Complete multi-module dossier including destiny, yogas, dasha, vastu, events, remedies, and security'
           }
-          badge={locale === 'hi' ? 'रिपोर्ट संकलन 19' : 'Dossier Builder 19'}
           icon={<FileSpreadsheet className="w-5 h-5 sm:w-6 sm:h-6" />}
           className="mb-0"
         />
@@ -464,8 +464,7 @@ export default function FinalReportPage() {
               </h1>
               <p className="text-xs text-[#8A7F6E] mt-1 font-medium">
                 DOB: <strong className="text-[#14213D]">{profile.dob || '1995-10-23'}</strong> • Mobile:{' '}
-                <strong className="text-[#14213D]">{profile.mobile || '9876543210'}</strong> • System:{' '}
-                <strong className="text-[#14213D] capitalize">{profile.destinySystem || 'Chaldean'}</strong> • Date:{' '}
+                <strong className="text-[#14213D]">{profile.mobile || '9876543210'}</strong> • Date:{' '}
                 <strong className="text-[#14213D]" suppressHydrationWarning>{reportDate}</strong>
               </p>
             </div>
@@ -491,18 +490,24 @@ export default function FinalReportPage() {
                   <VedicGrid dob={profile.dob} locale={exportLanguage} size="sm" hideControls={true} hideStats={true} />
                 </div>
                 <div className="space-y-2 text-xs text-[#2B2B3A] bg-white p-4 rounded-xl border border-[#EADFC8]">
-                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                  <div className="flex justify-between items-center border-b border-[#F3E3C4] pb-1">
                     <span className="text-[#8A7F6E]">Mulank (Driver Number):</span>
-                    <strong className="text-[#14213D]">{mulank.mulank} ({mulank.compoundStr})</strong>
-                  </p>
-                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <strong className="text-[#14213D] inline-flex items-center gap-1.5">
+                      <CompoundNumber compound={mulank.compound} reduced={mulank.mulank} size="sm" />
+                    </strong>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-[#F3E3C4] pb-1">
                     <span className="text-[#8A7F6E]">Bhagyank (Conductor Number):</span>
-                    <strong className="text-[#14213D]">{bhagyank.bhagyank} ({bhagyank.compoundStr})</strong>
-                  </p>
-                  <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
+                    <strong className="text-[#14213D] inline-flex items-center gap-1.5">
+                      <CompoundNumber compound={bhagyank.compound} reduced={bhagyank.bhagyank} size="sm" />
+                    </strong>
+                  </div>
+                  <div className="flex justify-between items-center border-b border-[#F3E3C4] pb-1">
                     <span className="text-[#8A7F6E]">Destiny (Namank):</span>
-                    <strong className="text-[#14213D]">{destiny.destinyNumber} ({destiny.compoundStr})</strong>
-                  </p>
+                    <strong className="text-[#14213D] inline-flex items-center gap-1.5">
+                      <CompoundNumber compound={destiny.compound} reduced={destiny.destinyNumber} size="sm" />
+                    </strong>
+                  </div>
                   <p className="flex justify-between border-b border-[#F3E3C4] pb-1">
                     <span className="text-[#8A7F6E]">Present Grid Numbers:</span>
                     <strong className="text-[#059669]">{grid.presentNumbers.join(', ') || 'None'}</strong>
@@ -534,8 +539,8 @@ export default function FinalReportPage() {
                   <span className="font-bold text-[#14213D] text-sm">
                     {destinyReading ? (exportLanguage === 'hi' ? destinyReading.title.hi : destinyReading.title.en) : `Destiny Number ${destiny.destinyNumber}`}
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold text-[11px]">
-                    {destiny.system.toUpperCase()} ({destiny.compoundStr})
+                  <span className="px-2 py-0.5 rounded bg-[#FFF1CC] text-[#E8A317] font-semibold text-[11px] inline-flex items-center gap-1.5">
+                    <CompoundNumber compound={destiny.compound} reduced={destiny.destinyNumber} size="sm" />
                   </span>
                 </div>
                 <p className="text-[#2B2B3A] leading-relaxed">
@@ -574,7 +579,7 @@ export default function FinalReportPage() {
             <div className="space-y-3 pb-6 border-b border-[#EADFC8] relative z-10">
               <h3 className="text-base font-bold font-serif text-[#E8A317] flex items-center gap-2">
                 <GitMerge className="w-4 h-4 text-[#E8A317]" />
-                03. {exportLanguage === 'hi' ? 'मूलांक एवं भाग्यांक तालमेल (Driver x Conductor)' : 'Driver x Conductor Synergy (Mulank x Bhagyank)'}
+                03. {exportLanguage === 'hi' ? 'संयोजन भविष्यफल (नामांक और भाग्यांक)' : 'Combination Prediction (Destiny & Life Path)'}
               </h3>
               <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2.5 text-xs">
                 <div className="flex items-center justify-between border-b border-[#F3E3C4] pb-2">
@@ -586,7 +591,7 @@ export default function FinalReportPage() {
                   </span>
                 </div>
                 <p className="text-[#2B2B3A] leading-relaxed">
-                  <strong>Synergy Analysis: </strong>
+                  <strong>{exportLanguage === 'hi' ? 'संयुक्त विश्लेषण: ' : 'Combined Vibration: '}</strong>
                   {combinationReading ? (exportLanguage === 'hi' ? combinationReading.synergyAnalysis.hi : combinationReading.synergyAnalysis.en) : 'Harmonious alliance blending leadership with destiny.'}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

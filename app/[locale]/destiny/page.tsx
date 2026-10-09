@@ -3,43 +3,36 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Crown, Sparkles, Briefcase, Heart, CheckCircle2 } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { SegmentedControl } from '@/components/ui/SegmentedControl';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateDestinyNumber, numerologyService } from '@/lib';
-import { DestinyReading } from '@/types';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateDestinyNumber, numerologyService } from '@/frontend';
+import { DestinyReading } from '@/core/types';
 
 export default function DestinyPage() {
   const t = useTranslations('destinyPage');
   const locale = (useLocale() || 'en') as 'en' | 'hi';
-  const { profile, setDestinySystem } = useNumerologyStore();
+  const { profile } = useNumerologyStore();
 
-  const [system, setSystem] = useState<'chaldean' | 'pythagorean'>(profile.destinySystem || 'chaldean');
   const [destinyReading, setDestinyReading] = useState<DestinyReading | null>(null);
 
   const destinyCalc = useMemo(
-    () => calculateDestinyNumber(profile.name || 'Rahul Sharma', system),
-    [profile.name, system]
+    () => calculateDestinyNumber(profile.name || 'Rahul Sharma'),
+    [profile.name]
   );
 
   useEffect(() => {
-    numerologyService.getDestinyReading(destinyCalc.destinyNumber, system, locale).then(setDestinyReading);
-  }, [destinyCalc.destinyNumber, system, locale]);
-
-  const handleSystemChange = (sys: 'chaldean' | 'pythagorean') => {
-    setSystem(sys);
-    setDestinySystem(sys);
-  };
+    numerologyService.getDestinyReading(destinyCalc.destinyNumber, locale).then(setDestinyReading);
+  }, [destinyCalc.destinyNumber, locale]);
 
   return (
     <div className="space-y-6 sm:space-y-7">
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'नामांक विश्लेषण 02' : 'DESTINY ANALYSIS 02'}
         icon={<Crown className="w-5 h-5 stroke-[1.5]" />}
       />
 
@@ -50,7 +43,7 @@ export default function DestinyPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center md:text-left">
             <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider font-sans">
-              {t('systemLabel')} {system.toUpperCase()}
+              {locale === 'hi' ? 'वैदिक नामांक पद्धति' : 'Vedic Destiny Standard'}
             </span>
             <h2 className="font-serif text-lg sm:text-xl font-bold text-[var(--heading)]">
               {profile.name || 'Rahul Sharma'}
@@ -62,20 +55,10 @@ export default function DestinyPage() {
             )}
           </div>
 
-          {/* System Toggle Segmented Control */}
-          <SegmentedControl
-            options={[
-              { value: 'chaldean', label: 'Chaldean (Vedic)' },
-              { value: 'pythagorean', label: 'Pythagorean' },
-            ]}
-            value={system}
-            onChange={(val) => handleSystemChange(val as 'chaldean' | 'pythagorean')}
-          />
-
           <div className="flex items-center gap-3">
             <div className="text-right">
               <span className="text-[10px] text-[var(--text-muted)] block">{t('compoundLabel')}</span>
-              <span className="font-mono text-xs text-[var(--gold)] font-bold">{destinyCalc.compoundStr}</span>
+              <CompoundNumber compound={destinyCalc.compound} reduced={destinyCalc.reduced} size="sm" />
             </div>
             <NumberBadge number={destinyCalc.destinyNumber} size="lg" />
           </div>
@@ -100,9 +83,7 @@ export default function DestinyPage() {
             ))}
             <div className="px-3 py-1 rounded-xl bg-[var(--chip-bg)] border border-[var(--border)] flex items-center gap-1.5">
               <span className="text-[10px] text-[var(--heading)] font-semibold">{t('compoundLabel')}</span>
-              <span className="text-xs font-bold font-mono text-[var(--gold)]">
-                {destinyCalc.compoundNumber} = {destinyCalc.destinyNumber}
-              </span>
+              <CompoundNumber compound={destinyCalc.compound} reduced={destinyCalc.reduced} size="sm" />
             </div>
           </div>
         </div>

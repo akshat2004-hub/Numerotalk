@@ -1,373 +1,487 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { KeyRound, Sparkles, RefreshCw, Copy, Check, ShieldCheck, Lock } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { GoldButton } from '@/components/ui/GoldButton';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateMulank } from '@/lib';
-import { generatePinByNumerology, generatePasswordByProfession, PROFESSIONS_PROFILES } from '@/lib/engine/security';
+import { KeyRound, RefreshCw, Copy, Check, ShieldCheck, Sparkles, SlidersHorizontal, FileText } from 'lucide-react';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { Select } from '@/frontend/components/ui/Select';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { recommendProfessions, PROFESSIONS_LIST, ProfessionItem } from '@/core/engine/profession';
+import { generateSecurePassword, generateSecurePin, GeneratedPasswordMatch, GeneratedPinMatch } from '@/core/engine/security';
 
 export default function PinPasswordPage() {
   const t = useTranslations('pinPasswordPage');
   const locale = (useLocale() || 'en') as 'en' | 'hi';
+
   const profile = useNumerologyStore((s) => s.profile);
+  const storedProfession = useNumerologyStore((s) => s.selectedProfession);
+  const setSelectedProfession = useNumerologyStore((s) => s.setSelectedProfession);
+  const toggleReportSection = useNumerologyStore((s) => s.toggleReportSection);
+  const reportSections = useNumerologyStore((s) => s.reportSections);
 
-  const mulank = profile.dob ? calculateMulank(profile.dob).mulank : 1;
+  // Recommendations from Module 10
+  const recommendedList = useMemo(() => recommendProfessions(profile, 3), [profile]);
+  const topRecommendedId = recommendedList[0]?.profession.id || 'tech_entrepreneur';
 
-  // Mode: Password vs PIN
-  const [activeTab, setActiveTab] = useState<'password' | 'pin'>('password');
+  // Active Profession selection
+  const [selectedProfId, setSelectedProfId] = useState<string>(storedProfession || topRecommendedId);
 
-  // Password generator options
-  const [selectedProf, setSelectedProf] = useState('tech');
-  const [pwdLength, setPwdLength] = useState(14);
-  const [includeSymbols, setIncludeSymbols] = useState(true);
-  const [includeUppercase, setIncludeUppercase] = useState(true);
-  const [copiedPwd, setCopiedPwd] = useState(false);
+  useEffect(() => {
+    if (storedProfession) {
+      setSelectedProfId(storedProfession);
+    } else if (topRecommendedId) {
+      setSelectedProfId(topRecommendedId);
+    }
+  }, [storedProfession, topRecommendedId]);
 
-  // PIN generator options
-  const [pinDigits, setPinDigits] = useState<4 | 6>(4);
-  const [pinTargetSum, setPinTargetSum] = useState<number>(mulank || 5);
-  const [copiedPin, setCopiedPin] = useState(false);
+  const activeProfession = useMemo(() => {
+    return PROFESSIONS_LIST.find((p) => p.id === selectedProfId) || PROFESSIONS_LIST[0];
+  }, [selectedProfId]);
 
-  const [pwdData, setPwdData] = useState(() =>
-    generatePasswordByProfession('tech', 14, true, true)
-  );
-  const [pinData, setPinData] = useState(() =>
-    generatePinByNumerology(4, mulank || 5)
-  );
+  // Lucky target sum for the chosen profession
+  const luckyTargetSum = useMemo(() => {
+    return activeProfession.favourableMulank[0] || activeProfession.favourableBhagyank[0] || 5;
+  }, [activeProfession]);
 
-  const handleRegeneratePassword = () => {
-    setPwdData(generatePasswordByProfession(selectedProf, pwdLength, includeSymbols, includeUppercase));
+  // Options row state
+  const [pwdLength, setPwdLength] = useState<number>(14);
+  const [useUppercase, setUseUppercase] = useState<boolean>(true);
+  const [useSymbols, setUseSymbols] = useState<boolean>(true);
+
+  // Results state: 3 passwords + 2 PINs (4-digit, 6-digit)
+  const [passwords, setPasswords] = useState<GeneratedPasswordMatch[]>([]);
+  const [pin4, setPin4] = useState<GeneratedPinMatch | null>(null);
+  const [pin6, setPin6] = useState<GeneratedPinMatch | null>(null);
+
+  // Copy feedback state
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [addedReport, setAddedReport] = useState<boolean>(false);
+
+  // Generator handler
+  const generateAll = useCallback(() => {
+    const p1 = generateSecurePassword({
+      length: pwdLength,
+      includeUppercase: useUppercase,
+      includeSymbols: useSymbols,
+      targetLuckyNumber: luckyTargetSum,
+      professionKey: selectedProfId
+    });
+    const p2 = generateSecurePassword({
+      length: pwdLength,
+      includeUppercase: useUppercase,
+      includeSymbols: useSymbols,
+      targetLuckyNumber: luckyTargetSum,
+      professionKey: selectedProfId
+    });
+    const p3 = generateSecurePassword({
+      length: pwdLength,
+      includeUppercase: useUppercase,
+      includeSymbols: useSymbols,
+      targetLuckyNumber: luckyTargetSum,
+      professionKey: selectedProfId
+    });
+
+    const pin4Item = generateSecurePin(4, luckyTargetSum);
+    const pin6Item = generateSecurePin(6, luckyTargetSum);
+
+    setPasswords([p1, p2, p3]);
+    setPin4(pin4Item);
+    setPin6(pin6Item);
+  }, [pwdLength, useUppercase, useSymbols, luckyTargetSum, selectedProfId]);
+
+  // Auto-generate on load or when profession / lucky sum changes
+  useEffect(() => {
+    generateAll();
+  }, [generateAll]);
+
+  // Regenerate single password row
+  const regeneratePasswordRow = (index: number) => {
+    const updated = generateSecurePassword({
+      length: pwdLength,
+      includeUppercase: useUppercase,
+      includeSymbols: useSymbols,
+      targetLuckyNumber: luckyTargetSum,
+      professionKey: selectedProfId
+    });
+    setPasswords((prev) => {
+      const copy = [...prev];
+      copy[index] = updated;
+      return copy;
+    });
   };
 
-  const handleRegeneratePin = () => {
-    setPinData(generatePinByNumerology(pinDigits, pinTargetSum));
+  // Regenerate single PIN row
+  const regeneratePinRow = (digits: 4 | 6) => {
+    if (digits === 4) {
+      setPin4(generateSecurePin(4, luckyTargetSum));
+    } else {
+      setPin6(generateSecurePin(6, luckyTargetSum));
+    }
   };
 
-  const copyPwd = () => {
-    navigator.clipboard.writeText(pwdData.password);
-    setCopiedPwd(true);
-    setTimeout(() => setCopiedPwd(false), 2000);
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const copyPin = () => {
-    navigator.clipboard.writeText(pinData.pin);
-    setCopiedPin(true);
-    setTimeout(() => setCopiedPin(false), 2000);
+  const handleAddToReport = () => {
+    if (!reportSections.pinPassword) {
+      toggleReportSection('pinPassword');
+    }
+    setAddedReport(true);
+    setTimeout(() => setAddedReport(false), 2500);
   };
 
-  // Strength score
-  const getStrength = (length: number, hasSym: boolean, hasUpper: boolean) => {
-    let score = 0;
-    if (length >= 12) score += 40;
-    else if (length >= 8) score += 25;
-    if (hasSym) score += 30;
-    if (hasUpper) score += 30;
-    return score;
-  };
-
-  const strengthScore = getStrength(pwdLength, includeSymbols, includeUppercase);
+  // Build partitioned profession dropdown options
+  const recommendedIds = useMemo(() => new Set(recommendedList.map((r) => r.profession.id)), [recommendedList]);
+  const otherProfessions = useMemo(() => PROFESSIONS_LIST.filter((p) => !recommendedIds.has(p.id)), [recommendedIds]);
 
   return (
     <div className="space-y-6 sm:space-y-7">
       <SectionHeader
-        title={t('title')}
-        subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'सुरक्षा अंकशास्त्र 11' : 'SECURITY GENERATOR 11'}
+        title={locale === 'hi' ? 'पिन और' : 'PIN &'}
+        goldTitle={locale === 'hi' ? 'पासवर्ड' : 'Password'}
+        subtitle={
+          locale === 'hi'
+            ? 'सुरक्षित पासवर्ड और 4/6-अंकीय पिन आपके शुभ अंकों के अनुकूल।'
+            : 'Secure passwords and 4/6-digit PINs matched to your lucky numbers.'
+        }
         icon={<KeyRound className="w-5 h-5 stroke-[1.5]" />}
       />
 
       <ProfileEmptyBanner />
 
-      {/* Mode Switcher */}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setActiveTab('password')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            activeTab === 'password'
-              ? 'bg-[var(--gold)] text-slate-900 font-bold shadow-xs'
-              : 'bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--heading)]'
-          }`}
+      {/* Single Flow Controls Card */}
+      <div className="vedic-card p-5 space-y-5">
+        {/* Step 1: Profession Dropdown */}
+        <Select
+          label={locale === 'hi' ? 'कार्यक्षेत्र का चयन करें' : 'Select Profession'}
+          value={selectedProfId}
+          onChange={(e) => {
+            const newId = e.target.value;
+            setSelectedProfId(newId);
+            setSelectedProfession(newId);
+          }}
         >
-          {locale === 'hi' ? 'अंक ज्योतिष पासवर्ड मोड' : 'Numerology Password Mode'}
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('pin')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            activeTab === 'pin'
-              ? 'bg-[var(--gold)] text-slate-900 font-bold shadow-xs'
-              : 'bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:text-[var(--heading)]'
-          }`}
-        >
-          {locale === 'hi' ? 'शुभ पिन कोड (4 / 6 अंक)' : 'Auspicious PIN Mode (4/6 Digits)'}
-        </button>
+          <optgroup label={locale === 'hi' ? '✨ आपकी जन्म कुंडली अनुसार अनुशंसित' : '✨ Recommended for Your Profile'}>
+            {recommendedList.map((rec) => (
+              <option key={`rec-${rec.profession.id}`} value={rec.profession.id}>
+                {rec.profession.icon} {rec.profession.name[locale]} ({Math.round(rec.score)}% Match)
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label={locale === 'hi' ? 'अन्य कार्यक्षेत्र' : 'All Other Professions'}>
+            {otherProfessions.map((prof) => (
+              <option key={`other-${prof.id}`} value={prof.id}>
+                {prof.icon} {prof.name[locale]}
+              </option>
+            ))}
+          </optgroup>
+        </Select>
+
+        {/* Step 2: Options Row */}
+        <div className="pt-2 border-t border-[var(--border)] flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          {/* Length Slider */}
+          <div className="flex-1 max-w-sm space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-[var(--heading)] flex items-center gap-1.5">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[var(--gold)]" />
+                <span>{locale === 'hi' ? 'पासवर्ड की लंबाई:' : 'Password Length:'}</span>
+              </span>
+              <span className="font-mono font-bold text-xs px-2 py-0.5 rounded-md bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--gold)] lining-nums">
+                {pwdLength}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={8}
+              max={20}
+              value={pwdLength}
+              onChange={(e) => setPwdLength(Number(e.target.value))}
+              className="w-full h-2 bg-[var(--surface-muted)] rounded-lg appearance-none cursor-pointer accent-[var(--gold)]"
+            />
+            <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-mono lining-nums">
+              <span>8</span>
+              <span>14</span>
+              <span>20</span>
+            </div>
+          </div>
+
+          {/* Toggles: Uppercase and Symbols */}
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={useUppercase}
+                onChange={(e) => setUseUppercase(e.target.checked)}
+                className="w-4 h-4 rounded text-[var(--gold)] border-[var(--border)] focus:ring-[var(--gold)] accent-[var(--gold)]"
+              />
+              <span className="text-xs font-medium text-[var(--heading)]">
+                {locale === 'hi' ? 'बड़े अक्षर (A-Z)' : 'Uppercase (A-Z)'}
+              </span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={useSymbols}
+                onChange={(e) => setUseSymbols(e.target.checked)}
+                className="w-4 h-4 rounded text-[var(--gold)] border-[var(--border)] focus:ring-[var(--gold)] accent-[var(--gold)]"
+              />
+              <span className="text-xs font-medium text-[var(--heading)]">
+                {locale === 'hi' ? 'विशेष चिन्ह (@#$)' : 'Symbols (@#$)'}
+              </span>
+            </label>
+          </div>
+
+          {/* One Medium Gold Generate Button */}
+          <button
+            type="button"
+            onClick={generateAll}
+            className="btn-gold-gradient h-[42px] px-6 rounded-[12px] text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shrink-0 shadow-[0_4px_12px_rgba(201,131,16,0.25)] hover:scale-[1.01] active:scale-[0.99] transition-all"
+          >
+            <Sparkles className="w-4 h-4 stroke-[2]" />
+            <span>{locale === 'hi' ? 'बनाएं' : 'Generate'}</span>
+          </button>
+        </div>
       </div>
 
-      {activeTab === 'password' ? (
-        /* PASSWORD MODE */
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Options Card */}
-          <div className="vedic-card p-4 sm:p-5 space-y-4">
-            <h3 className="font-serif text-sm sm:text-base font-bold text-[var(--heading)] flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-[var(--gold)]" />
-              <span>{locale === 'hi' ? 'पासवर्ड विन्यास एवं सेटिंग्स' : 'Password Configuration & Parameters'}</span>
-            </h3>
+      {/* Results Section: "Password Matches" */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--heading)] flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-[var(--gold)]" />
+            <span>{locale === 'hi' ? 'पासवर्ड मैच' : 'Password Matches'}</span>
+          </h3>
 
-            {/* Profession Select */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-semibold text-[var(--text-muted)]">
-                {locale === 'hi' ? 'व्यवसाय संरेखण (Profession)' : 'Profession Alignment'}
-              </label>
-              <select
-                value={selectedProf}
-                onChange={(e) => setSelectedProf(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] outline-hidden focus:border-[var(--gold)]"
-              >
-                {Object.entries(PROFESSIONS_PROFILES).map(([key, prof]) => (
-                  <option key={key} value={key}>
-                    {locale === 'hi' ? prof.titleHi : prof.titleEn}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Length slider */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'लंबाई' : 'Length'}:</span>
-                <span className="font-mono font-bold text-[var(--gold)]">{pwdLength} chars</span>
-              </div>
-              <input
-                type="range"
-                min={8}
-                max={24}
-                value={pwdLength}
-                onChange={(e) => setPwdLength(Number(e.target.value))}
-                className="w-full accent-[var(--gold)]"
-              />
-            </div>
-
-            {/* Checkboxes: symbols, uppercase */}
-            <div className="grid grid-cols-2 gap-2 text-xs pt-1">
-              <label className="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={includeSymbols}
-                  onChange={(e) => setIncludeSymbols(e.target.checked)}
-                  className="accent-[var(--gold)]"
-                />
-                <span className="text-[11px] text-[var(--heading)] font-medium">Symbols (!@#$)</span>
-              </label>
-              <label className="flex items-center gap-2 p-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={includeUppercase}
-                  onChange={(e) => setIncludeUppercase(e.target.checked)}
-                  className="accent-[var(--gold)]"
-                />
-                <span className="text-[11px] text-[var(--heading)] font-medium">Uppercase (A-Z)</span>
-              </label>
-            </div>
-
-            <GoldButton
-              type="button"
-              onClick={handleRegeneratePassword}
-              size="sm"
-              className="w-full text-xs"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>{locale === 'hi' ? 'नया पासवर्ड बनाएं' : 'Regenerate Password'}</span>
-            </GoldButton>
-          </div>
-
-          {/* Result & Strength Card */}
-          <div className="vedic-card p-4 sm:p-5 space-y-4 flex flex-col justify-between">
-            <div className="space-y-3">
-              <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
-                {locale === 'hi' ? 'वैदिक सुरक्षा कुंजी' : 'Numerological Password Output'}
-              </span>
-
-              {/* Password Display Box */}
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-between gap-3 shadow-inner">
-                <span className="font-mono text-sm sm:text-base font-bold text-[var(--heading)] break-all select-all">
-                  {pwdData.password}
-                </span>
-                <button
-                  type="button"
-                  onClick={copyPwd}
-                  className="p-2 rounded-xl bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--gold)] hover:bg-[var(--active-bg)] transition-colors shrink-0 cursor-pointer"
-                  title="Copy password"
-                >
-                  {copiedPwd ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-
-              {/* Strength Meter */}
-              <div className="space-y-1.5 pt-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'सुरक्षा क्षमता' : 'Security Strength'}:</span>
-                  <span className="font-bold text-emerald-700">
-                    {strengthScore >= 80 ? 'Fortress Grade' : strengthScore >= 50 ? 'Strong' : 'Moderate'}
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-[var(--border)] overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-300"
-                    style={{
-                      width: `${strengthScore}%`,
-                      background: strengthScore >= 80 ? '#16A34A' : strengthScore >= 50 ? '#D97706' : '#EF4444',
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-[11.5px] space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-muted)]">Chaldean Total:</span>
-                  <span className="font-serif font-bold text-[var(--gold)] text-xs">
-                    {pwdData.totalSum} → Root {pwdData.reducedTotal}
-                  </span>
-                </div>
-                <p className="text-[var(--text-muted)] leading-relaxed text-[11px]">
-                  {locale === 'hi' ? pwdData.explanationHi : pwdData.explanationEn}
-                </p>
-              </div>
-            </div>
-
-            <p className="text-[10.5px] text-[var(--text-muted)] italic">
-              {locale === 'hi'
-                ? 'यह पासवर्ड आपके मूलांक व कार्यक्षेत्र की शुभ तरंगों से सिंक है।'
-                : 'Generated with sound-value vibrations aligned to your birth driver.'}
-            </p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[var(--text-muted)] font-medium">
+              {locale === 'hi' ? 'शुभ अंक योग:' : 'Harmonized Lucky Sum:'}
+            </span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[var(--chip-bg)] border border-[var(--gold)]/40 text-xs font-bold text-[var(--gold)] lining-nums">
+              {luckyTargetSum}
+            </span>
           </div>
         </div>
-      ) : (
-        /* PIN MODE (4 or 6 DIGITS) */
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <div className="vedic-card p-4 sm:p-5 space-y-4">
-            <h3 className="font-serif text-sm sm:text-base font-bold text-[var(--heading)] flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[var(--gold)]" />
-              <span>{locale === 'hi' ? 'पिन कोड विन्यास (4 या 6 अंक)' : 'PIN Configuration (4 or 6 Digits)'}</span>
-            </h3>
 
-            {/* Length 4 or 6 */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold text-[var(--text-muted)]">
-                {locale === 'hi' ? 'पिन लंबाई चुनें' : 'Select PIN Length'}
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPinDigits(4)}
-                  className={`py-2 rounded-xl text-xs font-serif font-bold border transition-colors cursor-pointer ${
-                    pinDigits === 4
-                      ? 'bg-[var(--gold)] text-slate-900 font-bold border-[var(--gold)] shadow-xs'
-                      : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)]/40'
-                  }`}
-                >
-                  4 Digits (ATM / Phone)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPinDigits(6)}
-                  className={`py-2 rounded-xl text-xs font-serif font-bold border transition-colors cursor-pointer ${
-                    pinDigits === 6
-                      ? 'bg-[var(--gold)] text-slate-900 font-bold border-[var(--gold)] shadow-xs'
-                      : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)]/40'
-                  }`}
-                >
-                  6 Digits (UPI / Banking)
-                </button>
-              </div>
-            </div>
+        {/* ONE Card with 2 Groups: 3 Passwords + 2 PINs */}
+        <div className="vedic-card p-0 overflow-hidden divide-y divide-[var(--border)] shadow-xs">
+          {/* Group 1 Header: Passwords */}
+          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex items-center justify-between">
+            <span className="text-xs uppercase tracking-wider font-bold text-[var(--gold)]">
+              {locale === 'hi' ? 'सुरक्षित पासवर्ड (3 विकल्प)' : 'Secure Passwords (3 Matches)'}
+            </span>
+            <span className="text-[11px] text-[var(--text-muted)]">
+              {locale === 'hi' ? 'अंक योग लक्षित शुभ अंक से मेल खाता है' : 'Digit sums harmonize with lucky vibrations'}
+            </span>
+          </div>
 
-            {/* Target Root Sum 1-9 */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold text-[var(--text-muted)]">
-                {locale === 'hi' ? 'लक्षित शुभ योग (1 - 9)' : 'Target Root Sum (1 - 9)'}
-              </label>
-              <div className="grid grid-cols-9 gap-1 text-center">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    onClick={() => setPinTargetSum(n)}
-                    className={`py-1.5 rounded-xl text-xs font-bold font-serif border transition-colors cursor-pointer ${
-                      pinTargetSum === n
-                        ? 'bg-[var(--gold)] text-slate-900 font-extrabold border-[var(--gold)] shadow-xs'
-                        : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)]/40'
+          {/* 3 Password Rows */}
+          {passwords.map((pwd, idx) => {
+            const rowKey = `pwd-${idx}`;
+            const isCopied = copiedKey === rowKey;
+            return (
+              <div
+                key={rowKey}
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors"
+              >
+                {/* Value */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="w-6 text-xs text-[var(--text-muted)] font-mono text-center shrink-0 lining-nums">
+                    #{idx + 1}
+                  </span>
+                  <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-wider select-all truncate lining-nums">
+                    {pwd.password}
+                  </span>
+                </div>
+
+                {/* Badges + Actions */}
+                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                  {/* Match Badge */}
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                    Match {pwd.matchPercentage}%
+                  </span>
+
+                  {/* Strength Meter Badge */}
+                  <span
+                    className={`px-2 py-0.5 rounded-md text-xs font-medium border ${
+                      pwd.strength === 'Very Strong'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : pwd.strength === 'Strong'
+                        ? 'bg-blue-50 text-blue-700 border-blue-200'
+                        : 'bg-amber-50 text-amber-700 border-amber-200'
                     }`}
                   >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </div>
+                    {pwd.strength}
+                  </span>
 
-            <GoldButton
-              type="button"
-              onClick={handleRegeneratePin}
-              size="sm"
-              className="w-full text-xs"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>{locale === 'hi' ? 'नया शुभ पिन बनाएं' : 'Regenerate PIN'}</span>
-            </GoldButton>
+                  {/* Per-row regenerate */}
+                  <button
+                    type="button"
+                    onClick={() => regeneratePasswordRow(idx)}
+                    title={locale === 'hi' ? 'नया पासवर्ड बनाएं' : 'Regenerate this password'}
+                    className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Copy Button */}
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(pwd.password, rowKey)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
+                  >
+                    {isCopied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                        <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Group 2 Header: PINs */}
+          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex items-center justify-between border-t border-[var(--border)]">
+            <span className="text-xs uppercase tracking-wider font-bold text-[var(--gold)]">
+              {locale === 'hi' ? 'शुभ अंक पिन (4 व 6 अंक)' : 'Auspicious PIN Matches (4 & 6 Digits)'}
+            </span>
+            <span className="text-[11px] text-[var(--text-muted)]">
+              {locale === 'hi' ? 'एटीएम व मोबाइल लॉक के लिए अनुकूल' : 'Optimized for bank cards, safes & mobile lock'}
+            </span>
           </div>
 
-          {/* PIN Output Card */}
-          <div className="vedic-card p-4 sm:p-5 space-y-4 flex flex-col justify-between">
-            <div className="space-y-3">
-              <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
-                {locale === 'hi' ? 'उत्पन्न शुभ पिन' : 'Generated Auspicious PIN'}
-              </span>
+          {/* PIN 4 Row */}
+          {pin4 && (
+            <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
+              <div className="flex items-center gap-3">
+                <span className="px-2 py-0.5 rounded-md bg-[var(--surface-muted)] text-[11px] font-bold text-[var(--text-muted)] shrink-0">
+                  4-Digit
+                </span>
+                <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
+                  {pin4.pin}
+                </span>
+                <span className="text-xs text-[var(--text-muted)] lining-nums">
+                  (Sum {pin4.sum} → {pin4.reduced})
+                </span>
+              </div>
 
-              <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-between shadow-inner">
-                <div>
-                  <div className="font-mono text-3xl font-extrabold text-[var(--heading)] tracking-widest">
-                    {pinData.pin}
-                  </div>
-                  <span className="text-[11px] text-[var(--text-muted)] mt-1 block">
-                    Digit Sum: {pinData.sum} → Reduced: <strong className="text-[var(--gold)] font-bold">{pinData.reduced}</strong>
-                  </span>
-                </div>
+              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                  Match {pin4.matchPercentage}%
+                </span>
 
                 <button
                   type="button"
-                  onClick={copyPin}
-                  className="p-2.5 rounded-xl bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--gold)] hover:bg-[var(--active-bg)] transition-colors cursor-pointer"
-                  title="Copy PIN"
+                  onClick={() => regeneratePinRow(4)}
+                  title={locale === 'hi' ? 'नया 4-अंकीय पिन बनाएं' : 'Regenerate 4-digit PIN'}
+                  className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
                 >
-                  {copiedPin ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  <RefreshCw className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(pin4.pin, 'pin-4')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
+                >
+                  {copiedKey === 'pin-4' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                      <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
+                    </>
+                  )}
                 </button>
               </div>
+            </div>
+          )}
 
-              <div className="p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs text-[var(--text)]">
-                <span className="font-bold text-[var(--gold)] block mb-1">
-                  {locale === 'hi' ? 'पिन प्रभाव एवं ऊर्जा' : 'Vedic PIN Significance'}
+          {/* PIN 6 Row */}
+          {pin6 && (
+            <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
+              <div className="flex items-center gap-3">
+                <span className="px-2 py-0.5 rounded-md bg-[var(--surface-muted)] text-[11px] font-bold text-[var(--text-muted)] shrink-0">
+                  6-Digit
                 </span>
-                <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
-                  {locale === 'hi'
-                    ? `यह पिन आपके चयनित योग ${pinTargetSum} पर आधारित है, जो धन संचय और लेनदेन में सकारात्मक स्थिरता लाता है।`
-                    : `This ${pinDigits}-digit sequence reduces to planetary frequency ${pinTargetSum}, fostering financial stability and smooth authentication.`}
-                </p>
+                <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
+                  {pin6.pin}
+                </span>
+                <span className="text-xs text-[var(--text-muted)] lining-nums">
+                  (Sum {pin6.sum} → {pin6.reduced})
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                  Match {pin6.matchPercentage}%
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => regeneratePinRow(6)}
+                  title={locale === 'hi' ? 'नया 6-अंकीय पिन बनाएं' : 'Regenerate 6-digit PIN'}
+                  className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(pin6.pin, 'pin-6')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
+                >
+                  {copiedKey === 'pin-6' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+                      <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
-
-            <p className="text-[10.5px] text-[var(--text-muted)] italic">
-              {locale === 'hi'
-                ? 'सुरक्षा कारणों से इस पिन को किसी के साथ साझा न करें।'
-                : 'Keep your secret credentials confidential at all times.'}
-            </p>
-          </div>
+          )}
         </div>
-      )}
+
+        {/* Add to Report Button */}
+        <div className="flex justify-end pt-2">
+          <button
+            type="button"
+            onClick={handleAddToReport}
+            className="btn-gold-gradient px-5 py-2.5 rounded-[12px] text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs hover:scale-[1.01] transition-transform"
+          >
+            {addedReport ? (
+              <>
+                <Check className="w-4 h-4 text-slate-900" />
+                <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ा गया!' : 'Added to Report!'}</span>
+              </>
+            ) : (
+              <>
+                <FileText className="w-4 h-4" />
+                <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to Report'}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

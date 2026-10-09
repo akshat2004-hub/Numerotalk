@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   dob DATE NOT NULL,
   birth_time VARCHAR(10),
   image_url TEXT,
-  destiny_system VARCHAR(20) DEFAULT 'chaldean' CHECK (destiny_system IN ('chaldean', 'pythagorean')),
   is_self BOOLEAN DEFAULT FALSE,
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,

@@ -15,7 +15,7 @@ export interface NumberMeaningInfo {
   keyThemesHi: string[];
 }
 
-// Special classical compound names (Chaldean / Vedic tradition)
+// Special classical compound names (Vedic tradition)
 const CLASSIC_TITLES: Record<number, { en: string; hi: string; status: 'Highly Auspicious' | 'Auspicious' | 'Neutral' | 'Karmic / Caution'; statusHi: 'अत्यंत शुभ' | 'शुभ' | 'सामान्य' | 'कार्मिक / सावधानी' }> = {
   1: { en: 'The Crown of Creation', hi: 'सृजन का मुकुट', status: 'Highly Auspicious', statusHi: 'अत्यंत शुभ' },
   2: { en: 'The Mirror of Waters', hi: 'शीतल जलदर्पण', status: 'Auspicious', statusHi: 'शुभ' },

@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { GitMerge, Sparkles, Briefcase, Heart, CheckCircle2, Shield, Palette } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateMulank, calculateBhagyank, getNumberRelationship, NUMBER_RELATIONSHIPS, numerologyService } from '@/lib';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateMulank, calculateBhagyank, getNumberRelationship, NUMBER_RELATIONSHIPS, numerologyService } from '@/frontend';
 import { CombinationReading } from '@/types';
 
 export default function CombinationPage() {
@@ -50,9 +50,9 @@ export default function CombinationPage() {
   return (
     <div className="space-y-6 sm:space-y-7">
       <SectionHeader
-        title={t('title')}
+        title={locale === 'hi' ? 'संयोजन भविष्यफल' : 'Combination Prediction'}
+        goldTitle={locale === 'hi' ? '(नामांक और भाग्यांक)' : '(Destiny & Life Path)'}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'अंक तालमेल 03' : 'ENERGY SYNERGY 03'}
         icon={<GitMerge className="w-5 h-5 stroke-[1.5]" />}
       />
 
@@ -235,7 +235,7 @@ export default function CombinationPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <PredictionCard
             title={t('synergyTitle')}
-            badge="Cosmic Synergy"
+            badge="Combined Vibration"
             badgeVariant="gold"
             sectionKey="module3_synergy"
             icon={<Sparkles className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}

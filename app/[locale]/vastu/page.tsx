@@ -2,12 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Compass, Sparkles, Home, Shield, Check, Plus, RefreshCw } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { VedicGrid } from '@/components/VedicGrid';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateVastuNumerology, VastuNumerologyResult } from '@/lib/engine/vastu';
+import { Compass, Sparkles, Home, Check, Plus, RefreshCw } from 'lucide-react';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateVastuNumerology, VastuNumerologyResult } from '@/core/engine/vastu';
+
+import { Input } from '@/frontend/components/ui/Input';
+import { DateInput } from '@/frontend/components/ui/DateInput';
+import { Button } from '@/frontend/components/ui/Button';
 
 export default function VastuPage() {
   const t = useTranslations('vastuPage');
@@ -27,51 +31,40 @@ export default function VastuPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'वास्तु अंकशास्त्र 13' : 'VASTU ENERGY 13'}
         icon={<Compass className="w-5 h-5 stroke-[1.5]" />}
       />
 
       <ProfileEmptyBanner />
 
-      {/* Inputs bar: Name + DOB (prefilled from profile) */}
+      {/* Inputs bar: [Full Name | Date of Birth | Reset to Profile] */}
       <div className="vedic-card p-4 sm:p-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-end">
-          <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-[var(--text-muted)]">
-              {locale === 'hi' ? 'नाम' : 'Full Name'}
-            </label>
-            <input
-              type="text"
-              value={inputName}
-              onChange={(e) => setInputName(e.target.value)}
-              className="w-full px-3 py-2 h-[40px] rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] outline-hidden focus:border-[var(--gold)]"
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-3 items-end">
+          <Input
+            label={locale === 'hi' ? 'नाम' : 'Full Name'}
+            value={inputName}
+            onChange={(e) => setInputName(e.target.value)}
+          />
 
-          <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-[var(--text-muted)]">
-              {locale === 'hi' ? 'जन्म तिथि' : 'Date of Birth (YYYY-MM-DD)'}
-            </label>
-            <input
-              type="date"
-              value={inputDob}
-              onChange={(e) => setInputDob(e.target.value)}
-              className="w-full px-3 py-2 h-[40px] rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] outline-hidden focus:border-[var(--gold)]"
-            />
-          </div>
+          <DateInput
+            label={locale === 'hi' ? 'जन्म तिथि' : 'Date of Birth'}
+            value={inputDob}
+            onChange={(iso) => setInputDob(iso)}
+          />
 
           <div>
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="md"
               onClick={() => {
                 setInputName(profile.name || 'Rahul Sharma');
                 setInputDob(profile.dob || '1995-10-23');
               }}
-              className="btn-vedic-secondary h-[40px] px-4 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer w-full"
+              className="w-full md:w-auto flex items-center justify-center gap-2"
             >
-              <RefreshCw className="w-3 h-3 text-[var(--gold)]" />
+              <RefreshCw className="w-4 h-4 text-[var(--gold)] shrink-0" />
               <span>{locale === 'hi' ? 'प्रोफ़ाइल से रीसेट करें' : 'Reset to Profile'}</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>

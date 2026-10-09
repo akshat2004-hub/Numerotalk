@@ -2,14 +2,14 @@
 
 import React, { useState, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Clock, Sparkles, CheckCircle2, AlertTriangle, Compass } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateMulank, calculateBhagyank, getNumberRelationship } from '@/lib';
-import { calculateTimeNumerology, TimePredictionResult } from '@/lib/engine/timeNumerology';
+import { Clock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateMulank, calculateBhagyank, getNumberRelationship } from '@/frontend';
+import { calculateTimeNumerology, TimePredictionResult } from '@/core/engine/timeNumerology';
 
 export default function TimePage() {
   const t = useTranslations('timePage');
@@ -74,7 +74,6 @@ export default function TimePage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'समय अंकशास्त्र 14' : 'TIME VIBRATION 14'}
         icon={<Clock className="w-5 h-5 stroke-[1.5]" />}
       />
 

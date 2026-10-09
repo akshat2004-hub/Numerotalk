@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { ShieldCheck, Info } from 'lucide-react';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 
 export function DisclaimerFooter() {
   const t = useTranslations('common');

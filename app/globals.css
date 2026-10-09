@@ -74,12 +74,51 @@
     font-size: 13px;
     line-height: 1.5;
     overflow-x: hidden;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1;
   }
 
   h1, h2, h3, h4, .font-serif, .font-vedic-serif {
     font-family: var(--font-serif);
     letter-spacing: -0.015em;
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1;
   }
+
+  /* Global Lining Numerals for all numbers, badges, scores */
+  button, input, select, textarea, [data-number], [data-testid="number-badge"] {
+    font-variant-numeric: lining-nums tabular-nums;
+    font-feature-settings: "lnum" 1;
+  }
+}
+
+/* Thin gold custom scrollbar, visible on hover only */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s ease-in-out;
+}
+
+.sidebar-scroll:hover {
+  scrollbar-color: var(--gold) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background: var(--gold);
 }
 
 /* White 24px-radius cards with semantic tokens */

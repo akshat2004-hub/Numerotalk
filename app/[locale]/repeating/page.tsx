@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Repeat, Compass, CheckCircle } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { VedicGrid } from '@/components/VedicGrid';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateVedicGrid, numerologyService } from '@/lib';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateVedicGrid, numerologyService } from '@/frontend';
 import { RepeatingNumberReading } from '@/types';
 
 export default function RepeatingPage() {
@@ -30,7 +30,6 @@ export default function RepeatingPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'दोहराव अंक 05' : 'REPEATING NUMBERS 05'}
         icon={<Repeat className="w-5 h-5 stroke-[1.5]" />}
       />
 

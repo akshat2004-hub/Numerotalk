@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-banned-terms.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "node scripts/check-banned-terms.mjs && eslint",
     "test": "vitest run"
   },
   "dependencies": {

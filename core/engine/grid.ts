@@ -3,17 +3,16 @@ import { parseDob, calculateMulank, calculateBhagyank } from './numerology';
 export interface GridCell {
   number: number;
   count: number;
-  digitsDisplay: string; // e.g., "44", "9", or ""
+  digitsDisplay: string; // e.g., "33", "9", or ""
   isPresent: boolean;
   isRepeating: boolean;
   element: 'Wood' | 'Fire' | 'Earth' | 'Metal' | 'Water';
-  direction: string;
   significanceEn: string;
   significanceHi: string;
 }
 
 export interface VedicGridResult {
-  matrix: GridCell[][]; // 3x3 layout: Row 1 (4,9,2), Row 2 (3,5,7), Row 3 (8,1,6)
+  matrix: GridCell[][]; // 3x3 layout: Row 1 (3,1,9), Row 2 (6,7,5), Row 3 (2,8,4)
   flatCells: Record<number, GridCell>;
   counts: Record<number, number>;
   presentNumbers: number[];
@@ -24,48 +23,37 @@ export interface VedicGridResult {
   includedBhagyank: number;
 }
 
-// Indian Vedic layout (3 1 9 / 6 7 5 / 2 8 4) as specified
+// Indian Vedic layout (3 1 9 / 6 7 5 / 2 8 4)
 export const VEDIC_INDIAN_LAYOUT = [
   [3, 1, 9],
   [6, 7, 5],
   [2, 8, 4]
 ] as const;
 
-// Traditional Lo Shu layout constants:
-// [4, 9, 2]
-// [3, 5, 7]
-// [8, 1, 6]
-export const LO_SHU_LAYOUT = [
-  [4, 9, 2],
-  [3, 5, 7],
-  [8, 1, 6]
-] as const;
-
 export const NUMBER_ATTRIBUTES: Record<number, {
   element: 'Wood' | 'Fire' | 'Earth' | 'Metal' | 'Water';
-  direction: string;
   significanceEn: string;
   significanceHi: string;
 }> = {
-  1: { element: 'Water', direction: 'North', significanceEn: 'Career, Communication, Opportunity', significanceHi: 'करियर, संचार, नए अवसर' },
-  2: { element: 'Earth', direction: 'South-West', significanceEn: 'Relationships, Marriage, Sensitivity', significanceHi: 'संबंध, वैवाहिक सुख, संवेदनशीलता' },
-  3: { element: 'Wood', direction: 'East', significanceEn: 'Knowledge, Planning, Family harmony', significanceHi: 'ज्ञान, योजना, पारिवारिक सामंजस्य' },
-  4: { element: 'Wood', direction: 'South-East', significanceEn: 'Discipline, Wealth, Practical order', significanceHi: 'अनुशासन, धन संचय, संगठन' },
-  5: { element: 'Earth', direction: 'Center', significanceEn: 'Stability, Balance, Adaptability', significanceHi: 'स्थिरता, संतुलन, अनुकूलनशीलता' },
-  6: { element: 'Metal', direction: 'North-West', significanceEn: 'Luxury, Friends, New ventures', significanceHi: 'विलासिता, सहयोगी मित्र, सुख-सुविधा' },
-  7: { element: 'Metal', direction: 'West', significanceEn: 'Spirituality, Intuition, Children', significanceHi: 'आध्यात्मिकता, अंतर्ज्ञान, संतान सुख' },
-  8: { element: 'Earth', direction: 'North-East', significanceEn: 'Wisdom, Hard work, Spiritual knowledge', significanceHi: 'विवेक, कठिन परिश्रम, ज्ञान' },
-  9: { element: 'Fire', direction: 'South', significanceEn: 'Fame, Energy, Humanitarian ideals', significanceHi: 'यश, ऊर्जा, सामाजिक ख्याति' },
+  1: { element: 'Water', significanceEn: 'Career, Communication, Opportunity', significanceHi: 'करियर, संचार, नए अवसर' },
+  2: { element: 'Earth', significanceEn: 'Relationships, Marriage, Sensitivity', significanceHi: 'संबंध, वैवाहिक सुख, संवेदनशीलता' },
+  3: { element: 'Wood', significanceEn: 'Knowledge, Planning, Family harmony', significanceHi: 'ज्ञान, योजना, पारिवारिक सामंजस्य' },
+  4: { element: 'Wood', significanceEn: 'Discipline, Wealth, Practical order', significanceHi: 'अनुशासन, धन संचय, संगठन' },
+  5: { element: 'Earth', significanceEn: 'Stability, Balance, Adaptability', significanceHi: 'स्थिरता, संतुलन, अनुकूलनशीलता' },
+  6: { element: 'Metal', significanceEn: 'Luxury, Friends, New ventures', significanceHi: 'विलासिता, सहयोगी मित्र, सुख-सुविधा' },
+  7: { element: 'Metal', significanceEn: 'Spirituality, Intuition, Children', significanceHi: 'आध्यात्मिकता, अंतर्ज्ञान, संतान सुख' },
+  8: { element: 'Earth', significanceEn: 'Wisdom, Hard work, Spiritual knowledge', significanceHi: 'विवेक, कठिन परिश्रम, ज्ञान' },
+  9: { element: 'Fire', significanceEn: 'Fame, Energy, Humanitarian ideals', significanceHi: 'यश, ऊर्जा, सामाजिक ख्याति' },
 };
 
 /**
- * Generates Vedic / Lo Shu 3x3 Grid from DOB.
+ * Generates Indian Vedic 3x3 Grid from DOB.
  * Optionally includes Mulank and Bhagyank in digit frequencies (standard in Vedic practice).
  */
 export function calculateVedicGrid(
   dob: string | Date,
   includeMulankBhagyank: boolean = true,
-  layout: 'vedic' | 'loshu' = 'vedic',
+  _ignoredLegacyLayout?: unknown,
   additionalDigits: number[] = []
 ): VedicGridResult {
   const { digits } = parseDob(dob);
@@ -81,9 +69,11 @@ export function calculateVedicGrid(
     if (bhagyank >= 1 && bhagyank <= 9) allAnalyzed.push(bhagyank);
   }
 
-  if (additionalDigits && additionalDigits.length > 0) {
-    for (const d of additionalDigits) {
-      if (d >= 1 && d <= 9) allAnalyzed.push(d);
+  // Handle optional extra digits passed directly or as third argument if array
+  const extra = Array.isArray(_ignoredLegacyLayout) ? _ignoredLegacyLayout : additionalDigits;
+  if (extra && extra.length > 0) {
+    for (const d of extra) {
+      if (typeof d === 'number' && d >= 1 && d <= 9) allAnalyzed.push(d);
     }
   }
 
@@ -119,17 +109,14 @@ export function calculateVedicGrid(
       isPresent,
       isRepeating,
       element: attr.element,
-      direction: attr.direction,
       significanceEn: attr.significanceEn,
       significanceHi: attr.significanceHi
     };
   }
 
-  // Build 3x3 matrix following selected layout:
-  // Vedic Indian default: 3 1 9 / 6 7 5 / 2 8 4
-  // Lo Shu: 4 9 2 / 3 5 7 / 8 1 6
-  const activeLayout = layout === 'loshu' ? LO_SHU_LAYOUT : VEDIC_INDIAN_LAYOUT;
-  const matrix: GridCell[][] = activeLayout.map(row =>
+  // Build 3x3 matrix following Vedic Indian layout:
+  // 3 1 9 / 6 7 5 / 2 8 4
+  const matrix: GridCell[][] = VEDIC_INDIAN_LAYOUT.map(row =>
     row.map(num => flatCells[num])
   );
 
@@ -145,3 +132,5 @@ export function calculateVedicGrid(
     includedBhagyank: bhagyank
   };
 }
+
+export const buildVedicGrid = calculateVedicGrid;

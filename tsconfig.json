@@ -24,11 +24,15 @@
       "@/frontend/*": ["./frontend/*"],
       "@/core/*": ["./core/*"],
       "@/components/*": ["./frontend/components/*"],
+      "@/lib/utils": ["./frontend/utils.ts"],
       "@/lib/store/*": ["./frontend/store/*"],
       "@/lib/services/*": ["./frontend/services/*"],
       "@/lib/engine/*": ["./core/engine/*"],
       "@/lib/engine": ["./core/engine/index.ts"],
-      "@/mocks/*": ["./core/mocks/*"]
+      "@/lib": ["./frontend/index.ts"],
+      "@/mocks/*": ["./core/mocks/*"],
+      "@/types": ["./core/types/index.ts"],
+      "@/types/*": ["./core/types/*"]
     }
   },
   "include": [

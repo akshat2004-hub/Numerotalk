@@ -1,19 +1,33 @@
 [
   {
     "number": 1,
-    "system": "chaldean",
-    "title": { "en": "The Path of Sovereign Leadership", "hi": "स्वतंत्र नेतृत्व का मार्ग" },
+    "title": {
+      "en": "The Path of Sovereign Leadership",
+      "hi": "स्वतंत्र नेतृत्व का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny demands forging your own path, pioneering innovative endeavors, and leading others with integrity rather than conforming to obsolete traditions.",
       "hi": "आपका जीवन लक्ष्य अपनी मौलिक राह बनाना, समाज को नई दिशा देना और बिना किसी पराधीनता के सत्यनिष्ठा से नेतृत्व करना है।"
     },
     "coreStrengths": [
-      { "en": "Unshakeable executive vision", "hi": "अडिग दूरदर्शी दृष्टिकोण" },
-      { "en": "Courage to take absolute responsibility", "hi": "पूर्ण उत्तरदायित्व स्वीकारने का साहस" },
-      { "en": "Inspirational self-motivation", "hi": "स्वतः स्फूर्त आंतरिक प्रेरणा" }
+      {
+        "en": "Unshakeable executive vision",
+        "hi": "अडिग दूरदर्शी दृष्टिकोण"
+      },
+      {
+        "en": "Courage to take absolute responsibility",
+        "hi": "पूर्ण उत्तरदायित्व स्वीकारने का साहस"
+      },
+      {
+        "en": "Inspirational self-motivation",
+        "hi": "स्वतः स्फूर्त आंतरिक प्रेरणा"
+      }
     ],
     "careerAvenues": [
-      { "en": "Founder, CEO, Government Administrator, Political Strategist", "hi": "संस्थापक, मुख्य कार्यकारी (CEO), प्रशासनिक अधिकारी, राजनेता" }
+      {
+        "en": "Founder, CEO, Government Administrator, Political Strategist",
+        "hi": "संस्थापक, मुख्य कार्यकारी (CEO), प्रशासनिक अधिकारी, राजनेता"
+      }
     ],
     "relationshipStyle": {
       "en": "Protective, noble, and deeply loyal, requiring partners who respect your autonomy and leadership.",
@@ -22,19 +36,33 @@
   },
   {
     "number": 2,
-    "system": "chaldean",
-    "title": { "en": "The Path of Harmonious Diplomacy", "hi": "शांति, सहयोग व कूटनीति का मार्ग" },
+    "title": {
+      "en": "The Path of Harmonious Diplomacy",
+      "hi": "शांति, सहयोग व कूटनीति का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to unite divided factions, heal emotional fractures, and create sublime artistic or organizational beauty through delicate cooperation.",
       "hi": "आपका जीवन लक्ष्य मतभेदों को मिटाना, आत्मीयता से संबंध जोड़ना और सहयोग के माध्यम से समाज में संतुलन स्थापित करना है।"
     },
     "coreStrengths": [
-      { "en": "Supernatural emotional intuition", "hi": "असाधारण भावनात्मक अंतर्दृष्टि" },
-      { "en": "Gift of peaceful reconciliation", "hi": "विवादों को शांत करने की कला" },
-      { "en": "Aesthetic nuance and grace", "hi": "कलात्मक संवेदनशीलता" }
+      {
+        "en": "Supernatural emotional intuition",
+        "hi": "असाधारण भावनात्मक अंतर्दृष्टि"
+      },
+      {
+        "en": "Gift of peaceful reconciliation",
+        "hi": "विवादों को शांत करने की कला"
+      },
+      {
+        "en": "Aesthetic nuance and grace",
+        "hi": "कलात्मक संवेदनशीलता"
+      }
     ],
     "careerAvenues": [
-      { "en": "Diplomat, Mediator, Counselor, Musician, Healthcare Director", "hi": "कूटनीतिज्ञ, परामर्शदाता, कलाकार, चिकित्सक, मनोवैज्ञानिक" }
+      {
+        "en": "Diplomat, Mediator, Counselor, Musician, Healthcare Director",
+        "hi": "कूटनीतिज्ञ, परामर्शदाता, कलाकार, चिकित्सक, मनोवैज्ञानिक"
+      }
     ],
     "relationshipStyle": {
       "en": "Intensely affectionate, deeply loyal, and intuitive, needing emotional safety and verbal reassurance.",
@@ -43,19 +71,33 @@
   },
   {
     "number": 3,
-    "system": "chaldean",
-    "title": { "en": "The Path of Expansive Expression & Wisdom", "hi": "ज्ञान प्रसार व अभिव्यक्ति का मार्ग" },
+    "title": {
+      "en": "The Path of Expansive Expression & Wisdom",
+      "hi": "ज्ञान प्रसार व अभिव्यक्ति का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to uplift humanity with wisdom, joyful creative expression, pedagogical excellence, and inspirational philosophy.",
       "hi": "आपका जीवन लक्ष्य ज्ञान का प्रसार करना, रचनात्मक अभिव्यक्ति से लोगों को प्रेरित करना और जीवन में आशावाद का संचार करना है।"
     },
     "coreStrengths": [
-      { "en": "Eloquence of speech and written word", "hi": "वाणी व लेखन में अप्रतिम ओज" },
-      { "en": "Expansive philosophical intellect", "hi": "विशाल दार्शनिक समझ" },
-      { "en": "Infectious joyful charisma", "hi": "सकारात्मक व आनंदमय व्यक्तित्व" }
+      {
+        "en": "Eloquence of speech and written word",
+        "hi": "वाणी व लेखन में अप्रतिम ओज"
+      },
+      {
+        "en": "Expansive philosophical intellect",
+        "hi": "विशाल दार्शनिक समझ"
+      },
+      {
+        "en": "Infectious joyful charisma",
+        "hi": "सकारात्मक व आनंदमय व्यक्तित्व"
+      }
     ],
     "careerAvenues": [
-      { "en": "Author, Professor, Spiritual Guide, Media Producer, Advocate", "hi": "लेखक, प्राध्यापक, आध्यात्मिक वक्ता, मीडिया संचालक, अधिवक्ता" }
+      {
+        "en": "Author, Professor, Spiritual Guide, Media Producer, Advocate",
+        "hi": "लेखक, प्राध्यापक, आध्यात्मिक वक्ता, मीडिया संचालक, अधिवक्ता"
+      }
     ],
     "relationshipStyle": {
       "en": "Warm, communicative, and intellectually stimulating; thrives with partners who share cultural and philosophical banter.",
@@ -64,19 +106,33 @@
   },
   {
     "number": 4,
-    "system": "chaldean",
-    "title": { "en": "The Path of Foundation Building & Mastery", "hi": "सुदृढ़ निर्माण व संरचना का मार्ग" },
+    "title": {
+      "en": "The Path of Foundation Building & Mastery",
+      "hi": "सुदृढ़ निर्माण व संरचना का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to lay indestructible foundations for organizations, families, and technologies through methodical craftsmanship and endurance.",
       "hi": "आपका जीवन लक्ष्य संस्थाओं और व्यवस्थाओं के लिए एक सुदृढ़ और टिकाऊ आधारशिला तैयार करना है।"
     },
     "coreStrengths": [
-      { "en": "Engineered precision and discipline", "hi": "सटीक व्यवस्था व कार्यकुशलता" },
-      { "en": "Tenacious stamina under pressure", "hi": "कठिन समय में अविचल धैर्य" },
-      { "en": "Real-world practical pragmatism", "hi": "धरातलीय व्यावहारिक दृष्टिकोण" }
+      {
+        "en": "Engineered precision and discipline",
+        "hi": "सटीक व्यवस्था व कार्यकुशलता"
+      },
+      {
+        "en": "Tenacious stamina under pressure",
+        "hi": "कठिन समय में अविचल धैर्य"
+      },
+      {
+        "en": "Real-world practical pragmatism",
+        "hi": "धरातलीय व्यावहारिक दृष्टिकोण"
+      }
     ],
     "careerAvenues": [
-      { "en": "Civil Engineer, Financial Auditor, Software Architect, Defense Planner", "hi": "इंजीनियर, ऑडिटर, सॉफ्टवेयर आर्किटेक्ट, रक्षा योजनाकार" }
+      {
+        "en": "Civil Engineer, Financial Auditor, Software Architect, Defense Planner",
+        "hi": "इंजीनियर, ऑडिटर, सॉफ्टवेयर आर्किटेक्ट, रक्षा योजनाकार"
+      }
     ],
     "relationshipStyle": {
       "en": "Steadfast, trustworthy, and deeply protective; values actions and quiet reliability over flowery words.",
@@ -85,19 +141,33 @@
   },
   {
     "number": 5,
-    "system": "chaldean",
-    "title": { "en": "The Path of Dynamic Change & Enterprise", "hi": "व्यापारिक गति व परिवर्तन का मार्ग" },
+    "title": {
+      "en": "The Path of Dynamic Change & Enterprise",
+      "hi": "व्यापारिक गति व परिवर्तन का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to expand commercial frontiers, embrace freedom, pioneer adaptive business concepts, and bridge diverse cultures.",
       "hi": "आपका जीवन लक्ष्य व्यापार का विस्तार करना, नए विचारों को अपनाना और समाज में गतिशीलता लाना है।"
     },
     "coreStrengths": [
-      { "en": "Chameleon-like swift adaptability", "hi": "त्वरित निर्णय व अनुकूलनशीलता" },
-      { "en": "Commercial and negotiating sharpness", "hi": "सटीक व्यापारिक व संवाद कौशल" },
-      { "en": "Vibrant conversational magnetism", "hi": "आकर्षक जनसंपर्क कला" }
+      {
+        "en": "Chameleon-like swift adaptability",
+        "hi": "त्वरित निर्णय व अनुकूलनशीलता"
+      },
+      {
+        "en": "Commercial and negotiating sharpness",
+        "hi": "सटीक व्यापारिक व संवाद कौशल"
+      },
+      {
+        "en": "Vibrant conversational magnetism",
+        "hi": "आकर्षक जनसंपर्क कला"
+      }
     ],
     "careerAvenues": [
-      { "en": "Merchant, Tech Entrepreneur, Stock Trader, Journalist, Travel Director", "hi": "व्यापारी, तकनीकी उद्यमी, शेयर बाजार विश्लेषक, पत्रकार" }
+      {
+        "en": "Merchant, Tech Entrepreneur, Stock Trader, Journalist, Travel Director",
+        "hi": "व्यापारी, तकनीकी उद्यमी, शेयर बाजार विश्लेषक, पत्रकार"
+      }
     ],
     "relationshipStyle": {
       "en": "Playful, exciting, and intellectually spirited; needs a relationship that allows mutual freedom and shared adventures.",
@@ -106,19 +176,33 @@
   },
   {
     "number": 6,
-    "system": "chaldean",
-    "title": { "en": "The Path of Beauty, Luxury & Care", "hi": "प्रेम, वैभव व सेवा का मार्ग" },
+    "title": {
+      "en": "The Path of Beauty, Luxury & Care",
+      "hi": "प्रेम, वैभव व सेवा का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to enrich the world with refined comfort, beautiful environments, compassionate caregiving, and luxurious artistic creations.",
       "hi": "आपका जीवन लक्ष्य संसार को सौंदर्य, सुख-सुविधा, आत्मीय स्नेह और कलात्मक समृद्धि से संपन्न बनाना है।"
     },
     "coreStrengths": [
-      { "en": "Refined artistic and design brilliance", "hi": "उत्कृष्ट कलात्मक व सौंदर्य बोध" },
-      { "en": "Natural abundance magnetism", "hi": "सुख-समृद्धि को आकर्षित करने की क्षमता" },
-      { "en": "Profound domestic nurturing instinct", "hi": "परिवार व समाज का पोषण करने की भावना" }
+      {
+        "en": "Refined artistic and design brilliance",
+        "hi": "उत्कृष्ट कलात्मक व सौंदर्य बोध"
+      },
+      {
+        "en": "Natural abundance magnetism",
+        "hi": "सुख-समृद्धि को आकर्षित करने की क्षमता"
+      },
+      {
+        "en": "Profound domestic nurturing instinct",
+        "hi": "परिवार व समाज का पोषण करने की भावना"
+      }
     ],
     "careerAvenues": [
-      { "en": "Luxury Brand Designer, Architect, Hospitality Magnate, Film Director", "hi": "डिजाइनर, वास्तुविद, होटल व्यवसायी, फिल्म निर्देशक, सलाहकार" }
+      {
+        "en": "Luxury Brand Designer, Architect, Hospitality Magnate, Film Director",
+        "hi": "डिजाइनर, वास्तुविद, होटल व्यवसायी, फिल्म निर्देशक, सलाहकार"
+      }
     ],
     "relationshipStyle": {
       "en": "Romantically devoted, generous, and warm; creates a palace of emotional and aesthetic sanctuary for their family.",
@@ -127,19 +211,33 @@
   },
   {
     "number": 7,
-    "system": "chaldean",
-    "title": { "en": "The Path of Sacred Truth & Intuition", "hi": "परम सत्य, अंतर्ज्ञान व शोध का मार्ग" },
+    "title": {
+      "en": "The Path of Sacred Truth & Intuition",
+      "hi": "परम सत्य, अंतर्ज्ञान व शोध का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to uncover occult and technological truths, demystify life's secrets, and guide humanity toward deeper spiritual consciousness.",
       "hi": "आपका जीवन लक्ष्य जीवन के गूढ़ रहस्यों को समझना, वैज्ञानिक या आध्यात्मिक शोध करना और आत्मज्ञान प्राप्त करना है।"
     },
     "coreStrengths": [
-      { "en": "Penetrating investigative intellect", "hi": "गहन विश्लेषणात्मक व खोजी बुद्धि" },
-      { "en": "Prophetic spiritual intuition", "hi": "सूक्ष्म व सटीक अंतर्ज्ञान" },
-      { "en": "Detached objective clarity", "hi": "तटस्थ और निष्पक्ष दृष्टिकोण" }
+      {
+        "en": "Penetrating investigative intellect",
+        "hi": "गहन विश्लेषणात्मक व खोजी बुद्धि"
+      },
+      {
+        "en": "Prophetic spiritual intuition",
+        "hi": "सूक्ष्म व सटीक अंतर्ज्ञान"
+      },
+      {
+        "en": "Detached objective clarity",
+        "hi": "तटस्थ और निष्पक्ष दृष्टिकोण"
+      }
     ],
     "careerAvenues": [
-      { "en": "Research Scientist, Data Scientist, Esoteric Scholar, Cyber Analyst", "hi": "वैज्ञानिक शोधकर्ता, डेटा वैज्ञानिक, दार्शनिक, साइबर विशेषज्ञ" }
+      {
+        "en": "Research Scientist, Data Scientist, Esoteric Scholar, Cyber Analyst",
+        "hi": "वैज्ञानिक शोधकर्ता, डेटा वैज्ञानिक, दार्शनिक, साइबर विशेषज्ञ"
+      }
     ],
     "relationshipStyle": {
       "en": "Deep, selective, and soulful; bonds best with intellectual equals who respect quiet contemplative intervals.",
@@ -148,19 +246,33 @@
   },
   {
     "number": 8,
-    "system": "chaldean",
-    "title": { "en": "The Path of Material & Karmic Power", "hi": "कर्मयोग व भौतिक शक्ति का मार्ग" },
+    "title": {
+      "en": "The Path of Material & Karmic Power",
+      "hi": "कर्मयोग व भौतिक शक्ति का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to master the laws of karma, manage massive resources, balance material power with justice, and build lasting empires.",
       "hi": "आपका जीवन लक्ष्य कर्म के नियमों का पालन करते हुए विशाल संसाधनों का संचालन करना और न्यायपूर्ण समृद्धि का निर्माण करना है।"
     },
     "coreStrengths": [
-      { "en": "Formidable organizational sovereignty", "hi": "अद्वितीय संगठनात्मक अधिकार" },
-      { "en": "Unyielding perseverance against obstacles", "hi": "बाधाओं को परास्त करने की अपार क्षमता" },
-      { "en": "Sharp instinct for scalable enterprise", "hi": "दीर्घकालिक योजनाओं में दूरदर्शिता" }
+      {
+        "en": "Formidable organizational sovereignty",
+        "hi": "अद्वितीय संगठनात्मक अधिकार"
+      },
+      {
+        "en": "Unyielding perseverance against obstacles",
+        "hi": "बाधाओं को परास्त करने की अपार क्षमता"
+      },
+      {
+        "en": "Sharp instinct for scalable enterprise",
+        "hi": "दीर्घकालिक योजनाओं में दूरदर्शिता"
+      }
     ],
     "careerAvenues": [
-      { "en": "Industrialist, Real Estate Magnate, Judge, Banker, Infrastructure Leader", "hi": "उद्योगपति, रियल एस्टेट विशेषज्ञ, न्यायाधीश, वित्त प्रबंधक" }
+      {
+        "en": "Industrialist, Real Estate Magnate, Judge, Banker, Infrastructure Leader",
+        "hi": "उद्योगपति, रियल एस्टेट विशेषज्ञ, न्यायाधीश, वित्त प्रबंधक"
+      }
     ],
     "relationshipStyle": {
       "en": "Protective, pillar-like, and deeply committed; seeks partners who respect mutual ambition and lifelong solidarity.",
@@ -169,19 +281,33 @@
   },
   {
     "number": 9,
-    "system": "chaldean",
-    "title": { "en": "The Path of Universal Compassion & Valor", "hi": "सर्वकल्याण व वीरता का मार्ग" },
+    "title": {
+      "en": "The Path of Universal Compassion & Valor",
+      "hi": "सर्वकल्याण व वीरता का मार्ग"
+    },
     "lifeMission": {
       "en": "Your destiny is to champion the cause of humanity, fearlessly combat injustice, finish noble cycles, and inspire through selfless heroism.",
       "hi": "आपका जीवन लक्ष्य समाज सेवा, अन्याय के विरुद्ध संघर्ष, उच्च आदर्शों की स्थापना और जनकल्याण करना है।"
     },
     "coreStrengths": [
-      { "en": "Heroic courage and crusader spirit", "hi": "साहसी व निडर व्यक्तित्व" },
-      { "en": "Global humanitarian compassion", "hi": "सार्वभौमिक करुणा व परोपकार" },
-      { "en": "Electrifying motivational charisma", "hi": "ऊर्जावान व प्रेरक प्रभाव" }
+      {
+        "en": "Heroic courage and crusader spirit",
+        "hi": "साहसी व निडर व्यक्तित्व"
+      },
+      {
+        "en": "Global humanitarian compassion",
+        "hi": "सार्वभौमिक करुणा व परोपकार"
+      },
+      {
+        "en": "Electrifying motivational charisma",
+        "hi": "ऊर्जावान व प्रेरक प्रभाव"
+      }
     ],
     "careerAvenues": [
-      { "en": "Social Reformer, Armed Forces Commander, Philanthropist, Surgeon, Athlete", "hi": "समाज सुधारक, सेना अधिकारी, परोपकारी, शल्य चिकित्सक, खिलाड़ी" }
+      {
+        "en": "Social Reformer, Armed Forces Commander, Philanthropist, Surgeon, Athlete",
+        "hi": "समाज सुधारक, सेना अधिकारी, परोपकारी, शल्य चिकित्सक, खिलाड़ी"
+      }
     ],
     "relationshipStyle": {
       "en": "Passionate, idealistic, and intensely noble; blossoms when a partner shares noble ideals and broad community empathy.",

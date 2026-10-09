@@ -29,11 +29,13 @@ import {
   ArrowRight,
   ShieldCheck
 } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { VedicGrid } from '@/components/VedicGrid';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { ScoreMeter } from '@/components/ui/ScoreMeter';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { ScoreMeter } from '@/frontend/components/ui/ScoreMeter';
+import { Modal } from '@/frontend/components/ui/Modal';
+import { YearSelector } from '@/frontend/components/ui/YearSelector';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import {
   ALL_EVENTS,
   EventRule,
@@ -44,7 +46,7 @@ import {
   getMarriageLoveReading,
   getAllEventsLifeTimeline,
   getWordNumberImpact
-} from '@/lib/engine/events';
+} from '@/core/engine/events';
 
 // Map icon to event ID
 const EVENT_ICONS: Record<string, React.ReactNode> = {
@@ -79,7 +81,7 @@ export default function EventsPage() {
   const [showReasonsAccordion, setShowReasonsAccordion] = useState<boolean>(true);
   const [pickedWordNumber, setPickedWordNumber] = useState<number>(5);
 
-  const availableYears = Array.from({ length: 9 }, (_, i) => currentYear - 2 + i);
+  const birthYear = profile.dob ? parseInt(profile.dob.split('-')[0], 10) : undefined;
 
   // Memoize all heavy engine calls — only recompute when dependencies change
   const { scores, strongest, weakest, topRemedies } = useMemo(
@@ -121,7 +123,6 @@ export default function EventsPage() {
             ? 'वैदिक अंक ग्रिड, दशा प्रभाव और ग्रह मित्रता के आधार पर 14 प्रमुख जीवन क्षेत्रों का वैज्ञानिक विश्लेषण'
             : 'Scientific scoring of 14 core life dimensions derived from Vedic grid, Dasha alignment, and planetary affinities'
         }
-        badge={locale === 'hi' ? 'जीवन घटनाएं 16' : 'Life Events 16'}
         icon={<CalendarCheck className="w-5 h-5 sm:w-6 sm:h-6" />}
       />
 
@@ -149,24 +150,16 @@ export default function EventsPage() {
                 {locale === 'hi' ? 'विश्लेषण वर्ष चुनें' : 'Analysis Target Year'}
               </span>
               <h3 className="text-base font-bold font-serif text-[var(--heading)]">
-                {locale === 'hi' ? `वर्ष ${selectedYear} की दशा प्रभाव गणना` : `Target Year ${selectedYear} Influence`}
+                {locale === 'hi' ? `वर्ष ${selectedYear}/${selectedYear + 1} की दशा प्रभाव गणना` : `Target Year ${selectedYear}/${selectedYear + 1} Influence`}
               </h3>
             </div>
-            <div className="flex flex-wrap gap-1">
-              {availableYears.map((yr) => (
-                <button
-                  key={yr}
-                  type="button"
-                  onClick={() => setSelectedYear(yr)}
-                  className={`px-2.5 py-1 rounded-lg font-serif text-xs font-bold border transition-all cursor-pointer ${
-                    selectedYear === yr
-                      ? 'bg-gradient-to-r from-[var(--gold)] to-amber-600 text-white border-amber-600 shadow-sm'
-                      : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)] hover:text-[var(--heading)]'
-                  }`}
-                >
-                  {yr}
-                </button>
-              ))}
+            <div>
+              <YearSelector
+                selectedYear={selectedYear}
+                onChange={setSelectedYear}
+                birthYear={birthYear}
+                locale={locale}
+              />
             </div>
           </div>
 
@@ -282,11 +275,11 @@ export default function EventsPage() {
                 </div>
 
                 <div className="pt-2 border-t border-[var(--border)] flex items-center justify-between text-xs">
-                  <span className="text-[11px] font-bold text-[var(--gold)] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                    {locale === 'hi' ? 'विवरण देखें' : 'View details'} <ArrowRight className="w-3.5 h-3.5" />
+                  <span className="text-[10px] text-[var(--gold)] font-medium">
+                    {locale === 'hi' ? 'क्लिक करके विवरण देखें' : 'Click to inspect'}
                   </span>
                   <span className="text-[10px] text-[var(--text-muted)]">
-                    {item.reasons.length} {locale === 'hi' ? 'कारक' : 'factors'}
+                    {item.reasons.length} {locale === 'hi' ? 'प्रभाव कारक' : 'factors'}
                   </span>
                 </div>
               </div>
@@ -328,97 +321,113 @@ export default function EventsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {topRemedies.map((remedy, idx) => (
-            <div
+            <Link
               key={`rem-${idx}`}
-              className="p-3.5 rounded-2xl bg-[var(--bg)] border border-[var(--border)] flex items-start gap-2.5 text-xs"
+              href={`/${locale}/remedies`}
+              className="p-3.5 rounded-2xl bg-[var(--bg)] border border-[var(--border)] hover:border-[var(--gold)] hover:-translate-y-0.5 transition-all flex items-start gap-2.5 text-xs group cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[var(--gold)]/40"
             >
               <span className="w-5 h-5 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-bold flex items-center justify-center shrink-0 text-[11px]">
                 {idx + 1}
               </span>
               <div className="space-y-1.5 flex-1">
-                <span className="font-semibold text-[var(--heading)] block">{remedy}</span>
-                <Link
-                  href={`/${locale}/remedies`}
-                  className="text-[11px] text-[var(--gold)] hover:underline inline-flex items-center gap-1 font-medium"
-                >
-                  {locale === 'hi' ? 'उपाय मॉड्यूल में देखें →' : 'View in Remedies module →'}
-                </Link>
+                <span className="font-semibold text-[var(--heading)] block group-hover:text-[var(--gold)] transition-colors">{remedy}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
 
       {/* DETAIL DRAWER / MODAL */}
-      {activeEventModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto">
-          <div className="vedic-card w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5 sm:p-7 space-y-5 rounded-[24px] shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="flex items-start justify-between pb-4 border-b border-[var(--border)]">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)]">
-                  {EVENT_ICONS[activeEventModal.event.id] || <Sparkles className="w-6 h-6 text-[var(--gold)]" />}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--gold)]">
-                      Event Detail View
-                    </span>
-                    <span className="text-xs text-[var(--text-muted)]">•</span>
-                    <span className="text-xs font-semibold text-[var(--text-muted)]">
-                      Year {selectedYear}
-                    </span>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold font-serif text-[var(--heading)]">
-                    {locale === 'hi' ? activeEventModal.event.name.hi : activeEventModal.event.name.en}
-                  </h3>
-                </div>
+      <Modal
+        isOpen={!!activeEventModal}
+        onClose={() => setActiveEventModal(null)}
+        title={
+          activeEventModal ? (
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)] flex items-center justify-center shrink-0">
+                {EVENT_ICONS[activeEventModal.event.id] || <Sparkles className="w-4 h-4 text-[var(--gold)]" />}
               </div>
-
+              <div className="min-w-0">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--gold)]">
+                  {locale === 'hi' ? `इवेंट विवरण • वर्ष ${selectedYear}` : `Event Detail • Year ${selectedYear}`}
+                </div>
+                <h3 className="text-base sm:text-lg font-bold font-serif text-[var(--heading)] truncate">
+                  {locale === 'hi' ? activeEventModal.event.name.hi : activeEventModal.event.name.en}
+                </h3>
+              </div>
+            </div>
+          ) : undefined
+        }
+        footer={
+          activeEventModal ? (
+            <div className="flex items-center justify-between w-full gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  for (const p of activeEventModal.prescriptions) {
+                    addCustomRemedy(p);
+                  }
+                  toggleReportSection(`event_${activeEventModal.event.id}`);
+                }}
+                className="text-xs font-bold text-[var(--gold)] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+              >
+                <PlusCircle className="w-4 h-4" />
+                {reportSections?.[`event_${activeEventModal.event.id}`]
+                  ? locale === 'hi'
+                    ? '✓ रिपोर्ट में जोड़ा गया'
+                    : '✓ Added to Report'
+                  : locale === 'hi'
+                  ? 'रिपोर्ट में जोड़ें'
+                  : 'Add to Report'}
+              </button>
               <button
                 type="button"
                 onClick={() => setActiveEventModal(null)}
-                className="p-1.5 rounded-full hover:bg-[var(--chip-bg)] text-[var(--text-muted)] hover:text-[var(--heading)] transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-[var(--surface)] text-[var(--heading)] border border-[var(--border)] hover:bg-[var(--chip-bg)] transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                {locale === 'hi' ? 'बंद करें' : 'Close'}
               </button>
             </div>
-
+          ) : undefined
+        }
+      >
+        {activeEventModal && (
+          <div className="space-y-4 text-xs">
             {/* Score Banner */}
-            <div className="p-4 rounded-2xl bg-[var(--bg)] border border-[var(--border)] flex flex-wrap items-center justify-between gap-3">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-[var(--bg)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="text-xs text-[var(--text-muted)] block font-medium">
+                <span className="text-[11px] text-[var(--text-muted)] block font-medium">
                   {locale === 'hi' ? 'गणना स्तर एवं स्कोर' : 'Computed Score & Dimension Level'}
                 </span>
-                <div className="text-xl font-serif font-bold text-[var(--heading)] flex items-center gap-2">
+                <div className="text-lg sm:text-xl font-serif font-bold text-[var(--heading)] flex items-center gap-2">
                   <span>{activeEventModal.score} / 100</span>
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)]">
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)]">
                     {locale === 'hi' ? activeEventModal.levelHi : activeEventModal.level}
                   </span>
                 </div>
               </div>
-              <div className="w-full sm:w-64">
+              <div className="w-full sm:w-56">
                 <ScoreMeter score={activeEventModal.score} showLabel={false} />
               </div>
             </div>
 
             {/* Grid with highlighted Support (Gold) and Hurdle (Red) digits */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--gold)] font-serif">
-                  {locale === 'hi' ? 'सक्रिय अंक ग्रिड (सहायक = स्वर्ण, बाधक = लाल)' : 'Vedic Grid Analysis (Support = Gold, Hurdle = Red Outline)'}
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <h4 className="text-[11px] font-bold uppercase tracking-wider text-[var(--gold)] font-serif">
+                  {locale === 'hi' ? 'सक्रिय अंक ग्रिड (सहायक = स्वर्ण, बाधक = लाल)' : 'Vedic Grid Analysis'}
                 </h4>
-                <div className="flex items-center gap-3 text-[11px] text-[var(--text-muted)]">
+                <div className="flex flex-wrap items-center gap-2.5 text-[10px] text-[var(--text-muted)]">
                   <span className="flex items-center gap-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[var(--gold)]" /> Support ({activeEventModal.event.supportDigits.join(', ')})
+                    <span className="w-2 h-2 rounded-full bg-[var(--gold)]" /> Support ({activeEventModal.event.supportDigits.join(', ')})
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Hurdle ({activeEventModal.event.hurdleDigits.join(', ') || 'None'})
+                    <span className="w-2 h-2 rounded-full bg-rose-500" /> Hurdle ({activeEventModal.event.hurdleDigits.join(', ') || 'None'})
                   </span>
                 </div>
               </div>
 
-              <div className="flex justify-center py-2">
+              <div className="flex justify-center py-1">
                 <VedicGrid
                   dob={profile.dob}
                   size="sm"
@@ -436,27 +445,27 @@ export default function EventsPage() {
             </div>
 
             {/* Full Prediction Text */}
-            <div className="space-y-1.5 p-4 rounded-2xl bg-[var(--chip-bg)]/30 border border-[var(--border)]">
-              <h4 className="text-xs font-bold text-[var(--heading)] font-serif uppercase tracking-wider">
+            <div className="space-y-1.5 p-3.5 sm:p-4 rounded-2xl bg-[var(--chip-bg)]/30 border border-[var(--border)]">
+              <h4 className="text-[11px] font-bold text-[var(--heading)] font-serif uppercase tracking-wider">
                 {locale === 'hi' ? 'सूक्ष्म फलादेश' : 'Detailed Reading & Prediction'}
               </h4>
-              <p className="text-xs sm:text-sm text-[var(--text)] leading-relaxed">
+              <p className="text-xs sm:text-[13px] text-[var(--text)] leading-relaxed">
                 {locale === 'hi' ? activeEventModal.prediction.hi : activeEventModal.prediction.en}
               </p>
             </div>
 
             {/* "Why this score" Expandable List of Reasons */}
-            <div className="space-y-2 border border-[var(--border)] rounded-2xl p-4 bg-[var(--bg)]">
+            <div className="space-y-2 border border-[var(--border)] rounded-2xl p-3.5 bg-[var(--bg)]">
               <button
                 type="button"
                 onClick={() => setShowReasonsAccordion(!showReasonsAccordion)}
                 className="w-full flex items-center justify-between text-xs font-bold font-serif text-[var(--heading)] cursor-pointer"
               >
                 <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-[var(--gold)]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" />
                   {locale === 'hi' ? 'यह स्कोर क्यों मिला? (Why this score)' : 'Why this score? (Point Breakdown)'}
                 </span>
-                {showReasonsAccordion ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {showReasonsAccordion ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
 
               {showReasonsAccordion && (
@@ -466,7 +475,7 @@ export default function EventsPage() {
                       key={`rs-${idx}`}
                       className="text-xs text-[var(--text-muted)] flex items-start gap-2"
                     >
-                      <span className="text-[var(--gold)] font-bold">•</span>
+                      <span className="text-[var(--gold)] font-bold shrink-0">•</span>
                       <span>{reason}</span>
                     </div>
                   ))}
@@ -474,40 +483,18 @@ export default function EventsPage() {
               )}
             </div>
 
-            {/* Prescriptions List + Add to Report */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--gold)] font-serif">
-                  {locale === 'hi' ? 'अनुशंसित वैदिक उपाय' : 'Prescribed Remedial Actions'}
-                </h4>
-                <button
-                  type="button"
-                  onClick={() => {
-                    for (const p of activeEventModal.prescriptions) {
-                      addCustomRemedy(p);
-                    }
-                    toggleReportSection(`event_${activeEventModal.event.id}`);
-                  }}
-                  className="text-xs font-bold text-[var(--gold)] hover:underline inline-flex items-center gap-1 cursor-pointer"
-                >
-                  <PlusCircle className="w-3.5 h-3.5" />
-                  {reportSections?.[`event_${activeEventModal.event.id}`]
-                    ? locale === 'hi'
-                      ? '✓ रिपोर्ट में जोड़ा गया'
-                      : '✓ Added to Report'
-                    : locale === 'hi'
-                    ? 'रिपोर्ट में जोड़ें'
-                    : 'Add to Report'}
-                </button>
-              </div>
-
+            {/* Prescriptions List */}
+            <div className="space-y-2">
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-[var(--gold)] font-serif">
+                {locale === 'hi' ? 'अनुशंसित वैदिक उपाय' : 'Prescribed Remedial Actions'}
+              </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {activeEventModal.prescriptions.map((pres, idx) => (
                   <div
                     key={`pres-${idx}`}
-                    className="p-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs flex items-start gap-2"
+                    className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs flex items-start gap-2"
                   >
-                    <span className="text-[var(--gold)] font-bold">✓</span>
+                    <span className="text-[var(--gold)] font-bold shrink-0">✓</span>
                     <span className="text-[var(--heading)]">{pres}</span>
                   </div>
                 ))}
@@ -515,16 +502,16 @@ export default function EventsPage() {
             </div>
 
             {/* 10-Year Projections Timeline */}
-            <div className="space-y-2 p-4 rounded-2xl bg-[var(--bg)] border border-[var(--border)]">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--heading)] font-serif">
+            <div className="space-y-2 p-3.5 rounded-2xl bg-[var(--bg)] border border-[var(--border)]">
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-[var(--heading)] font-serif">
                 {locale === 'hi' ? 'आगामी 10 वर्षों का चक्र' : 'Next 10-Year Cycle Timeline'}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
                   <span className="text-[11px] font-semibold text-emerald-700 block mb-1">
-                    {locale === 'hi' ? 'अनुकूल वर्ष (Favourable Years):' : 'Favourable Years:'}
+                    {locale === 'hi' ? 'अनुकूल वर्ष:' : 'Favourable Years:'}
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {activeEventModal.favourableYears.length > 0 ? (
                       activeEventModal.favourableYears.map((yr) => (
                         <span
@@ -542,9 +529,9 @@ export default function EventsPage() {
 
                 <div>
                   <span className="text-[11px] font-semibold text-amber-700 block mb-1">
-                    {locale === 'hi' ? 'सावधानी के वर्ष (Caution Periods):' : 'Caution Periods:'}
+                    {locale === 'hi' ? 'सावधानी के वर्ष:' : 'Caution Periods:'}
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {activeEventModal.cautionPeriods.length > 0 ? (
                       activeEventModal.cautionPeriods.map((cp) => (
                         <span
@@ -564,8 +551,8 @@ export default function EventsPage() {
 
             {/* Special Event 4: Year Before Birth Details */}
             {activeEventModal.event.id === 'year_before_birth' && (
-              <div className="p-4 rounded-2xl bg-[var(--chip-bg)]/40 border border-[var(--border)] space-y-2">
-                <h4 className="text-xs font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
+              <div className="p-3.5 rounded-2xl bg-[var(--chip-bg)]/40 border border-[var(--border)] space-y-1.5">
+                <h4 className="text-[11px] font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
                   {locale === 'hi' ? `पूर्वजन्म वर्ष ${karmicReading.karmicYear} का कर्म-विश्लेषण` : `Pre-Birth Karma Reading (${karmicReading.karmicYear})`}
                 </h4>
                 <p className="text-xs text-[var(--heading)] leading-relaxed">
@@ -576,11 +563,11 @@ export default function EventsPage() {
 
             {/* Special Event 12: Love vs Arranged Marriage Meters */}
             {activeEventModal.event.id === 'marriage_love' && (
-              <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
-                <h4 className="text-xs font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
+              <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
+                <h4 className="text-[11px] font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
                   {locale === 'hi' ? 'प्रेम विवाह बनाम पारंपरिक विवाह अनुपात' : 'Love vs Arranged Marriage Comparison'}
                 </h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs font-semibold">
                       <span>{locale === 'hi' ? 'प्रेम विवाह' : 'Love Marriage'}</span>
@@ -604,15 +591,15 @@ export default function EventsPage() {
 
             {/* Special Event 8: Comprehensive 0-90 Life Timeline */}
             {activeEventModal.event.id === 'all_events_by_dob' && (
-              <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
-                <h4 className="text-xs font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
+              <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-2.5">
+                <h4 className="text-[11px] font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
                   {locale === 'hi' ? 'आयु-वार जीवन समयरेखा (0-90 वर्ष)' : 'Age-Wise Life Timeline (0-90 Years)'}
                 </h4>
-                <div className="flex gap-2 overflow-x-auto pb-2">
+                <div className="flex gap-2 overflow-x-auto pb-2 max-w-full">
                   {lifeTimeline.map((item) => (
                     <div
                       key={`age-${item.age}`}
-                      className="min-w-[130px] p-2.5 rounded-xl bg-[var(--bg)] border border-[var(--border)] text-xs space-y-1 shrink-0"
+                      className="min-w-[120px] p-2 rounded-xl bg-[var(--bg)] border border-[var(--border)] text-xs space-y-1 shrink-0"
                     >
                       <span className="text-[10px] font-bold text-[var(--gold)] block">
                         Age {item.age} ({item.calendarYear})
@@ -631,16 +618,16 @@ export default function EventsPage() {
 
             {/* Special Event 9: Word Number Impact */}
             {activeEventModal.event.id === 'word_number' && (
-              <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
+              <div className="p-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
+                  <h4 className="text-[11px] font-bold text-[var(--gold)] font-serif uppercase tracking-wider">
                     {locale === 'hi' ? 'अंक 1-9 का चयन करें' : 'Pick a Number (1 to 9)'}
                   </h4>
                   <span className="text-xs font-semibold text-[var(--heading)] font-serif">
                     Selected: #{pickedWordNumber}
                   </span>
                 </div>
-                <div className="flex gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                     <button
                       key={`num-${num}`}
@@ -666,20 +653,9 @@ export default function EventsPage() {
                 </div>
               </div>
             )}
-
-            {/* Close Button */}
-            <div className="pt-2 flex justify-end">
-              <button
-                type="button"
-                onClick={() => setActiveEventModal(null)}
-                className="px-5 py-2 rounded-xl text-xs font-bold bg-[var(--surface)] text-[var(--heading)] border border-[var(--border)] hover:bg-[var(--chip-bg)] transition-colors cursor-pointer"
-              >
-                {locale === 'hi' ? 'बंद करें' : 'Close Details'}
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

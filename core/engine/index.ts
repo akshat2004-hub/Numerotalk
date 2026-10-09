@@ -10,3 +10,4 @@ export * from './timeNumerology';
 export * from './vastu';
 export * from './events';
 export * from './transliteration';
+export * from './profession';

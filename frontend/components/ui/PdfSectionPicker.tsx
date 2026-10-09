@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/frontend/utils';
 
 export interface SectionPickerItem {
   id: string;
@@ -34,12 +34,12 @@ export function PdfSectionPicker({
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
         <div>
           <h4 className="font-serif text-base sm:text-lg font-bold text-[var(--heading)]">
-            {currentLocale === 'hi' ? 'पीडीएफ अनुभाग चयन (1 - 16, 18)' : 'Report Sections Selection (1 - 16, 18)'}
+            {currentLocale === 'hi' ? 'पीडीएफ अनुभाग चयन' : 'Report Sections Selection'}
           </h4>
           <p className="text-xs text-[var(--text-muted)]">
             {currentLocale === 'hi'
-              ? 'चुनें कि रिपोर्ट में कौन से मॉड्यूल और गणनाएं सम्मिलित करनी हैं'
-              : 'Select which modules and readings to include in your personalized dossier'}
+              ? 'चुनें कि रिपोर्ट में कौन से अनुभाग और गणनाएं सम्मिलित करनी हैं'
+              : 'Select which sections and readings to include in your personalized dossier'}
           </p>
         </div>
 

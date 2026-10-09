@@ -9,38 +9,47 @@ import {
   Heart, 
   Users, 
   CheckCircle2, 
-  FileText, 
   Loader2,
   Calendar,
   Layers,
   ArrowRightLeft,
-  ShieldCheck
+  ShieldCheck,
+  Check,
+  Plus,
+  AlertTriangle,
+  Flame,
+  Award
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { CircularScoreMeter } from '@/components/ui/CircularScoreMeter';
-import { VedicGrid } from '@/components/VedicGrid';
-import { calculateMatchMaking, MatchMakingResult } from '@/lib';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { CircularScoreMeter } from '@/frontend/components/ui/CircularScoreMeter';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { RemedyChip } from '@/frontend/components/ui/RemedyChip';
+import { Input } from '@/frontend/components/ui/Input';
+import { DateInput } from '@/frontend/components/ui/DateInput';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { matchScore, MatchScoreResult, MatchPillar } from '@/core/engine/compatibility';
 
 export default function MatchMakingPage() {
   const t = useTranslations('matchMakingPage');
   const tc = useTranslations('common');
   const locale = (useLocale() || 'en') as 'en' | 'hi';
+  const { reportSections, toggleReportSection } = useNumerologyStore();
 
-  const [boyName, setBoyName] = useState('Rahul');
+  const [boyName, setBoyName] = useState('Rahul Sharma');
   const [boyDob, setBoyDob] = useState('1995-10-23');
-  const [girlName, setGirlName] = useState('Pooja');
+  const [girlName, setGirlName] = useState('Pooja Verma');
   const [girlDob, setGirlDob] = useState('1997-06-15');
 
   const [isExporting, setIsExporting] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  // Memoize calculation to prevent unnecessary lag
-  const result: MatchMakingResult = useMemo(
-    () => calculateMatchMaking(
-      { name: boyName || 'Boy', dob: boyDob || '1995-01-01' },
-      { name: girlName || 'Girl', dob: girlDob || '1995-01-01' }
+  // Memoize comprehensive match score calculation
+  const matchResult: MatchScoreResult = useMemo(
+    () => matchScore(
+      { name: boyName.trim() || 'Boy', dob: boyDob || '1995-01-01' },
+      { name: girlName.trim() || 'Girl', dob: girlDob || '1995-01-01' }
     ),
     [boyName, boyDob, girlName, girlDob]
   );
@@ -121,24 +130,27 @@ export default function MatchMakingPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <SectionHeader
-          title={t('title')}
-          subtitle={t('subtitle')}
-          badge={locale === 'hi' ? 'वैदिक गुण मिलान 08' : 'MATCH MAKING 08'}
+          title={locale === 'hi' ? 'वैदिक गुण मिलान एवं संबंध विश्लेषण' : 'Vedic Compatibility & Match Making'}
+          subtitle={
+            locale === 'hi'
+              ? 'मूलांक, भाग्यांक, नामांक और वैदिक ग्रिड के 5 प्रमुख स्तंभों पर आधारित 100 अंकों का वैज्ञानिक विश्लेषण'
+              : 'Scientific 100-point compatibility evaluation across 5 Vedic pillars: Driver, Life Path, Destiny, Exchangeable, and Common energies.'
+          }
           icon={<HeartHandshake className="w-5 h-5 stroke-[1.5]" />}
           className="mb-0"
         />
 
-        {/* Quick Top Export Button */}
+        {/* Quick Top Export Button: md = 44px, 15px text */}
         <button
           type="button"
           onClick={handleExportPdf}
           disabled={isExporting}
-          className="btn-gold-gradient h-[40px] px-4 text-xs font-semibold flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer rounded-xl shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="btn-gold-gradient h-[44px] px-5 text-[15px] font-semibold flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer rounded-[12px] shadow-[0_4px_12px_rgba(201,131,16,0.25)] transition-all hover:scale-[1.01] active:scale-[0.99]"
         >
           {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 stroke-[2]" />
           )}
           <span>
             {isExporting 
@@ -150,12 +162,12 @@ export default function MatchMakingPage() {
 
       {/* Partner Input Form Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Boy Input */}
+        {/* Partner 1 (Boy) */}
         <div className="vedic-card p-4 sm:p-5 space-y-3.5 border-t-2 border-t-[var(--gold)]">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold font-serif text-[var(--heading)] flex items-center gap-2">
               <Users className="w-4 h-4 text-[var(--gold)]" />
-              {t('boyDetails')}
+              <span>{locale === 'hi' ? 'साथी 1 का विवरण' : 'Partner 1 Details'}</span>
             </h3>
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)]">
               Partner 1
@@ -164,53 +176,60 @@ export default function MatchMakingPage() {
 
           <div className="space-y-3">
             <div>
-              <label className="block text-[11px] font-medium text-[var(--text-muted)] mb-1">
-                {t('boyName')}
-              </label>
-              <input
-                type="text"
+              <Input
+                label={locale === 'hi' ? 'पूरा नाम' : 'Full Name'}
                 value={boyName}
                 onChange={(e) => setBoyName(e.target.value)}
                 placeholder="Rahul Sharma"
-                className="w-full h-[38px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-hidden transition-all"
               />
+              <span className="text-[11px] text-[var(--text-muted)] block mt-1">
+                {locale === 'hi' ? 'नामांक गणना हेतु प्रयुक्त' : 'Used for Destiny number'}
+              </span>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[var(--text-muted)] mb-1">
-                {t('boyDob')}
-              </label>
-              <input
-                type="date"
+              <DateInput
+                label={locale === 'hi' ? 'जन्म तिथि' : 'Date of Birth'}
                 value={boyDob}
-                onChange={(e) => setBoyDob(e.target.value)}
-                className="w-full h-[38px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-hidden cursor-pointer transition-all"
+                onChange={(iso) => setBoyDob(iso)}
               />
             </div>
           </div>
 
-          {/* Quick Key Numbers Bar */}
-          <div className="flex items-center justify-between pt-2 border-t border-[var(--border)] text-xs">
+          {/* Profile Header Chips: 3 badges with lining numerals */}
+          <div className="flex flex-wrap items-center justify-between pt-2 border-t border-[var(--border)] text-xs gap-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-[var(--text-muted)]">Driver (मूलांक):</span>
-              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)]">
-                {result.boy.mulank}
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'ड्राइवर (मूलांक):' : 'Driver (Mulank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)] tabular-nums lining-nums">
+                {matchResult.boy.mulank}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-[var(--text-muted)]">Conductor (भाग्यांक):</span>
-              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)]">
-                {result.boy.bhagyank}
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'कंडक्टर (भाग्यांक):' : 'Conductor (Bhagyank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)] tabular-nums lining-nums">
+                {matchResult.boy.bhagyank}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'डेस्टिनी (नामांक):' : 'Destiny (Namank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)] tabular-nums lining-nums">
+                {matchResult.boy.destinyNumber}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Girl Input */}
+        {/* Partner 2 (Girl) */}
         <div className="vedic-card p-4 sm:p-5 space-y-3.5 border-t-2 border-t-rose-400">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold font-serif text-[var(--heading)] flex items-center gap-2">
               <Heart className="w-4 h-4 text-rose-500" />
-              {t('girlDetails')}
+              <span>{locale === 'hi' ? 'साथी 2 का विवरण' : 'Partner 2 Details'}</span>
             </h3>
             <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
               Partner 2
@@ -219,462 +238,539 @@ export default function MatchMakingPage() {
 
           <div className="space-y-3">
             <div>
-              <label className="block text-[11px] font-medium text-[var(--text-muted)] mb-1">
-                {t('girlName')}
-              </label>
-              <input
-                type="text"
+              <Input
+                label={locale === 'hi' ? 'पूरा नाम' : 'Full Name'}
                 value={girlName}
                 onChange={(e) => setGirlName(e.target.value)}
                 placeholder="Pooja Verma"
-                className="w-full h-[38px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] focus:border-rose-400 focus:ring-1 focus:ring-rose-400 outline-hidden transition-all"
               />
+              <span className="text-[11px] text-[var(--text-muted)] block mt-1">
+                {locale === 'hi' ? 'नामांक गणना हेतु प्रयुक्त' : 'Used for Destiny number'}
+              </span>
             </div>
             <div>
-              <label className="block text-[11px] font-medium text-[var(--text-muted)] mb-1">
-                {t('girlDob')}
-              </label>
-              <input
-                type="date"
+              <DateInput
+                label={locale === 'hi' ? 'जन्म तिथि' : 'Date of Birth'}
                 value={girlDob}
-                onChange={(e) => setGirlDob(e.target.value)}
-                className="w-full h-[38px] px-3.5 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] focus:border-rose-400 focus:ring-1 focus:ring-rose-400 outline-hidden cursor-pointer transition-all"
+                onChange={(iso) => setGirlDob(iso)}
               />
             </div>
           </div>
 
-          {/* Quick Key Numbers Bar */}
-          <div className="flex items-center justify-between pt-2 border-t border-[var(--border)] text-xs">
+          {/* Profile Header Chips: 3 badges with lining numerals */}
+          <div className="flex flex-wrap items-center justify-between pt-2 border-t border-[var(--border)] text-xs gap-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-[var(--text-muted)]">Driver (मूलांक):</span>
-              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200">
-                {result.girl.mulank}
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'ड्राइवर (मूलांक):' : 'Driver (Mulank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+                {matchResult.girl.mulank}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-[var(--text-muted)]">Conductor (भाग्यांक):</span>
-              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200">
-                {result.girl.bhagyank}
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'कंडक्टर (भाग्यांक):' : 'Conductor (Bhagyank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+                {matchResult.girl.bhagyank}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {locale === 'hi' ? 'डेस्टिनी (नामांक):' : 'Destiny (Namank):'}
+              </span>
+              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+                {matchResult.girl.destinyNumber}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* PRIMARY ACTION BANNER: Dedicated Match Making Report Export Button */}
-      <div className="vedic-card p-4 sm:p-5 bg-gradient-to-r from-[var(--surface)] via-[var(--bg)] to-[var(--surface)] border border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[var(--chip-bg)] border border-[var(--border)] flex items-center justify-center text-[var(--gold)] shrink-0 shadow-xs">
-            <FileText className="w-5 h-5 stroke-[1.8]" />
-          </div>
+      {/* SECTION: Compatibility Pillars (Total 100 points, 2-column grid on desktop) */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-sm font-bold font-serif text-[var(--heading)]">
-              {locale === 'hi' ? 'वैदिक गुण मिलान रिपोर्ट (PDF)' : 'Dedicated Match Making PDF Report'}
-            </h4>
-            <p className="text-[11px] text-[var(--text-muted)]">
+            <h2 className="text-base sm:text-lg font-bold font-serif text-[var(--heading)] flex items-center gap-2">
+              <Layers className="w-5 h-5 text-[var(--gold)]" />
+              <span>{locale === 'hi' ? 'अनुकूलता के 5 स्तंभ' : 'Compatibility Pillars'}</span>
+            </h2>
+            <p className="text-xs text-[var(--text-muted)]">
               {locale === 'hi'
-                ? `केवल ${boyName || 'वर'} और ${girlName || 'वधू'} की संपूर्ण गुण मिलान विश्लेषण रिपोर्ट डाउनलोड करें`
-                : `Download complete matchmaking analysis, score breakdown, Vedic grids & remedies for ${boyName || 'Boy'} & ${girlName || 'Girl'}`}
+                ? 'वैदिक अंकशास्त्र के 5 स्वतंत्र आयामों पर आधारित विस्तृत मूल्यांकन (प्रत्येक 20 अंक, कुल 100 अंक)'
+                : 'Evaluated across 5 foundational Vedic dimensions (20 points each, 100 total)'}
             </p>
           </div>
+          <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)] tabular-nums lining-nums">
+            Score: {matchResult.total}/100
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {matchResult.pillars.map((pillar) => {
+            const relBadge = getRelationBadge(pillar.relation);
+            const reportKey = `match_pillar_${pillar.id}`;
+            const isAdded = !!reportSections[reportKey];
+
+            return (
+              <div
+                key={pillar.id}
+                className="vedic-card p-4 sm:p-5 space-y-4 flex flex-col justify-between border-t-2 border-t-[var(--gold)]"
+              >
+                {/* 1. Header: title + relation badge + score x/20 */}
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-[var(--border)]">
+                  <div>
+                    <h3 className="font-serif font-bold text-sm sm:text-base text-[var(--heading)]">
+                      {locale === 'hi' ? pillar.titleHi : pillar.titleEn}
+                    </h3>
+                    <span className="text-[10px] text-[var(--text-muted)] block mt-0.5">
+                      Pillar Weight: 20 Points
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${relBadge.bg}`}>
+                      {relBadge.label}
+                    </span>
+                    <span className="font-serif font-bold text-sm sm:text-base text-[var(--gold)] tabular-nums lining-nums">
+                      {pillar.score}/20
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Number strip: Boy's number ⇄ Girl's number with names */}
+                <div className="p-3 rounded-xl bg-[var(--bg)] border border-[var(--border)] flex items-center justify-around text-center">
+                  <div className="flex-1">
+                    <span className="text-[11px] text-[var(--text-muted)] block truncate max-w-[130px] mx-auto">
+                      {boyName || 'Partner 1'}
+                    </span>
+                    <span className="font-serif font-bold text-xl sm:text-2xl text-[var(--heading)] tabular-nums lining-nums">
+                      {pillar.boyNumber}
+                    </span>
+                  </div>
+
+                  <ArrowRightLeft className="w-4 h-4 text-[var(--gold)] shrink-0 mx-2" />
+
+                  <div className="flex-1">
+                    <span className="text-[11px] text-[var(--text-muted)] block truncate max-w-[130px] mx-auto">
+                      {girlName || 'Partner 2'}
+                    </span>
+                    <span className="font-serif font-bold text-xl sm:text-2xl text-rose-600 tabular-nums lining-nums">
+                      {pillar.girlNumber}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3. Mini grids side by side with highlighted cells */}
+                {pillar.id === 'exchangeable' ? (
+                  /* For Exchangeable card: show two exchanges */
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
+                      {locale === 'hi' ? 'दोहरा ऊर्जा विनिमय (Dual Energy Cross)' : 'Dual Energy Cross Exchange'}
+                    </span>
+                    <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                      <div className="text-center space-y-1">
+                        <span className="text-[10px] text-[var(--text-muted)] block">
+                          Boy Mulank ({matchResult.boy.mulank}) × Girl Bhagyank ({matchResult.girl.bhagyank})
+                        </span>
+                        <div className="flex justify-center">
+                          <VedicGrid
+                            dob={boyDob}
+                            size="sm"
+                            hideControls={true}
+                            hideStats={true}
+                            digitHighlights={{ [matchResult.boy.mulank]: 'support' }}
+                          />
+                        </div>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <span className="text-[10px] text-[var(--text-muted)] block">
+                          Girl Mulank ({matchResult.girl.mulank}) × Boy Bhagyank ({matchResult.boy.bhagyank})
+                        </span>
+                        <div className="flex justify-center">
+                          <VedicGrid
+                            dob={girlDob}
+                            size="sm"
+                            hideControls={true}
+                            hideStats={true}
+                            digitHighlights={{ [matchResult.girl.mulank]: 'support' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : pillar.id === 'common' ? (
+                  /* For Common numbers: show common digits highlighted gold, faded rest */
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
+                      {locale === 'hi' ? 'समान सक्रिय ऊर्जा तल (Common Resonance)' : 'Common Vedic Resonance'}
+                    </span>
+                    <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                      <div className="text-center space-y-1">
+                        <span className="text-[10px] text-[var(--text-muted)] block truncate">
+                          {boyName || 'Partner 1'} ({matchResult.common.commonNumbers.length} Common)
+                        </span>
+                        <div className="flex justify-center">
+                          <VedicGrid
+                            dob={boyDob}
+                            size="sm"
+                            hideControls={true}
+                            hideStats={true}
+                            digitHighlights={matchResult.common.commonNumbers.reduce((acc, num) => ({ ...acc, [num]: 'support' }), {})}
+                          />
+                        </div>
+                      </div>
+                      <div className="text-center space-y-1">
+                        <span className="text-[10px] text-[var(--text-muted)] block truncate">
+                          {girlName || 'Partner 2'} ({matchResult.common.commonNumbers.length} Common)
+                        </span>
+                        <div className="flex justify-center">
+                          <VedicGrid
+                            dob={girlDob}
+                            size="sm"
+                            hideControls={true}
+                            hideStats={true}
+                            digitHighlights={matchResult.common.commonNumbers.reduce((acc, num) => ({ ...acc, [num]: 'support' }), {})}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {matchResult.missingInBoth.length > 0 && (
+                      <div className="pt-1 flex flex-wrap items-center gap-1.5 text-[11px]">
+                        <span className="text-rose-600 font-medium">
+                          {locale === 'hi' ? 'दोनों में अनुपस्थित अंक:' : 'Missing in Both:'}
+                        </span>
+                        {matchResult.missingInBoth.map((mNum) => (
+                          <span
+                            key={mNum}
+                            className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"
+                          >
+                            Number {mNum}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Standard 2 Mini grids side by side */
+                  <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="text-center space-y-1">
+                      <span className="text-[10px] text-[var(--text-muted)] block truncate">
+                        {boyName || 'Partner 1'} ({pillar.boyNumber})
+                      </span>
+                      <div className="flex justify-center">
+                        <VedicGrid
+                          dob={boyDob}
+                          size="sm"
+                          hideControls={true}
+                          hideStats={true}
+                          digitHighlights={{ [pillar.boyNumber]: 'support' }}
+                        />
+                      </div>
+                      <span className="text-[9.5px] text-[var(--text-muted)] block">
+                        Highlighted: {pillar.boyNumber}
+                      </span>
+                    </div>
+
+                    <div className="text-center space-y-1">
+                      <span className="text-[10px] text-[var(--text-muted)] block truncate">
+                        {girlName || 'Partner 2'} ({pillar.girlNumber})
+                      </span>
+                      <div className="flex justify-center">
+                        <VedicGrid
+                          dob={girlDob}
+                          size="sm"
+                          hideControls={true}
+                          hideStats={true}
+                          digitHighlights={{ [pillar.girlNumber]: 'support' }}
+                        />
+                      </div>
+                      <span className="text-[9.5px] text-[var(--text-muted)] block">
+                        Highlighted: {pillar.girlNumber}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. CONCLUSION block (detailed) */}
+                <div className="p-3.5 rounded-xl bg-[var(--bg)] border border-[var(--border)] space-y-2 text-xs">
+                  {/* Verdict */}
+                  <div>
+                    <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
+                      {locale === 'hi' ? 'निर्णय (Verdict)' : 'Verdict'}
+                    </span>
+                    <p className="font-semibold text-[var(--heading)] leading-snug">
+                      {locale === 'hi' ? pillar.conclusion.verdict.hi : pillar.conclusion.verdict.en}
+                    </p>
+                  </div>
+
+                  {/* What it means */}
+                  <p className="text-[var(--text)] leading-relaxed text-[11.5px]">
+                    {locale === 'hi' ? pillar.conclusion.meaning.hi : pillar.conclusion.meaning.en}
+                  </p>
+
+                  {/* Strengths & Watch Out Bullets */}
+                  <div className="pt-2 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div className="space-y-1">
+                      <span className="font-bold text-emerald-700 flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        {locale === 'hi' ? 'सकारात्मक पक्ष' : 'Strengths'}
+                      </span>
+                      <ul className="space-y-0.5 text-[var(--text)]">
+                        {(locale === 'hi' ? pillar.conclusion.strengths.hi : pillar.conclusion.strengths.en).map((str, idx) => (
+                          <li key={idx} className="leading-tight">• {str}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="font-bold text-amber-700 flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        {locale === 'hi' ? 'सावधानी व सुझाव' : 'Watch Out'}
+                      </span>
+                      <ul className="space-y-0.5 text-[var(--text-muted)]">
+                        {(locale === 'hi' ? pillar.conclusion.watchOut.hi : pillar.conclusion.watchOut.en).map((wo, idx) => (
+                          <li key={idx} className="leading-tight">• {wo}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Add to report button */}
+                <div className="pt-2 border-t border-[var(--border)] flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => toggleReportSection(reportKey)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      isAdded
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                        : 'bg-[var(--surface)] text-[var(--gold)] hover:bg-[var(--chip-bg)] border border-[var(--border)]'
+                    }`}
+                  >
+                    {isAdded ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5 text-[var(--gold)]" />
+                        <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to report'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* OVERALL CONCLUSION CARD (Score gauge / 100, tier, summary, top 3 strengths, top 3 cautions, remedies) */}
+      <div className="vedic-card p-5 sm:p-6 space-y-5 border-t-4 border-t-[var(--gold)]">
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-5 pb-4 border-b border-[var(--border)]">
+          <div className="space-y-1.5 flex-1">
+            <div className="flex items-center gap-2">
+              <Award className="w-5 h-5 text-[var(--gold)]" />
+              <span className="text-xs font-bold text-[var(--gold)] uppercase tracking-wider">
+                {locale === 'hi' ? 'समग्र वैदिक मिलान निष्कर्ष' : 'Overall Match Verdict'}
+              </span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold font-serif text-[var(--heading)]">
+              {locale === 'hi' ? matchResult.tierHi : matchResult.tier} ({matchResult.total}/100)
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--text)] leading-relaxed max-w-2xl">
+              {locale === 'hi' ? matchResult.summaryHi : matchResult.summaryEn}
+            </p>
+          </div>
+
+          <div className="shrink-0 flex flex-col items-center">
+            <CircularScoreMeter
+              score={matchResult.total}
+              size={110}
+              label={locale === 'hi' ? 'अनुकूलता' : 'Compatibility'}
+            />
+            <span className="text-[11px] font-bold text-[var(--gold)] mt-1.5">
+              Tier: {matchResult.tier}
+            </span>
+          </div>
+        </div>
+
+        {/* Top 3 Strengths & Top 3 Cautions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+            <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              {locale === 'hi' ? 'शीर्ष 3 सकारात्मक शक्तियां' : 'Top 3 Relationship Strengths'}
+            </span>
+            <ul className="space-y-1.5 text-xs text-[var(--text)]">
+              {(locale === 'hi' ? matchResult.topStrengthsHi : matchResult.topStrengthsEn).map((str, idx) => (
+                <li key={idx} className="flex items-start gap-1.5">
+                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span>{str}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
+            <span className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              {locale === 'hi' ? 'शीर्ष 3 सावधानी के बिंदु' : 'Top 3 Planetary Cautions'}
+            </span>
+            <ul className="space-y-1.5 text-xs text-[var(--text)]">
+              {(locale === 'hi' ? matchResult.topCautionsHi : matchResult.topCautionsEn).map((caut, idx) => (
+                <li key={idx} className="flex items-start gap-1.5">
+                  <span className="text-amber-600 font-bold">!</span>
+                  <span>{caut}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Recommended Remedies */}
+        <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+          <span className="text-xs font-bold text-[var(--gold)] flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5" />
+            {locale === 'hi' ? 'अनुशंसित वैदिक उपाय (Harmonizing Remedies)' : 'Prescribed Harmonizing Remedies'}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {matchResult.remedies.map((rem, idx) => (
+              <RemedyChip
+                key={idx}
+                category={idx % 2 === 0 ? 'Vedic Harmony' : 'Crystal & Color'}
+                label={rem}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* DEDICATED PDF REPORT EXPORT BANNER */}
+      <div className="vedic-card p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-amber-500/10 via-[var(--card)] to-rose-500/10 border border-[var(--gold)]/30">
+        <div className="space-y-0.5">
+          <h3 className="font-serif font-bold text-sm sm:text-base text-[var(--heading)] flex items-center gap-2">
+            <Download className="w-4 h-4 text-[var(--gold)]" />
+            <span>{locale === 'hi' ? 'समग्र गुण मिलान पीडीएफ रिपोर्ट' : 'Dedicated Match Making PDF Report'}</span>
+          </h3>
+          <p className="text-[14px] text-[var(--text-muted)]">
+            {locale === 'hi'
+              ? 'पाँचों स्तंभों, ग्रिड तालमेल और वैदिक उपायों सहित विस्तृत वैवाहिक विश्लेषण डाउनलोड करें।'
+              : 'Download the comprehensive multi-pillar match dossier with dual grids, scoring meters, and prescribed remedies.'}
+          </p>
         </div>
 
         <button
           type="button"
           onClick={handleExportPdf}
           disabled={isExporting}
-          className="btn-gold-gradient w-full sm:w-auto h-[44px] px-6 text-xs font-bold flex items-center justify-center gap-2 shrink-0 cursor-pointer rounded-xl shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+          className="btn-gold-gradient h-[44px] px-5 text-[15px] font-semibold flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer rounded-[12px] shadow-[0_4px_12px_rgba(201,131,16,0.25)] transition-all hover:scale-[1.01] active:scale-[0.99]"
         >
           {isExporting ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>{locale === 'hi' ? 'रिपोर्ट तैयार हो रही है...' : 'Generating Report...'}</span>
-            </>
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <>
-              <Download className="w-4 h-4 stroke-[2]" />
-              <span>{locale === 'hi' ? 'एक्सपोर्ट मिलान रिपोर्ट (PDF)' : 'Export Match Report (PDF)'}</span>
-            </>
+            <Download className="w-4 h-4 stroke-[2]" />
           )}
+          <span>
+            {isExporting 
+              ? (locale === 'hi' ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...') 
+              : (locale === 'hi' ? 'मैच रिपोर्ट डाउनलोड (PDF)' : 'Export Match Report (PDF)')}
+          </span>
         </button>
       </div>
 
-      {/* PRINTABLE REPORT CONTAINER (Exported to PDF) */}
-      <div 
-        ref={pdfRef} 
-        className="space-y-5 p-3 sm:p-6 rounded-[24px] bg-[var(--bg)] border border-[var(--border)] shadow-xs"
-      >
-        {/* PDF Header (Visible in print/export) */}
-        <div className="pb-3 border-b border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-1.5 text-[var(--gold)] font-serif font-bold text-base sm:text-lg">
-              <Sparkles className="w-4 h-4" />
-              <span>NumeroTalk Vedic Compatibility Report</span>
+      {/* HIDDEN PRINT/PDF TEMPLATE (Captured by html2canvas + jsPDF) */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1100px' }}>
+        <div ref={pdfRef} className="p-8 bg-[#FFFAF3] text-[#14213D] space-y-6 font-sans">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 border-b-2 border-[#E8A317]">
+            <div>
+              <span className="text-[11px] font-bold text-[#E8A317] uppercase tracking-widest block">
+                NUMEROTALK VEDIC COMPATIBILITY DOSSIER
+              </span>
+              <h1 className="text-2xl font-serif font-bold text-[#14213D]">
+                Kundali & Numerological Match Report
+              </h1>
             </div>
-            <p className="text-[11px] text-[var(--text-muted)]">
-              {boyName} ({boyDob}) & {girlName} ({girlDob}) • Generated on {todayStr}
-            </p>
-          </div>
-          <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] px-2.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)]">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Vedic Kundli & Numerology Alignment</span>
-          </div>
-        </div>
-
-        {/* 1. HERO COMPATIBILITY SCORE CARD with CIRCULAR SCORE GAUGE */}
-        <div className="vedic-card p-5 sm:p-7 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(ellipse_at_top_right,_var(--gold)_0%,_transparent_70%)] opacity-10 pointer-events-none" />
-
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10">
-            {/* The Rounded Donut Circle Gauge */}
-            <div className="shrink-0">
-              <CircularScoreMeter
-                score={result.totalScore}
-                size={175}
-                strokeWidth={12}
-                label={locale === 'hi' ? 'समग्र गुण मिलान' : 'Overall Match'}
-                verdict={locale === 'hi' ? result.verdictHi : result.verdictEn}
-                locale={locale}
-              />
-            </div>
-
-            {/* Score Breakdown & Synthesis */}
-            <div className="flex-1 text-left space-y-3.5 max-w-xl">
-              <div>
-                <span className="text-[10px] font-bold text-[var(--gold)] tracking-widest uppercase block mb-1">
-                  {t('totalScoreLabel')}
-                </span>
-                <h3 className="font-serif text-lg sm:text-xl font-bold text-[var(--heading)]">
-                  {locale === 'hi' ? result.verdictHi : result.verdictEn}
-                </h3>
-                <p className="text-xs text-[var(--text)] leading-relaxed mt-1">
-                  {locale === 'hi' ? result.analysisHi : result.analysisEn}
-                </p>
-              </div>
-
-              {/* Score Metric Progress Pill Indicators */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[var(--border)]">
-                <div className="p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-center">
-                  <span className="text-[10px] text-[var(--text-muted)] block">Driver Bond</span>
-                  <strong className="text-xs font-serif font-bold text-[var(--gold)]">
-                    {result.mulankCompat.score}/30
-                  </strong>
-                </div>
-                <div className="p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-center">
-                  <span className="text-[10px] text-[var(--text-muted)] block">Destiny Path</span>
-                  <strong className="text-xs font-serif font-bold text-[var(--gold)]">
-                    {result.bhagyankCompat.score}/30
-                  </strong>
-                </div>
-                <div className="p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-center">
-                  <span className="text-[10px] text-[var(--text-muted)] block">Cross Dynamic</span>
-                  <strong className="text-xs font-serif font-bold text-[var(--gold)]">
-                    {result.crossCompat.score}/20
-                  </strong>
-                </div>
-                <div className="p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-center">
-                  <span className="text-[10px] text-[var(--text-muted)] block">Grid Overlap</span>
-                  <strong className="text-xs font-serif font-bold text-emerald-700">
-                    {Math.max(0, result.totalScore - result.mulankCompat.score - result.bhagyankCompat.score - result.crossCompat.score)}/20
-                  </strong>
-                </div>
-              </div>
+            <div className="text-right text-xs text-[#8A7F6E]">
+              <span className="block font-semibold">Date: {todayStr}</span>
+              <span className="block">DPDP Local Compliance</span>
             </div>
           </div>
-        </div>
 
-        {/* 2. THREE KEY COMPARISON BLOCKS (Clean Number Badge Pairs, NO Cluttered Grids) */}
-        <div className="space-y-3.5">
-          <div className="flex items-center justify-between">
-            <h3 className="font-serif text-sm sm:text-base font-bold text-[var(--heading)] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[var(--gold)]" />
-              <span>{locale === 'hi' ? 'तीन प्रमुख वैदिक तुलनात्मक स्तंभ' : 'Three Key Vedic Compatibility Pillars'}</span>
+          {/* Profile Strip */}
+          <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-white border border-[#EADFC8]">
+            <div className="space-y-1 border-r border-[#EADFC8] pr-4">
+              <span className="text-xs font-bold text-[#E8A317]">Partner 1 (Boy)</span>
+              <h3 className="text-base font-bold text-[#14213D]">{boyName}</h3>
+              <p className="text-xs text-[#4A4A5A]">DOB: {boyDob} | Driver: {matchResult.boy.mulank} | Life Path: {matchResult.boy.bhagyank} | Destiny: {matchResult.boy.destinyNumber}</p>
+            </div>
+            <div className="space-y-1 pl-4">
+              <span className="text-xs font-bold text-[#E8A317]">Partner 2 (Girl)</span>
+              <h3 className="text-base font-bold text-[#14213D]">{girlName}</h3>
+              <p className="text-xs text-[#4A4A5A]">DOB: {girlDob} | Driver: {matchResult.girl.mulank} | Life Path: {matchResult.girl.bhagyank} | Destiny: {matchResult.girl.destinyNumber}</p>
+            </div>
+          </div>
+
+          {/* Overall Score Box */}
+          <div className="p-5 rounded-xl bg-white border-2 border-[#E8A317] flex items-center justify-between">
+            <div className="space-y-1 max-w-xl">
+              <span className="text-xs font-bold text-[#E8A317] uppercase tracking-wider block">Compatibility Synthesis</span>
+              <h2 className="text-xl font-bold font-serif text-[#14213D]">
+                {matchResult.tier} Compatibility — {matchResult.total}/100
+              </h2>
+              <p className="text-xs text-[#2B2B3A] leading-relaxed">
+                {matchResult.summaryEn}
+              </p>
+            </div>
+            <div className="text-center p-3 rounded-xl bg-[#FFF6E5] border border-[#E8A317]">
+              <span className="text-3xl font-serif font-bold text-[#14213D] block">{matchResult.total}</span>
+              <span className="text-[10px] font-bold text-[#E8A317] uppercase">Out of 100</span>
+            </div>
+          </div>
+
+          {/* 5 Pillars Summary */}
+          <div className="space-y-3">
+            <h3 className="text-base font-serif font-bold text-[#14213D] border-b border-[#EADFC8] pb-1">
+              5 Core Vedic Compatibility Pillars
             </h3>
-            <span className="text-[10px] text-[var(--text-muted)]">
-              Weight: 80 Points Total
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Pillar 1: Driver ↔ Driver */}
-            {(() => {
-              const rel = getRelationBadge(result.mulankCompat.relation);
-              return (
-                <div className="vedic-card p-4 space-y-3 flex flex-col justify-between border-t-2 border-t-[var(--gold)]">
-                  <div>
-                    <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                      <span className="text-xs font-bold font-serif text-[var(--heading)]">
-                        1. Driver ↔ Driver
-                      </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${rel.bg}`}>
-                        {rel.label}
-                      </span>
-                    </div>
-
-                    {/* Clean Number Badge Pair */}
-                    <div className="flex items-center justify-center gap-4 py-3.5 bg-[var(--bg)] rounded-xl my-2 border border-[var(--border)]">
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">{boyName}</span>
-                        <div className="w-10 h-10 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-extrabold text-base flex items-center justify-center border-2 border-[var(--border)] shadow-xs mx-auto">
-                          {result.boy.mulank}
-                        </div>
-                        <span className="text-[9px] text-[var(--text-muted)] block mt-0.5">Mulank</span>
-                      </div>
-
-                      <div className="flex flex-col items-center">
-                        <ArrowRightLeft className="w-4 h-4 text-[var(--gold)] stroke-[2]" />
-                        <span className="text-[10px] font-bold text-emerald-700 mt-1">
-                          {result.mulankCompat.score}/30
-                        </span>
-                      </div>
-
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">{girlName}</span>
-                        <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-700 font-serif font-extrabold text-base flex items-center justify-center border-2 border-rose-200 shadow-xs mx-auto">
-                          {result.girl.mulank}
-                        </div>
-                        <span className="text-[9px] text-[var(--text-muted)] block mt-0.5">Mulank</span>
-                      </div>
-                    </div>
+            <div className="grid grid-cols-1 gap-3">
+              {matchResult.pillars.map((p) => (
+                <div key={p.id} className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#14213D] text-sm">{p.titleEn}</span>
+                    <span className="font-bold text-[#E8A317]">{p.score}/20 ({p.relation.toUpperCase()})</span>
                   </div>
-
-                  <p className="text-[11px] text-[var(--text)] leading-relaxed pt-2 border-t border-[var(--border)]">
-                    {locale === 'hi' ? result.mulankCompat.labelHi : result.mulankCompat.labelEn}
+                  <p className="text-[#2B2B3A] leading-relaxed">
+                    <strong>Verdict: </strong>{p.conclusion.verdict.en}
+                  </p>
+                  <p className="text-[#4A4A5A] text-[11px] leading-relaxed">
+                    {p.conclusion.meaning.en}
                   </p>
                 </div>
-              );
-            })()}
-
-            {/* Pillar 2: Conductor ↔ Conductor */}
-            {(() => {
-              const rel = getRelationBadge(result.bhagyankCompat.relation);
-              return (
-                <div className="vedic-card p-4 space-y-3 flex flex-col justify-between border-t-2 border-t-[var(--gold)]">
-                  <div>
-                    <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                      <span className="text-xs font-bold font-serif text-[var(--heading)]">
-                        2. Conductor ↔ Conductor
-                      </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${rel.bg}`}>
-                        {rel.label}
-                      </span>
-                    </div>
-
-                    {/* Clean Number Badge Pair */}
-                    <div className="flex items-center justify-center gap-4 py-3.5 bg-[var(--bg)] rounded-xl my-2 border border-[var(--border)]">
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">{boyName}</span>
-                        <div className="w-10 h-10 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-extrabold text-base flex items-center justify-center border-2 border-[var(--border)] shadow-xs mx-auto">
-                          {result.boy.bhagyank}
-                        </div>
-                        <span className="text-[9px] text-[var(--text-muted)] block mt-0.5">Bhagyank</span>
-                      </div>
-
-                      <div className="flex flex-col items-center">
-                        <ArrowRightLeft className="w-4 h-4 text-[var(--gold)] stroke-[2]" />
-                        <span className="text-[10px] font-bold text-emerald-700 mt-1">
-                          {result.bhagyankCompat.score}/30
-                        </span>
-                      </div>
-
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">{girlName}</span>
-                        <div className="w-10 h-10 rounded-full bg-rose-50 text-rose-700 font-serif font-extrabold text-base flex items-center justify-center border-2 border-rose-200 shadow-xs mx-auto">
-                          {result.girl.bhagyank}
-                        </div>
-                        <span className="text-[9px] text-[var(--text-muted)] block mt-0.5">Bhagyank</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-[var(--text)] leading-relaxed pt-2 border-t border-[var(--border)]">
-                    {locale === 'hi' ? result.bhagyankCompat.labelHi : result.bhagyankCompat.labelEn}
-                  </p>
-                </div>
-              );
-            })()}
-
-            {/* Pillar 3: Cross Driver ↔ Conductor */}
-            {(() => {
-              const rel = getRelationBadge(result.crossCompat.relation);
-              return (
-                <div className="vedic-card p-4 space-y-3 flex flex-col justify-between border-t-2 border-t-[var(--gold)]">
-                  <div>
-                    <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                      <span className="text-xs font-bold font-serif text-[var(--heading)]">
-                        3. Cross Driver ↔ Conductor
-                      </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${rel.bg}`}>
-                        {rel.label}
-                      </span>
-                    </div>
-
-                    {/* Cross interaction display */}
-                    <div className="flex items-center justify-center gap-4 py-3.5 bg-[var(--bg)] rounded-xl my-2 border border-[var(--border)]">
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">Boy M × Girl B</span>
-                        <div className="px-2.5 py-1 rounded-lg bg-[var(--surface)] text-[var(--gold)] font-serif font-bold text-xs border border-[var(--border)] shadow-xs">
-                          {result.boy.mulank} × {result.girl.bhagyank}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-center">
-                        <Sparkles className="w-4 h-4 text-[var(--gold)]" />
-                        <span className="text-[10px] font-bold text-emerald-700 mt-1">
-                          {result.crossCompat.score}/20
-                        </span>
-                      </div>
-
-                      <div className="text-center">
-                        <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">Girl M × Boy B</span>
-                        <div className="px-2.5 py-1 rounded-lg bg-[var(--surface)] text-rose-700 font-serif font-bold text-xs border border-rose-200 shadow-xs">
-                          {result.girl.mulank} × {result.boy.bhagyank}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-[11px] text-[var(--text)] leading-relaxed pt-2 border-t border-[var(--border)]">
-                    {locale === 'hi' ? result.crossCompat.labelHi : result.crossCompat.labelEn}
-                  </p>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-
-        {/* 3. COMMON NUMBERS & MUTUAL FILLING */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Common Numbers */}
-          <div className="vedic-card p-4 sm:p-5 space-y-2.5">
-            <h4 className="text-xs font-bold font-serif text-[var(--gold)] flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" />
-              {t('commonNumbersTitle')}
-            </h4>
-            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
-              {locale === 'hi'
-                ? 'दोनों के ग्रिड में समान उपस्थित अंक जो प्राकृतिक वैचारिक सामंजस्य और सहज समझ बनाते हैं:'
-                : 'Digits present in both partners grids creating natural common ground and shared thinking:'}
-            </p>
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              {result.commonNumbers.length > 0 ? (
-                result.commonNumbers.map((num) => (
-                  <span 
-                    key={num}
-                    className="w-8 h-8 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--border)] shadow-xs"
-                  >
-                    {num}
-                  </span>
-                ))
-              ) : (
-                <span className="text-xs text-[var(--text-muted)] italic">
-                  {locale === 'hi' ? 'कोई उभयनिष्ठ अंक नहीं' : 'No common digits present'}
-                </span>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* Mutual Complement / Exchangeable Numbers */}
-          <div className="vedic-card p-4 sm:p-5 space-y-2.5">
-            <h4 className="text-xs font-bold font-serif text-emerald-800 flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              {t('exchangeTitle')}
-            </h4>
-            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
-              {locale === 'hi'
-                ? 'एक-दूसरे के रिक्त खानों की पूर्ति — जहाँ एक पार्टनर दूसरे की कमियों को संबल प्रदान करता है:'
-                : 'How each partner spiritually fills missing numeric voids in the other partner:'}
-            </p>
-            <div className="space-y-2 text-xs pt-1">
-              <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-                <span className="text-[var(--text-muted)] text-[11px]">
-                  {boyName} fills {girlName}&apos;s voids:
-                </span>
-                <strong className="text-emerald-800 font-serif font-bold text-xs">
-                  {result.boyFillsGirlMissing.length > 0 ? result.boyFillsGirlMissing.join(', ') : 'None'}
-                </strong>
-              </div>
-              <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-                <span className="text-[var(--text-muted)] text-[11px]">
-                  {girlName} fills {boyName}&apos;s voids:
-                </span>
-                <strong className="text-emerald-800 font-serif font-bold text-xs">
-                  {result.girlFillsBoyMissing.length > 0 ? result.girlFillsBoyMissing.join(', ') : 'None'}
-                </strong>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. FULL VEDIC GRIDS SIDE-BY-SIDE (Clean, centered, dedicated section) */}
-        <div className="space-y-3.5 pt-2">
-          <div className="flex items-center justify-between">
-            <h3 className="font-serif text-sm sm:text-base font-bold text-[var(--heading)] flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[var(--gold)]" />
-              <span>{locale === 'hi' ? 'दोनों कुंडलियों के वैदिक ग्रिड' : 'Vedic Numerology Grids Comparison'}</span>
-            </h3>
-            <span className="text-[10px] text-[var(--text-muted)]">
-              Full 3×3 Planetary Matrices
-            </span>
+          {/* Prescribed Remedies */}
+          <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2 text-xs">
+            <span className="font-bold text-[#E8A317] block">Prescribed Harmonizing Remedies:</span>
+            <ul className="space-y-1 text-[#2B2B3A]">
+              {matchResult.remedies.map((rem, idx) => (
+                <li key={idx} className="flex items-start gap-1.5">
+                  <span className="text-[#E8A317] font-bold">•</span>
+                  <span>{rem}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Boy's Vedic Grid Card */}
-            <div className="vedic-card p-4 sm:p-5 space-y-3 border-t-2 border-t-[var(--gold)]">
-              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                <div>
-                  <span className="text-xs font-bold font-serif text-[var(--heading)] block">
-                    {boyName}&apos;s Vedic Grid
-                  </span>
-                  <span className="text-[10px] text-[var(--text-muted)]">
-                    DOB: {boyDob} • Mulank: {result.boy.mulank} • Bhagyank: {result.boy.bhagyank}
-                  </span>
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--chip-bg)] text-[var(--gold)] font-semibold border border-[var(--border)]">
-                  Partner 1
-                </span>
-              </div>
-              <div className="flex justify-center py-2">
-                <VedicGrid dob={boyDob} locale={locale} hideControls={true} />
-              </div>
-            </div>
-
-            {/* Girl's Vedic Grid Card */}
-            <div className="vedic-card p-4 sm:p-5 space-y-3 border-t-2 border-t-rose-400">
-              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
-                <div>
-                  <span className="text-xs font-bold font-serif text-[var(--heading)] block">
-                    {girlName}&apos;s Vedic Grid
-                  </span>
-                  <span className="text-[10px] text-[var(--text-muted)]">
-                    DOB: {girlDob} • Mulank: {result.girl.mulank} • Bhagyank: {result.girl.bhagyank}
-                  </span>
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-semibold border border-rose-200">
-                  Partner 2
-                </span>
-              </div>
-              <div className="flex justify-center py-2">
-                <VedicGrid dob={girlDob} locale={locale} hideControls={true} />
-              </div>
-            </div>
+          {/* Statutory Footer */}
+          <div className="pt-4 border-t border-[#EADFC8] text-center text-[10px] text-[#8A7F6E]">
+            NumeroTalk Vedic Match Matrix • For consultative & informational purposes • Generated on {todayStr}
           </div>
-        </div>
-
-        {/* 5. HARMONIZING REMEDIES ADVICE */}
-        <div className="vedic-card p-4 sm:p-5 space-y-2 border-l-4 border-l-[var(--gold)]">
-          <h4 className="text-xs font-bold font-serif text-[var(--gold)] flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" />
-            {t('remedyAdvice')}
-          </h4>
-          <p className="text-xs text-[var(--text)] leading-relaxed">
-            {locale === 'hi' ? result.remedyAdviceHi : result.remedyAdviceEn}
-          </p>
-        </div>
-
-        {/* Report Footer Note */}
-        <div className="text-center pt-2 text-[10px] text-[var(--text-muted)] border-t border-[var(--border)]">
-          NumeroTalk Vedic Numerology Platform • Confidential Match Making Analysis • Not intended as legal advice
         </div>
       </div>
     </div>

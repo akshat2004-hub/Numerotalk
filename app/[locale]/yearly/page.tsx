@@ -3,13 +3,14 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { CalendarDays, Sparkles, Compass, CheckCircle2, Repeat, Layers } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { VedicGrid } from '@/components/VedicGrid';
-import { ProfileEmptyBanner } from '@/components/ProfileEmptyBanner';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { calculateYearlyPrediction, YearlyPredictionResult, DashaPeriod } from '@/lib/engine/dasha';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { YearSelector } from '@/frontend/components/ui/YearSelector';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { calculateYearlyPrediction, YearlyPredictionResult, DashaPeriod } from '@/core/engine/dasha';
 
 export default function YearlyPage() {
   const t = useTranslations('yearlyPage');
@@ -21,11 +22,11 @@ export default function YearlyPage() {
   const [targetYear, setTargetYear] = useState<number>(currentYear);
 
   const dob = profile.dob || '1995-10-23';
+  const birthYear = profile.dob ? parseInt(profile.dob.split('-')[0], 10) : undefined;
   const prediction: YearlyPredictionResult = useMemo(
     () => calculateYearlyPrediction(dob, targetYear),
     [dob, targetYear]
   );
-  const availableYears = Array.from({ length: 9 }, (_, i) => currentYear - 3 + i);
 
   const dashaLevels: DashaPeriod[] = [
     prediction.mahadasha,
@@ -38,7 +39,6 @@ export default function YearlyPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? 'वार्षिक दशा चक्र 12' : 'Yearly Dasha Cycle 12'}
         icon={<CalendarDays className="w-5 h-5 sm:w-6 sm:h-6" />}
       />
 
@@ -51,25 +51,17 @@ export default function YearlyPage() {
             {t('selectYear')}
           </span>
           <h3 className="text-base sm:text-lg font-bold font-serif text-[var(--heading)]">
-            {locale === 'hi' ? `वर्ष ${targetYear} का सूक्ष्म विश्लेषण` : `Cosmic Reading for Year ${targetYear}`}
+            {locale === 'hi' ? `वर्ष ${targetYear}/${targetYear + 1} का सूक्ष्म विश्लेषण` : `Cosmic Reading for Year ${targetYear}/${targetYear + 1}`}
           </h3>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {availableYears.map((yr) => (
-            <button
-              key={yr}
-              type="button"
-              onClick={() => setTargetYear(yr)}
-              className={`px-3 py-1.5 rounded-xl font-serif text-xs font-bold border transition-all cursor-pointer ${
-                targetYear === yr
-                  ? 'bg-gradient-to-r from-[var(--gold)] to-amber-600 text-white border-amber-600 shadow-sm'
-                  : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)] hover:text-[var(--heading)]'
-              }`}
-            >
-              {yr}
-            </button>
-          ))}
+        <div>
+          <YearSelector
+            selectedYear={targetYear}
+            onChange={setTargetYear}
+            birthYear={birthYear}
+            locale={locale}
+          />
         </div>
       </div>
 

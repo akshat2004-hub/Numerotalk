@@ -12,7 +12,7 @@ export async function GET(
     // Check if ID is UUID or share_token
     const query = supabase
       .from('reports')
-      .select('*, profiles(name, dob, mobile, birth_time, destiny_system)');
+      .select('*, profiles(name, dob, mobile, birth_time)');
 
     if (id.length > 30 && !id.includes('-')) {
       query.eq('share_token', id);

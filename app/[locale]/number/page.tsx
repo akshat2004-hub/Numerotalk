@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { BookOpen, Sparkles, Check, Plus } from 'lucide-react';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { NumberBadge } from '@/components/ui/NumberBadge';
-import { PredictionCard } from '@/components/ui/PredictionCard';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
-import { getNumberMeaning, NumberMeaningInfo } from '@/lib/engine/meanings108';
+import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { getNumberMeaning, NumberMeaningInfo } from '@/core/engine/meanings108';
 
 export default function NumberMeaningPage() {
   const t = useTranslations('numberMeaningsPage');
@@ -28,7 +28,6 @@ export default function NumberMeaningPage() {
       <SectionHeader
         title={t('title')}
         subtitle={t('subtitle')}
-        badge={locale === 'hi' ? '1 से 108 अंक 15' : '108 SACRED BEADS 15'}
         icon={<BookOpen className="w-5 h-5 stroke-[1.5]" />}
       />
 

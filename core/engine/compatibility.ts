@@ -1,5 +1,81 @@
 import { calculateMulank, calculateBhagyank, calculateDestinyNumber } from './numerology';
 import { calculateVedicGrid, VedicGridResult } from './grid';
+import friendlyEnemyRules from '@/mocks/rules/friendly-enemy-neutral.json';
+import matchConclusionsData from '@/mocks/rules/match-conclusions.json';
+
+export interface PillarConclusion {
+  verdict: { en: string; hi: string };
+  meaning: { en: string; hi: string };
+  strengths: { en: string[]; hi: string[] };
+  watchOut: { en: string[]; hi: string[] };
+}
+
+export interface MatchPillar {
+  id: 'driver' | 'lifepath' | 'destiny' | 'exchangeable' | 'common';
+  titleEn: string;
+  titleHi: string;
+  boyNumber: number;
+  girlNumber: number;
+  relation: 'friendly' | 'enemy' | 'neutral';
+  score: number;
+  max: 20;
+  conclusion: PillarConclusion;
+}
+
+export interface MatchScoreResult {
+  total: number;
+  tier: 'Excellent' | 'Good' | 'Moderate' | 'Needs care';
+  tierHi: string;
+  pillars: MatchPillar[];
+  exchangeable: {
+    exchange1: {
+      boyNumber: number;
+      girlNumber: number;
+      relation: 'friendly' | 'enemy' | 'neutral';
+      score: number;
+      max: 10;
+    };
+    exchange2: {
+      girlNumber: number;
+      boyNumber: number;
+      relation: 'friendly' | 'enemy' | 'neutral';
+      score: number;
+      max: 10;
+    };
+    totalScore: number;
+  };
+  common: {
+    commonNumbers: number[];
+    boyOnlyNumbers: number[];
+    girlOnlyNumbers: number[];
+    score: number;
+    max: 20;
+  };
+  missingInBoth: number[];
+  boy: {
+    name: string;
+    dob: string;
+    mulank: number;
+    bhagyank: number;
+    destinyNumber: number;
+    grid: VedicGridResult;
+  };
+  girl: {
+    name: string;
+    dob: string;
+    mulank: number;
+    bhagyank: number;
+    destinyNumber: number;
+    grid: VedicGridResult;
+  };
+  summaryEn: string;
+  summaryHi: string;
+  topStrengthsEn: string[];
+  topStrengthsHi: string[];
+  topCautionsEn: string[];
+  topCautionsHi: string[];
+  remedies: string[];
+}
 
 export interface NumberRelationshipInfo {
   number: number;
@@ -241,10 +317,81 @@ export interface MatchMakingResult {
   remedyAdviceHi: string;
 }
 
-export function calculateMatchMaking(
+export function getPillarConclusion(numA: number, numB: number, fallbackRelation: 'friendly' | 'enemy' | 'neutral'): PillarConclusion {
+  const key = `${numA}-${numB}`;
+  const data = (matchConclusionsData as unknown as Record<string, PillarConclusion>)[key];
+  if (data) {
+    return {
+      verdict: data.verdict,
+      meaning: data.meaning,
+      strengths: data.strengths,
+      watchOut: data.watchOut
+    };
+  }
+  if (fallbackRelation === 'friendly') {
+    return {
+      verdict: {
+        en: `Harmonious Vedic synergy uniting number ${numA} and number ${numB}.`,
+        hi: `अंक ${numA} और अंक ${numB} के मध्य अत्यंत शुभ व अनुकूल वैदिक तालमेल।`
+      },
+      meaning: {
+        en: `This pairing naturally cultivates mutual appreciation, shared life vision, and smooth domestic harmony. Both partners uplift each other effortlessly.`,
+        hi: `यह संयोग स्वाभाविक रूप से एक-दूसरे के प्रति सम्मान, साझा दृष्टिकोण और पारिवारिक शांति को बढ़ाता है। दोनों साथी एक-दूसरे के लक्ष्यों में सहजता से सहयोग करते हैं।`
+      },
+      strengths: {
+        en: [`Organic emotional resonance and aligned priorities.`, `Shared enthusiasm for family growth and financial security.`],
+        hi: [`सहज भावनात्मक जुड़ाव और जीवन की समान प्राथमिकताएं।`, `पारिवारिक समृद्धि और सुरक्षा के लिए मिलकर काम करने की तत्परता।`]
+      },
+      watchOut: {
+        en: [`Ensure independent hobbies are maintained so you don't become overly co-dependent.`],
+        hi: [`अत्यधिक निर्भरता से बचने के लिए अपनी व्यक्तिगत रुचियों को भी समय दें।`]
+      }
+    };
+  }
+  if (fallbackRelation === 'enemy') {
+    return {
+      verdict: {
+        en: `Dynamic contrast requiring conscious patience and clear boundaries.`,
+        hi: `विरोधी ऊर्जाओं का संगम, जिसमें सजग धैर्य और परस्पर सम्मान की आवश्यकता है।`
+      },
+      meaning: {
+        en: `This pairing brings contrasting planetary impulses that can spark occasional misunderstanding. Conscious listening and Vedic remedies bridge differences.`,
+        hi: `यह मेल अलग-अलग ग्रहों के स्वभाव के कारण कभी-कभी वैचारिक मतभेद ला सकता है। धैर्यपूर्वक संवाद और वैदिक उपाय इस दूरी को पाटते हैं।`
+      },
+      strengths: {
+        en: [`Offers immense opportunities for soul evolution, patience, and maturity.`],
+        hi: [`धैर्य, परिपक्वता और आत्म-सुधार के गहरे अवसर प्रदान करता है।`]
+      },
+      watchOut: {
+        en: [`Guard against stubborn ego clashes and trying to forcefully change the other partner.`],
+        hi: [`अहंकार के टकराव और एक-दूसरे को जबरन बदलने की कोशिश से बचें।`]
+      }
+    };
+  }
+  return {
+    verdict: {
+      en: `Balanced and stable alliance with complementary differences.`,
+      hi: `पूरक गुणों के साथ संतुलित, व्यावहारिक और स्थिर संबंध।`
+    },
+    meaning: {
+      en: `The union is practical, steady, and grounded in mutual respect without intense friction. Roles and expectations are well-balanced.`,
+      hi: `यह रिश्ता व्यावहारिक और स्थिर है, जो आपसी समझ और मर्यादा पर टिका है। दोनों साथी मिलकर सुखद जीवन का निर्माण करते हैं।`
+    },
+    strengths: {
+      en: [`Complementary strengths that balance individual blind spots.`],
+      hi: [`एक-दूसरे की कमियों को पूरा करने वाले पूरक गुण।`]
+    },
+    watchOut: {
+      en: [`Avoid viewing the partnership solely as a pragmatic checklist; nourish emotional intimacy.`],
+      hi: [`रिश्ते को केवल कर्तव्यों तक सीमित न रखें; भावनात्मक गर्माहट बनाए रखें।`]
+    }
+  };
+}
+
+export function matchScore(
   boyInput: MatchProfileInput,
   girlInput: MatchProfileInput
-): MatchMakingResult {
+): MatchScoreResult {
   const boyMulank = calculateMulank(boyInput.dob).mulank;
   const boyBhagyank = calculateBhagyank(boyInput.dob).bhagyank;
   const boyDestiny = calculateDestinyNumber(boyInput.name).destinyNumber;
@@ -255,114 +402,258 @@ export function calculateMatchMaking(
   const girlDestiny = calculateDestinyNumber(girlInput.name).destinyNumber;
   const girlGrid = calculateVedicGrid(girlInput.dob);
 
-  // 1. Mulank ↔ Mulank evaluation (up to 30 pts)
-  const mRel = getNumberRelationship(boyMulank, girlMulank);
-  let mScore = 18;
-  let mLabelEn = 'Neutral Harmony';
-  let mLabelHi = 'सामान्य सामंजस्य';
-  if (mRel === 'friendly') {
-    mScore = 30;
-    mLabelEn = 'Strong Friendly Bond';
-    mLabelHi = 'प्रगाढ़ मित्रवत संबंध';
-  } else if (mRel === 'enemy') {
-    mScore = 8;
-    mLabelEn = 'Differing Temperaments';
-    mLabelHi = 'विपरीत स्वभाव / मतभेद की संभावना';
-  }
+  const pointsConfig = (friendlyEnemyRules.points as { friendly: number; neutral: number; enemy: number }) || {
+    friendly: 20,
+    neutral: 12,
+    enemy: 5
+  };
 
-  // 2. Bhagyank ↔ Bhagyank evaluation (up to 30 pts)
-  const bRel = getNumberRelationship(boyBhagyank, girlBhagyank);
-  let bScore = 18;
-  let bLabelEn = 'Neutral Destiny Path';
-  let bLabelHi = 'सामान्य भाग्य संयोग';
-  if (bRel === 'friendly') {
-    bScore = 30;
-    bLabelEn = 'Supportive Life Destiny';
-    mLabelHi = 'सद्भावपूर्ण जीवन यात्रा';
-  } else if (bRel === 'enemy') {
-    bScore = 8;
-    bLabelEn = 'Differing Life Directions';
-    bLabelHi = 'जीवन लक्ष्यों में भिन्नता';
-  }
+  // Pillar 1: Driver ↔ Driver (Mulank) — max 20
+  const driverRel = getNumberRelationship(boyMulank, girlMulank);
+  const driverScore = pointsConfig[driverRel];
+  const driverConclusion = getPillarConclusion(boyMulank, girlMulank, driverRel);
 
-  // 3. Cross Driver ↔ Conductor evaluation (up to 20 pts)
-  const cross1 = getNumberRelationship(boyMulank, girlBhagyank);
-  const cross2 = getNumberRelationship(girlMulank, boyBhagyank);
-  let cScore = 12;
-  let cRel: 'friendly' | 'enemy' | 'neutral' = 'neutral';
-  let cLabelEn = 'Moderate Complementary Dynamics';
-  let cLabelHi = 'सामान्य पूरक ऊर्जा';
-  if (cross1 === 'friendly' || cross2 === 'friendly') {
-    cScore = 20;
-    cRel = 'friendly';
-    cLabelEn = 'Harmonious Exchange Energy';
-    cLabelHi = 'परस्पर पूरक श्रेष्ठ ऊर्जा';
-  } else if (cross1 === 'enemy' && cross2 === 'enemy') {
-    cScore = 5;
-    cRel = 'enemy';
-    cLabelEn = 'Cross-Energy Friction';
-    cLabelHi = 'विरोधी पूरक प्रभाव';
-  }
+  // Pillar 2: Life Path ↔ Life Path (Conductor / Bhagyank) — max 20
+  const lifepathRel = getNumberRelationship(boyBhagyank, girlBhagyank);
+  const lifepathScore = pointsConfig[lifepathRel];
+  const lifepathConclusion = getPillarConclusion(boyBhagyank, girlBhagyank, lifepathRel);
 
-  // 4. Destiny evaluation (legacy compat reference)
-  const dRel = getNumberRelationship(boyDestiny, girlDestiny);
-  let dScore = 10;
-  let dLabelEn = 'Moderate Name Harmony';
-  let dLabelHi = 'सामान्य नामांक योग';
-  if (dRel === 'friendly') {
-    dScore = 20;
-    dLabelEn = 'Favorable Name Vibrations';
-    dLabelHi = 'अत्यंत अनुकूल नामांक ऊर्जा';
-  } else if (dRel === 'enemy') {
-    dScore = 5;
-    dLabelEn = 'Conflicting Name Frequencies';
-    dLabelHi = 'विरोधी नामांक प्रभाव';
-  }
+  // Pillar 3: Destiny ↔ Destiny (Name number) — max 20
+  const destinyRel = getNumberRelationship(boyDestiny, girlDestiny);
+  const destinyScore = pointsConfig[destinyRel];
+  const destinyConclusion = getPillarConclusion(boyDestiny, girlDestiny, destinyRel);
 
-  // 5. Grid mutual complement & overlap (up to 20 pts)
+  // Pillar 4: Exchangeable Numbers (Boy Mulank × Girl Bhagyank and Girl Mulank × Boy Bhagyank) — max 20
+  const ex1Rel = getNumberRelationship(boyMulank, girlBhagyank);
+  const ex2Rel = getNumberRelationship(girlMulank, boyBhagyank);
+  const halfPoints = { friendly: 10, neutral: 6, enemy: 2.5 };
+  const ex1Score = halfPoints[ex1Rel];
+  const ex2Score = halfPoints[ex2Rel];
+  const exchangeableScore = Math.round(ex1Score + ex2Score);
+  const exchangeableRel: 'friendly' | 'enemy' | 'neutral' =
+    ex1Rel === 'friendly' && ex2Rel === 'friendly'
+      ? 'friendly'
+      : ex1Rel === 'enemy' && ex2Rel === 'enemy'
+      ? 'enemy'
+      : ex1Rel === 'friendly' || ex2Rel === 'friendly'
+      ? 'friendly'
+      : 'neutral';
+  const exchangeableConclusion = getPillarConclusion(boyMulank, girlBhagyank, exchangeableRel);
+
+  // Pillar 5: Common Numbers (digits present in BOTH Vedic grids) — max 20
   const boyPresent = new Set(boyGrid.presentNumbers);
   const girlPresent = new Set(girlGrid.presentNumbers);
-
   const commonNumbers = boyGrid.presentNumbers.filter(n => girlPresent.has(n));
-  const boyFillsGirlMissing = boyGrid.presentNumbers.filter(n => !girlPresent.has(n));
-  const girlFillsBoyMissing = girlGrid.presentNumbers.filter(n => !boyPresent.has(n));
+  const boyOnlyNumbers = boyGrid.presentNumbers.filter(n => !girlPresent.has(n));
+  const girlOnlyNumbers = girlGrid.presentNumbers.filter(n => !boyPresent.has(n));
 
-  const gridOverlapScore = Math.min(20, Math.round(commonNumbers.length * 4.5 + (boyFillsGirlMissing.length + girlFillsBoyMissing.length) * 1.5));
+  // Digits 1-9 missing in both grids
+  const missingInBoth = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => !boyPresent.has(n) && !girlPresent.has(n));
 
-  // Score = DriverDriver 30 + ConductorConductor 30 + cross 20 + grid overlap 20
-  const totalScore = Math.min(100, Math.round(mScore + bScore + cScore + gridOverlapScore));
+  // Common score by overlap count: 5 pts per common digit up to 20
+  const commonScore = Math.min(20, commonNumbers.length * 5);
+  const commonRel: 'friendly' | 'enemy' | 'neutral' =
+    commonNumbers.length >= 4 ? 'friendly' : commonNumbers.length >= 2 ? 'neutral' : 'enemy';
+  const commonConclusion = {
+    verdict: {
+      en: `Shared grid resonance with ${commonNumbers.length} overlapping numbers (${commonNumbers.join(', ') || 'None'}).`,
+      hi: `${commonNumbers.length} समान उपस्थित अंकों (${commonNumbers.join(', ') || 'कोई नहीं'}) के साथ ग्रिड सामंजस्य।`
+    },
+    meaning: {
+      en: `Digits appearing in both grids create natural mutual understanding in lifestyle, temperament, and daily habits. ${
+        missingInBoth.length > 0
+          ? `Mutual missing numbers (${missingInBoth.join(', ')}) should be balanced with remedial gemstones or colors.`
+          : 'Energy grid coverage is well-rounded.'
+      }`,
+      hi: `दोनों ग्रिडों में उपस्थित अंक जीवनशैली और दैनिक व्यवहार में सहज सामंजस्य उत्पन्न करते हैं। ${
+        missingInBoth.length > 0
+          ? `दोनों में अनुपस्थित अंक (${missingInBoth.join(', ')}) को उपाय व रंगों से संतुलित करें।`
+          : 'ग्रिड ऊर्जा समग्र रूप से संतुलित है।'
+      }`
+    },
+    strengths: {
+      en: [`Common vibrational ground across ${commonNumbers.length} distinct life dimensions.`],
+      hi: [`${commonNumbers.length} प्रमुख जीवन क्षेत्रों में स्वाभाविक मानसिक तालमेल।`]
+    },
+    watchOut: {
+      en: [
+        missingInBoth.length > 0
+          ? `Both partners lack vibration of digits ${missingInBoth.join(', ')}; conscious effort needed here.`
+          : 'Maintain balance across present active planes.'
+      ],
+      hi: [
+        missingInBoth.length > 0
+          ? `दोनों में अंक ${missingInBoth.join(', ')} की कमी है; इस दिशा में सजग प्रयास की आवश्यकता है।`
+          : 'सक्रिय ऊर्जा तलों में संतुलन बनाए रखें।'
+      ]
+    }
+  };
 
-  let verdictEn: MatchMakingResult['verdictEn'] = 'Moderate / Remedy Recommended';
-  let verdictHi: MatchMakingResult['verdictHi'] = 'मध्यम / उपाय अनुशंसित';
-  let analysisEn = '';
-  let analysisHi = '';
+  const total = Math.min(100, Math.max(0, Math.round(driverScore + lifepathScore + destinyScore + exchangeableScore + commonScore)));
 
-  if (totalScore >= 75) {
-    verdictEn = 'Highly Auspicious';
-    verdictHi = 'अत्यंत शुभ';
-    analysisEn = `Outstanding compatibility between Mulank ${boyMulank} and ${girlMulank}. The energy grids complement each other seamlessly, creating emotional warmth, mutual prosperity, and long-term peace.`;
-    analysisHi = `मूलांक ${boyMulank} और ${girlMulank} के मध्य अति उत्तम सामंजस्य है। दोनों के ग्रिड परस्पर पूरक हैं, जो दांपत्य जीवन में सुख, समृद्धि और परस्पर सम्मान प्रदान करते हैं।`;
-  } else if (totalScore >= 60) {
-    verdictEn = 'Good Compatibility';
-    verdictHi = 'उत्तम सामंजस्य';
-    analysisEn = `A balanced and supportive relationship. With mutual understanding and open communication, this union will flourish with stability and shared success.`;
-    analysisHi = `एक संतुलित और अनुकूल वैवाहिक संबंध। परस्पर समझ और सहयोग से दांपत्य जीवन सुखमय और स्थिर रहेगा।`;
-  } else if (totalScore >= 45) {
-    verdictEn = 'Moderate / Remedy Recommended';
-    verdictHi = 'मध्यम / उपाय अनुशंसित';
-    analysisEn = `Average numeric resonance. While mutual affection can be nurtured, differences in opinions will occur. Following recommended harmonizing remedies will ensure domestic happiness.`;
-    analysisHi = `औसत अंक अनुकूलता। आपसी प्रेम रहेगा, परंतु विचारों में भिन्नता आ सकती है। सुझाए गए सामंजस्य उपायों से दांपत्य में सुख शांति बनी रहेगी।`;
+  let tier: 'Excellent' | 'Good' | 'Moderate' | 'Needs care' = 'Moderate';
+  let tierHi = 'मध्यम / संतुलन आवश्यक';
+  if (total >= 80) {
+    tier = 'Excellent';
+    tierHi = 'उत्कृष्ट सामंजस्य';
+  } else if (total >= 65) {
+    tier = 'Good';
+    tierHi = 'उत्तम अनुकूलता';
+  } else if (total >= 50) {
+    tier = 'Moderate';
+    tierHi = 'मध्यम / संतुलन आवश्यक';
   } else {
-    verdictEn = 'Challenging Match';
-    verdictHi = 'सावधानी व उपाय आवश्यक';
-    analysisEn = `Significant friction between planetary energies. Prone to ego clashes and misalignments unless specific astrological and numerological remedies are diligently adopted.`;
-    analysisHi = `ग्रह ऊर्जाओं में टकराव के संकेत। अहं का टकराव या मतभेद संभव हैं। विवाह से पूर्व अथवा पश्चात् विशेष उपाय करने की सलाह दी जाती है।`;
+    tier = 'Needs care';
+    tierHi = 'सावधानी व वैदिक उपाय आवश्यक';
   }
 
-  const remedyAdviceEn = `Focus on harmonizing common missing energies (${[...boyGrid.missingNumbers, ...girlGrid.missingNumbers].slice(0, 3).join(', ')}). Wear matching balancing colors (${NUMBER_RELATIONSHIPS[boyMulank].luckyColorsEn[0]}, ${NUMBER_RELATIONSHIPS[girlMulank].luckyColorsEn[0]}).`;
-  const remedyAdviceHi = `अनुपस्थित अंकों के संतुलन पर ध्यान दें। दोनों के लिए अनुकूल रंगों (${NUMBER_RELATIONSHIPS[boyMulank].luckyColorsHi[0]}, ${NUMBER_RELATIONSHIPS[girlMulank].luckyColorsHi[0]}) का प्रयोग करें।`;
+  const pillars: MatchPillar[] = [
+    {
+      id: 'driver',
+      titleEn: 'Driver ↔ Driver (Mulank)',
+      titleHi: 'ड्राइवर ↔ ड्राइवर (मूलांक)',
+      boyNumber: boyMulank,
+      girlNumber: girlMulank,
+      relation: driverRel,
+      score: driverScore,
+      max: 20,
+      conclusion: driverConclusion
+    },
+    {
+      id: 'lifepath',
+      titleEn: 'Life Path ↔ Life Path (Conductor / Bhagyank)',
+      titleHi: 'लाइफ पाथ ↔ लाइफ पाथ (कंडक्टर / भाग्यांक)',
+      boyNumber: boyBhagyank,
+      girlNumber: girlBhagyank,
+      relation: lifepathRel,
+      score: lifepathScore,
+      max: 20,
+      conclusion: lifepathConclusion
+    },
+    {
+      id: 'destiny',
+      titleEn: 'Destiny ↔ Destiny (Name number)',
+      titleHi: 'डेस्टिनी ↔ डेस्टिनी (नामांक)',
+      boyNumber: boyDestiny,
+      girlNumber: girlDestiny,
+      relation: destinyRel,
+      score: destinyScore,
+      max: 20,
+      conclusion: destinyConclusion
+    },
+    {
+      id: 'exchangeable',
+      titleEn: 'Exchangeable Numbers',
+      titleHi: 'परस्पर विनिमय अंक (क्रॉस संबंध)',
+      boyNumber: boyMulank,
+      girlNumber: girlBhagyank,
+      relation: exchangeableRel,
+      score: exchangeableScore,
+      max: 20,
+      conclusion: exchangeableConclusion
+    },
+    {
+      id: 'common',
+      titleEn: 'Common Numbers',
+      titleHi: 'समान उपस्थित अंक (वैदिक ग्रिड)',
+      boyNumber: commonNumbers.length,
+      girlNumber: commonNumbers.length,
+      relation: commonRel,
+      score: commonScore,
+      max: 20,
+      conclusion: commonConclusion
+    }
+  ];
+
+  let summaryEn = '';
+  let summaryHi = '';
+  if (total >= 80) {
+    summaryEn = `Outstanding compatibility score of ${total}/100. The core Vedic pillars—Driver, Life Path, and Destiny—radiate harmonious synergy, promising emotional depth, mutual prosperity, and enduring joy.`;
+    summaryHi = `${total}/100 का उत्कृष्ट सामंजस्य स्कोर। मूलांक, भाग्यांक और नामांक के मध्य श्रेष्ठ ऊर्जा तालमेल है, जो दांपत्य जीवन में सुख, समृद्धि और गहरा प्रेम सुनिश्चित करता है।`;
+  } else if (total >= 65) {
+    summaryEn = `Solid Vedic compatibility score of ${total}/100. This union possesses natural supportive momentum. With constructive dialogue and mutual respect for differences, life goals will flourish.`;
+    summaryHi = `${total}/100 का उत्तम अनुकूलता स्कोर। यह संबंध स्वाभाविक रूप से सकारात्मक है। परस्पर संवाद और सम्मान से जीवन के सभी लक्ष्य सिद्ध होंगे।`;
+  } else if (total >= 50) {
+    summaryEn = `Moderate compatibility score of ${total}/100. Complementary dynamics provide stability, though contrasting instincts require conscious patience and shared agreements on finances and routines.`;
+    summaryHi = `${total}/100 का मध्यम स्कोर। रिश्ते में स्थिरता है, किंतु विपरीत स्वभाव के कारण धैर्य और वित्तीय व पारिवारिक मामलों में स्पष्ट सहमति आवश्यक है।`;
+  } else {
+    summaryEn = `Challenging compatibility score of ${total}/100. Pronounced planetary differences demand conscious understanding, mature conflict resolution, and dedicated Vedic harmonizing remedies.`;
+    summaryHi = `${total}/100 का स्कोर। ग्रहों के विपरीत स्वभाव के कारण वैचारिक मतभेद संभव हैं। परिपक्व समझ और नियमित वैदिक उपायों से सामंजस्य स्थापित करें।`;
+  }
+
+  const topStrengthsEn: string[] = [
+    driverRel === 'friendly' ? 'Strong mutual understanding between core Driver numbers.' : 'Dynamic personality interplay encouraging maturity.',
+    lifepathRel === 'friendly' ? 'Aligned life goals and cohesive long-term destiny path.' : 'Practical division of life responsibilities.',
+    commonNumbers.length >= 3 ? `Shared resonance across ${commonNumbers.length} common grid numbers.` : 'Diverse perspectives that protect against common blind spots.'
+  ];
+
+  const topStrengthsHi: string[] = [
+    driverRel === 'friendly' ? 'मूलांक के मध्य प्रगाढ़ मित्रवत स्वभाव व सहज समझ।' : 'व्यक्तित्व का सुंदर संतुलन जो परिपक्वता लाता है।',
+    lifepathRel === 'friendly' ? 'भाग्यांक का तालमेल जीवन लक्ष्यों को साझा दिशा देता है।' : 'पारिवारिक कर्तव्यों का व्यावहारिक व संतुलित विभाजन।',
+    commonNumbers.length >= 3 ? `${commonNumbers.length} समान ग्रिड अंकों के कारण सहज वैचारिक तालमेल।` : 'विभिन्न दृष्टिकोण जो जीवन के अंधेरे कोनों को उजागर करते हैं।'
+  ];
+
+  const topCautionsEn: string[] = [
+    driverRel === 'enemy' ? 'Avoid impulsive reactions and ego confrontations during disagreements.' : 'Keep communication open to avoid unspoken assumptions.',
+    destinyRel === 'enemy' ? 'Acknowledge different social communication styles calmly.' : 'Schedule quality time away from routine pressures.',
+    missingInBoth.length > 0 ? `Both partners lack numbers [${missingInBoth.join(', ')}]; practice conscious balance in those areas.` : 'Ensure healthy independence alongside togetherness.'
+  ];
+
+  const topCautionsHi: string[] = [
+    driverRel === 'enemy' ? 'मतभेद के समय अहंकार के टकराव और जल्दबाजी में प्रतिक्रिया से बचें।' : 'संवाद में पारदर्शिता रखें ताकि गलतफहमी न हो।',
+    destinyRel === 'enemy' ? 'सामाजिक व्यवहार और बोलचाल में एक-दूसरे की शैली का सम्मान करें।' : 'दैनिक तनाव से हटकर साथ में समय अवश्य बिताएं।',
+    missingInBoth.length > 0 ? `दोनों में अंक [${missingInBoth.join(', ')}] की कमी है; उन क्षेत्रों में अतिरिक्त सजगता रखें।` : 'एक-दूसरे के व्यक्तिगत स्पेस का सम्मान करें।'
+  ];
+
+  const remedies: string[] = [];
+  if (driverRel === 'enemy' || lifepathRel === 'enemy') {
+    remedies.push('Place a harmonizing Rose Quartz crystal in the southwest bedroom corner.');
+    remedies.push('Recite the Gayatri Mantra or Mahamrityunjaya Mantra together on Sundays.');
+  }
+  if (missingInBoth.includes(5)) {
+    remedies.push('Keep an indoor green plant or emerald stone to strengthen communication (Number 5).');
+  }
+  if (missingInBoth.includes(6)) {
+    remedies.push('Light white camphor or sandalwood incense on Friday evenings for Venusian bliss (Number 6).');
+  }
+  if (missingInBoth.includes(1) || missingInBoth.includes(9)) {
+    remedies.push('Offer water to the rising sun together to infuse vital solar-martial vigor.');
+  }
+  if (remedies.length < 3) {
+    remedies.push('Perform charity or feed cows/birds together on Thursdays to invoke Jupiterian grace.');
+    remedies.push('Decorate domestic spaces with soothing pastel tones (cream, light yellow, mint green).');
+  }
 
   return {
+    total,
+    tier,
+    tierHi,
+    pillars,
+    exchangeable: {
+      exchange1: {
+        boyNumber: boyMulank,
+        girlNumber: girlBhagyank,
+        relation: ex1Rel,
+        score: ex1Score,
+        max: 10
+      },
+      exchange2: {
+        girlNumber: girlMulank,
+        boyNumber: boyBhagyank,
+        relation: ex2Rel,
+        score: ex2Score,
+        max: 10
+      },
+      totalScore: exchangeableScore
+    },
+    common: {
+      commonNumbers,
+      boyOnlyNumbers,
+      girlOnlyNumbers,
+      score: commonScore,
+      max: 20
+    },
+    missingInBoth,
     boy: {
       name: boyInput.name,
       dob: boyInput.dob,
@@ -379,39 +670,71 @@ export function calculateMatchMaking(
       destinyNumber: girlDestiny,
       grid: girlGrid
     },
+    summaryEn,
+    summaryHi,
+    topStrengthsEn,
+    topStrengthsHi,
+    topCautionsEn,
+    topCautionsHi,
+    remedies: remedies.slice(0, 4)
+  };
+}
+
+export function calculateMatchMaking(
+  boyInput: MatchProfileInput,
+  girlInput: MatchProfileInput
+): MatchMakingResult & MatchScoreResult {
+  const scoreRes = matchScore(boyInput, girlInput);
+
+  return {
+    ...scoreRes,
+    totalScore: scoreRes.total,
     mulankCompat: {
-      score: mScore,
-      relation: mRel,
-      labelEn: mLabelEn,
-      labelHi: mLabelHi
+      score: scoreRes.pillars[0].score,
+      relation: scoreRes.pillars[0].relation,
+      labelEn: scoreRes.pillars[0].conclusion.verdict.en,
+      labelHi: scoreRes.pillars[0].conclusion.verdict.hi
     },
     bhagyankCompat: {
-      score: bScore,
-      relation: bRel,
-      labelEn: bLabelEn,
-      labelHi: bLabelHi
+      score: scoreRes.pillars[1].score,
+      relation: scoreRes.pillars[1].relation,
+      labelEn: scoreRes.pillars[1].conclusion.verdict.en,
+      labelHi: scoreRes.pillars[1].conclusion.verdict.hi
     },
     destinyCompat: {
-      score: dScore,
-      relation: dRel,
-      labelEn: dLabelEn,
-      labelHi: dLabelHi
+      score: scoreRes.pillars[2].score,
+      relation: scoreRes.pillars[2].relation,
+      labelEn: scoreRes.pillars[2].conclusion.verdict.en,
+      labelHi: scoreRes.pillars[2].conclusion.verdict.hi
     },
     crossCompat: {
-      score: cScore,
-      relation: cRel,
-      labelEn: cLabelEn,
-      labelHi: cLabelHi
+      score: scoreRes.pillars[3].score,
+      relation: scoreRes.pillars[3].relation,
+      labelEn: scoreRes.pillars[3].conclusion.verdict.en,
+      labelHi: scoreRes.pillars[3].conclusion.verdict.hi
     },
-    commonNumbers,
-    boyFillsGirlMissing,
-    girlFillsBoyMissing,
-    totalScore,
-    verdictEn,
-    verdictHi,
-    analysisEn,
-    analysisHi,
-    remedyAdviceEn,
-    remedyAdviceHi
+    commonNumbers: scoreRes.common.commonNumbers,
+    boyFillsGirlMissing: scoreRes.common.boyOnlyNumbers,
+    girlFillsBoyMissing: scoreRes.common.girlOnlyNumbers,
+    verdictEn:
+      scoreRes.tier === 'Excellent'
+        ? 'Highly Auspicious'
+        : scoreRes.tier === 'Good'
+        ? 'Good Compatibility'
+        : scoreRes.tier === 'Moderate'
+        ? 'Moderate / Remedy Recommended'
+        : 'Challenging Match',
+    verdictHi:
+      scoreRes.tier === 'Excellent'
+        ? 'अत्यंत शुभ'
+        : scoreRes.tier === 'Good'
+        ? 'उत्तम सामंजस्य'
+        : scoreRes.tier === 'Moderate'
+        ? 'मध्यम / उपाय अनुशंसित'
+        : 'सावधानी व उपाय आवश्यक',
+    analysisEn: scoreRes.summaryEn,
+    analysisHi: scoreRes.summaryHi,
+    remedyAdviceEn: scoreRes.remedies.join(' '),
+    remedyAdviceHi: scoreRes.remedies.join(' ')
   };
 }

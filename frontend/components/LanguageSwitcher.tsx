@@ -4,7 +4,7 @@ import React, { useTransition } from 'react';
 import { usePathname, useRouter } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
 import { Languages } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/frontend/utils';
 
 interface LanguageSwitcherProps {
   className?: string;

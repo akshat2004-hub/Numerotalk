@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { FileText, Check, Plus } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useNumerologyStore } from '@/lib/store/useNumerologyStore';
+import { cn } from '@/frontend/utils';
+import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 
 export interface PredictionCardProps {
   title: string;

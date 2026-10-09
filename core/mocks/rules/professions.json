@@ -1,0 +1,452 @@
+[
+  {
+    "id": "chartered_accountant",
+    "name": { "en": "Chartered Accountant & Auditor", "hi": "चार्टर्ड एकाउंटेंट व अंकेक्षक" },
+    "category": "finance",
+    "icon": "Calculator",
+    "favourableMulank": [5, 8, 4],
+    "favourableBhagyank": [5, 8, 6],
+    "favourableDestiny": [5, 8],
+    "favourableTime": [5, 8],
+    "supportDigits": [5, 8, 4],
+    "reasonTemplates": {
+      "en": "Strong resonance with analytical Mercury and structured Saturn governance.",
+      "hi": "बुध की तीव्र गणना शक्ति और शनि के अनुशासित नियमों के साथ सुदृढ़ तालमेल।"
+    }
+  },
+  {
+    "id": "investment_banker",
+    "name": { "en": "Investment Banker & Wealth Strategist", "hi": "निवेश बैंकर व वित्तीय रणनीतिकार" },
+    "category": "finance",
+    "icon": "TrendingUp",
+    "favourableMulank": [1, 5, 6],
+    "favourableBhagyank": [1, 5, 8],
+    "favourableDestiny": [1, 5],
+    "favourableTime": [1, 5],
+    "supportDigits": [1, 5, 6],
+    "reasonTemplates": {
+      "en": "Solar ambition aligned with Mercury commerce and Venusian capital expansion.",
+      "hi": "सूर्य की महत्वाकांक्षा, बुध के व्यापारिक कौशल और शुक्र के धन विस्तार से सशक्त।"
+    }
+  },
+  {
+    "id": "stock_trader",
+    "name": { "en": "Stock Trader & Market Analyst", "hi": "शेयर ट्रेडर व बाजार विश्लेषक" },
+    "category": "finance",
+    "icon": "BarChart3",
+    "favourableMulank": [5, 3, 4],
+    "favourableBhagyank": [5, 4, 1],
+    "favourableDestiny": [5, 3],
+    "favourableTime": [5, 4],
+    "supportDigits": [5, 3, 4],
+    "reasonTemplates": {
+      "en": "Quick market reflexes governed by Mercury and innovative Rahu speculation.",
+      "hi": "बुध की त्वरित समझ और राहु की बाजार में अप्रत्याशित अवसरों को भांपने की क्षमता।"
+    }
+  },
+  {
+    "id": "software_architect",
+    "name": { "en": "Software Architect & Tech Lead", "hi": "सॉफ्टवेयर आर्किटेक्ट व तकनीकी नेतृत्व" },
+    "category": "it_engineering",
+    "icon": "Cpu",
+    "favourableMulank": [4, 7, 5],
+    "favourableBhagyank": [4, 7, 1],
+    "favourableDestiny": [4, 7],
+    "favourableTime": [4, 7],
+    "supportDigits": [4, 7, 5],
+    "reasonTemplates": {
+      "en": "Rahu's affinity for technological frameworks and Ketu's deep abstract coding logic.",
+      "hi": "राहु की तकनीकी दक्षता और केतु के गहन अमूर्त कोडिंग व आर्किटेक्चर तर्क से पोषित।"
+    }
+  },
+  {
+    "id": "ai_data_scientist",
+    "name": { "en": "AI & Data Science Specialist", "hi": "एआई व डेटा वैज्ञानिक" },
+    "category": "it_engineering",
+    "icon": "Brain",
+    "favourableMulank": [7, 4, 5],
+    "favourableBhagyank": [7, 5, 3],
+    "favourableDestiny": [7, 4],
+    "favourableTime": [7, 4],
+    "supportDigits": [7, 4, 5],
+    "reasonTemplates": {
+      "en": "Penetrating research insight of Ketu synchronized with algorithmic Rahu systems.",
+      "hi": "केतु की गहन शोध दृष्टि और राहु के उन्नत डेटा एल्गोरिदम का उत्कृष्ट संगम।"
+    }
+  },
+  {
+    "id": "cybersecurity_expert",
+    "name": { "en": "Cybersecurity & Cryptography Specialist", "hi": "साइबर सुरक्षा व सूचना संरक्षा विशेषज्ञ" },
+    "category": "it_engineering",
+    "icon": "ShieldCheck",
+    "favourableMulank": [8, 4, 9],
+    "favourableBhagyank": [8, 4, 7],
+    "favourableDestiny": [8, 4],
+    "favourableTime": [8, 4],
+    "supportDigits": [8, 4, 9],
+    "reasonTemplates": {
+      "en": "Saturnian defense fortresses integrated with Mars vigilance and Rahu cyber intelligence.",
+      "hi": "शनि का रक्षात्मक ढांचा, मंगल की तत्परता और राहु की साइबर बुद्धिमत्ता का संतुलन।"
+    }
+  },
+  {
+    "id": "surgeon_specialist",
+    "name": { "en": "Surgeon & Medical Specialist", "hi": "शल्य चिकित्सक (सर्जन) व विशेषज्ञ" },
+    "category": "medical",
+    "icon": "Activity",
+    "favourableMulank": [9, 1, 7],
+    "favourableBhagyank": [9, 1, 2],
+    "favourableDestiny": [9, 1],
+    "favourableTime": [9, 1],
+    "supportDigits": [9, 1, 7],
+    "reasonTemplates": {
+      "en": "Mars decisive precision with surgical blades and Sun healing vitality.",
+      "hi": "मंगल का सर्जिकल कौशल व निर्णय क्षमता तथा सूर्य की प्राणवान आरोग्य शक्ति।"
+    }
+  },
+  {
+    "id": "physician_pediatrician",
+    "name": { "en": "Physician & Pediatrician", "hi": "चिकित्सक व बाल रोग विशेषज्ञ" },
+    "category": "medical",
+    "icon": "Stethoscope",
+    "favourableMulank": [1, 2, 3],
+    "favourableBhagyank": [1, 2, 5],
+    "favourableDestiny": [2, 3],
+    "favourableTime": [1, 2],
+    "supportDigits": [1, 2, 3],
+    "reasonTemplates": {
+      "en": "Moon compassionate bedside manner paired with Jupiter diagnostic wisdom.",
+      "hi": "चन्द्रमा की संवेदनशील देखभाल और बृहस्पति के समग्र नैदानिक ज्ञान का प्रभाव।"
+    }
+  },
+  {
+    "id": "pharma_biotech_researcher",
+    "name": { "en": "Pharmacologist & Biotech Researcher", "hi": "फार्मा व जैव प्रौद्योगिकी शोधकर्ता" },
+    "category": "medical",
+    "icon": "FlaskConical",
+    "favourableMulank": [7, 4, 5],
+    "favourableBhagyank": [7, 5, 8],
+    "favourableDestiny": [7, 5],
+    "favourableTime": [7, 5],
+    "supportDigits": [7, 4, 8],
+    "reasonTemplates": {
+      "en": "Ketu root medicinal curiosity combined with Mercury chemical formulation expertise.",
+      "hi": "केतु का औषधि अनुसंधान और बुध की रासायनिक मिश्रण समझ का सकारात्मक प्रभाव।"
+    }
+  },
+  {
+    "id": "creative_director",
+    "name": { "en": "Creative Director & Film Filmmaker", "hi": "क्रिएटिव डायरेक्टर व फिल्म निर्माता" },
+    "category": "arts_media",
+    "icon": "Film",
+    "favourableMulank": [3, 6, 9],
+    "favourableBhagyank": [6, 3, 1],
+    "favourableDestiny": [6, 3],
+    "favourableTime": [6, 3],
+    "supportDigits": [3, 6, 9],
+    "reasonTemplates": {
+      "en": "Venusian visual grandeur supercharged by Jupiterian storytelling and Mars passion.",
+      "hi": "शुक्र का सौंदर्य बोध, गुरु की कथा कहने की कला और मंगल के जीवंत उत्साह का समन्वय।"
+    }
+  },
+  {
+    "id": "graphic_ui_designer",
+    "name": { "en": "UI/UX & Visual Brand Designer", "hi": "यूआई/यूएक्स व विजुअल डिजाइनर" },
+    "category": "arts_media",
+    "icon": "Palette",
+    "favourableMulank": [6, 5, 2],
+    "favourableBhagyank": [6, 5, 3],
+    "favourableDestiny": [6, 5],
+    "favourableTime": [6, 5],
+    "supportDigits": [6, 5, 2],
+    "reasonTemplates": {
+      "en": "Aesthetic harmony of Venus fused with Mercury communication design.",
+      "hi": "शुक्र का कलात्मक सौंदर्य और बुध का संप्रेषणीय डिजाइन कौशल।"
+    }
+  },
+  {
+    "id": "author_journalist",
+    "name": { "en": "Author, Journalist & Content Strategist", "hi": "लेखक, पत्रकार व संचार रणनीतिकार" },
+    "category": "arts_media",
+    "icon": "Feather",
+    "favourableMulank": [5, 3, 2],
+    "favourableBhagyank": [5, 3, 7],
+    "favourableDestiny": [5, 3],
+    "favourableTime": [5, 3],
+    "supportDigits": [5, 3, 2],
+    "reasonTemplates": {
+      "en": "Mercury fluent linguistic expression supported by Jupiter philosophical depth.",
+      "hi": "बुध की प्रभावशाली लेखन शैली और गुरु की दार्शनिक विचार गहराई।"
+    }
+  },
+  {
+    "id": "corporate_lawyer",
+    "name": { "en": "Corporate Lawyer & Legal Consultant", "hi": "कॉर्पोरेट वकील व विधिक सलाहकार" },
+    "category": "legal",
+    "icon": "Scale",
+    "favourableMulank": [8, 5, 1],
+    "favourableBhagyank": [8, 1, 3],
+    "favourableDestiny": [8, 5],
+    "favourableTime": [8, 1],
+    "supportDigits": [8, 5, 1],
+    "reasonTemplates": {
+      "en": "Saturnian constitutional adherence reinforced by Mercury argumentative acumen.",
+      "hi": "शनि की विधिक न्यायप्रियता और बुध की तार्किक बहस व दस्तावेज कौशल।"
+    }
+  },
+  {
+    "id": "judicial_magistrate",
+    "name": { "en": "Judge & Public Prosecutor", "hi": "न्यायाधीश व लोक अभियोजक" },
+    "category": "legal",
+    "icon": "Gavel",
+    "favourableMulank": [8, 1, 9],
+    "favourableBhagyank": [8, 1, 3],
+    "favourableDestiny": [8, 1],
+    "favourableTime": [8, 1],
+    "supportDigits": [8, 1, 9],
+    "reasonTemplates": {
+      "en": "Impartial moral judgement of Saturn united with solar sovereign authority.",
+      "hi": "शनि का निष्पक्ष न्यायबोध और सूर्य का उच्च नैतिक व प्रशासनिक अधिकार।"
+    }
+  },
+  {
+    "id": "tech_entrepreneur",
+    "name": { "en": "Startup Founder & Innovator", "hi": "स्टार्टअप संस्थापक व उद्यमी" },
+    "category": "entrepreneurship_trade",
+    "icon": "Rocket",
+    "favourableMulank": [1, 5, 9],
+    "favourableBhagyank": [1, 5, 4],
+    "favourableDestiny": [1, 5],
+    "favourableTime": [1, 5],
+    "supportDigits": [1, 5, 9],
+    "reasonTemplates": {
+      "en": "Sun pioneering leadership bolstered by Mercury scalability and Mars courage.",
+      "hi": "सूर्य का अग्रणी विजन, बुध की व्यावसायिक गति और मंगल का जोखिम उठाने का साहस।"
+    }
+  },
+  {
+    "id": "retail_export_merchant",
+    "name": { "en": "Wholesale Trader & Export Merchant", "hi": "थोक व्यापारी व आयात-निर्यात उद्यमी" },
+    "category": "entrepreneurship_trade",
+    "icon": "Store",
+    "favourableMulank": [5, 6, 1],
+    "favourableBhagyank": [5, 6, 8],
+    "favourableDestiny": [5, 6],
+    "favourableTime": [5, 6],
+    "supportDigits": [5, 6, 1],
+    "reasonTemplates": {
+      "en": "Mercury network reach combined with Venusian buyer magnetism and trade harmony.",
+      "hi": "बुध का विस्तृत व्यापार नेटवर्क और शुक्र का ग्राहक आकर्षण व लाभ प्रवाह।"
+    }
+  },
+  {
+    "id": "university_professor",
+    "name": { "en": "University Professor & Scholar", "hi": "विश्वविद्यालय प्रोफेसर व विद्वान" },
+    "category": "education",
+    "icon": "GraduationCap",
+    "favourableMulank": [3, 7, 1],
+    "favourableBhagyank": [3, 7, 5],
+    "favourableDestiny": [3, 7],
+    "favourableTime": [3, 7],
+    "supportDigits": [3, 7, 1],
+    "reasonTemplates": {
+      "en": "Brihaspati (Jupiter) supreme mentorship matched with Ketu intellectual research.",
+      "hi": "देवगुरु बृहस्पति का मार्गदर्शन कौशल और केतु की शोध-उन्मुख बौद्धिक गहराई।"
+    }
+  },
+  {
+    "id": "school_leader_edupreneur",
+    "name": { "en": "Edupreneur & Educational Leader", "hi": "शिक्षाविद व संस्थान संचालक" },
+    "category": "education",
+    "icon": "BookOpen",
+    "favourableMulank": [3, 1, 5],
+    "favourableBhagyank": [3, 1, 6],
+    "favourableDestiny": [3, 1],
+    "favourableTime": [3, 1],
+    "supportDigits": [3, 1, 5],
+    "reasonTemplates": {
+      "en": "Jupiter institutional ethics combined with solar administrative command.",
+      "hi": "गुरु के उच्च शैक्षणिक आदर्श और सूर्य की अनुकरणीय संस्थागत नेतृत्व क्षमता।"
+    }
+  },
+  {
+    "id": "civil_servant_ias_ips",
+    "name": { "en": "Civil Services Officer (IAS/IPS)", "hi": "प्रशासनिक व पुलिस सेवा अधिकारी (IAS/IPS)" },
+    "category": "government_defence",
+    "icon": "Landmark",
+    "favourableMulank": [1, 9, 8],
+    "favourableBhagyank": [1, 8, 3],
+    "favourableDestiny": [1, 8],
+    "favourableTime": [1, 9],
+    "supportDigits": [1, 9, 8],
+    "reasonTemplates": {
+      "en": "Sun royal administration empowered by Mars executive enforcement and Saturn duty.",
+      "hi": "सूर्य की प्रशासनिक गरिमा, मंगल की त्वरित कार्रवाई और शनि का कर्तव्यनिष्ठ समर्पण।"
+    }
+  },
+  {
+    "id": "defence_armed_forces",
+    "name": { "en": "Armed Forces & Military Officer", "hi": "सैन्य अधिकारी व सुरक्षा बल" },
+    "category": "government_defence",
+    "icon": "Shield",
+    "favourableMulank": [9, 1, 8],
+    "favourableBhagyank": [9, 1, 8],
+    "favourableDestiny": [9, 8],
+    "favourableTime": [9, 1],
+    "supportDigits": [9, 1, 8],
+    "reasonTemplates": {
+      "en": "Mars warrior valor aligned with Sun patriotic devotion and Saturnian discipline.",
+      "hi": "मंगल का अदम्य पराक्रम, सूर्य की देशभक्ति और शनि का कठोर अनुशासन।"
+    }
+  },
+  {
+    "id": "professional_athlete",
+    "name": { "en": "Professional Athlete & Sports Leader", "hi": "पेशेवर खिलाड़ी व स्पोर्ट्स लीडर" },
+    "category": "sports",
+    "icon": "Trophy",
+    "favourableMulank": [9, 1, 5],
+    "favourableBhagyank": [9, 1, 6],
+    "favourableDestiny": [9, 1],
+    "favourableTime": [9, 5],
+    "supportDigits": [9, 1, 5],
+    "reasonTemplates": {
+      "en": "Mars physical stamina, explosive reflex, and Sun winning mindset.",
+      "hi": "मंगल की असीम शारीरिक ऊर्जा, त्वरित गति और सूर्य का विजयी आत्मविश्वास।"
+    }
+  },
+  {
+    "id": "fitness_sports_coach",
+    "name": { "en": "Fitness Mentor & High Performance Coach", "hi": "फिटनेस कोच व प्रदर्शन सलाहकार" },
+    "category": "sports",
+    "icon": "Dumbbell",
+    "favourableMulank": [9, 3, 5],
+    "favourableBhagyank": [9, 3, 1],
+    "favourableDestiny": [9, 3],
+    "favourableTime": [9, 3],
+    "supportDigits": [9, 3, 5],
+    "reasonTemplates": {
+      "en": "Mars biomechanical mastery blended with Jupiter motivational coaching.",
+      "hi": "मंगल का शारीरिक व्यायाम कौशल और गुरु का प्रेरणादायक मार्गदर्शन।"
+    }
+  },
+  {
+    "id": "real_estate_developer",
+    "name": { "en": "Real Estate Developer & Land Investor", "hi": "रियल एस्टेट डेवलपर व भूमि निवेशक" },
+    "category": "real_estate",
+    "icon": "Building2",
+    "favourableMulank": [8, 4, 1],
+    "favourableBhagyank": [8, 9, 6],
+    "favourableDestiny": [8, 9],
+    "favourableTime": [8, 4],
+    "supportDigits": [8, 4, 9],
+    "reasonTemplates": {
+      "en": "Saturn land permanence empowered by Mars earth ownership (Bhoomi-Karaka).",
+      "hi": "शनि का स्थायी निर्माण और मंगल का भूमि-कारक प्रभाव, जो विशाल संपदा दिलाता है।"
+    }
+  },
+  {
+    "id": "construction_architect",
+    "name": { "en": "Civil Engineer & Infrastructure Builder", "hi": "सिविल इंजीनियर व निर्माण सलाहकार" },
+    "category": "real_estate",
+    "icon": "HardHat",
+    "favourableMulank": [4, 8, 9],
+    "favourableBhagyank": [4, 8, 1],
+    "favourableDestiny": [4, 8],
+    "favourableTime": [4, 8],
+    "supportDigits": [4, 8, 9],
+    "reasonTemplates": {
+      "en": "Rahu architectural blue-printing united with Saturn solid physical infrastructure.",
+      "hi": "राहु की आधुनिक संरचनात्मक योजना और शनि का सुदृढ़ भौतिक निर्माण।"
+    }
+  },
+  {
+    "id": "luxury_hotelier",
+    "name": { "en": "Hotelier & Luxury Resort Operator", "hi": "होटल व लक्जरी रिसॉर्ट संचालक" },
+    "category": "hospitality",
+    "icon": "Hotel",
+    "favourableMulank": [6, 2, 5],
+    "favourableBhagyank": [6, 3, 1],
+    "favourableDestiny": [6, 2],
+    "favourableTime": [6, 2],
+    "supportDigits": [6, 2, 5],
+    "reasonTemplates": {
+      "en": "Venus hospitality and comfort enriched by Moon welcoming nourishment.",
+      "hi": "शुक्र का वैभव व आतिथ्य सत्कार तथा चन्द्रमा का स्नेहपूर्ण सेवा भाव।"
+    }
+  },
+  {
+    "id": "event_wedding_curator",
+    "name": { "en": "Event Producer & Wedding Curator", "hi": "इवेंट प्रोड्यूसर व विवाह संयोजक" },
+    "category": "hospitality",
+    "icon": "Sparkles",
+    "favourableMulank": [6, 5, 3],
+    "favourableBhagyank": [6, 5, 9],
+    "favourableDestiny": [6, 5],
+    "favourableTime": [6, 5],
+    "supportDigits": [6, 5, 3],
+    "reasonTemplates": {
+      "en": "Venus elegance, celebration and glamour steered by Mercury organizational precision.",
+      "hi": "शुक्र का उत्सव व सौंदर्य विलास और बुध का सटीक समन्वय व आयोजन कौशल।"
+    }
+  },
+  {
+    "id": "agri_tech_entrepreneur",
+    "name": { "en": "Agri-Tech & Organic Farm Owner", "hi": "एग्री-टेक व जैविक कृषि उद्यमी" },
+    "category": "agriculture",
+    "icon": "Sprout",
+    "favourableMulank": [8, 2, 5],
+    "favourableBhagyank": [8, 4, 9],
+    "favourableDestiny": [8, 2],
+    "favourableTime": [8, 2],
+    "supportDigits": [8, 2, 4],
+    "reasonTemplates": {
+      "en": "Saturn soil stewardship combined with Moon hydration cycle and Rahu automation.",
+      "hi": "शनि का भूमि व श्रम से जुड़ाव, चन्द्रमा का जल पोषण और राहु की आधुनिक तकनीक।"
+    }
+  },
+  {
+    "id": "agro_export_manager",
+    "name": { "en": "Agro Commodity Trader & Exporter", "hi": "कृषि जिंस व्यापारी व निर्यातक" },
+    "category": "agriculture",
+    "icon": "Wheat",
+    "favourableMulank": [5, 8, 6],
+    "favourableBhagyank": [5, 8, 1],
+    "favourableDestiny": [5, 8],
+    "favourableTime": [5, 8],
+    "supportDigits": [5, 8, 6],
+    "reasonTemplates": {
+      "en": "Mercury commodity distribution bolstered by Saturn bulk agricultural volume.",
+      "hi": "बुध का व्यापारिक वितरण और शनि की विशाल कृषि उत्पादन प्रबंधन क्षमता।"
+    }
+  },
+  {
+    "id": "hr_corporate_headhunter",
+    "name": { "en": "Chief People Officer & Talent Headhunter", "hi": "मुख्य मानव संसाधन अधिकारी (HR)" },
+    "category": "education",
+    "icon": "Users",
+    "favourableMulank": [2, 5, 3],
+    "favourableBhagyank": [2, 3, 6],
+    "favourableDestiny": [2, 5],
+    "favourableTime": [2, 3],
+    "supportDigits": [2, 5, 3],
+    "reasonTemplates": {
+      "en": "Moon interpersonal intuition coupled with Mercury communication diplomacy.",
+      "hi": "चन्द्रमा की मानवीय समझ और बुध की सौहार्दपूर्ण संवाद कुशलता।"
+    }
+  },
+  {
+    "id": "renewable_energy_pioneer",
+    "name": { "en": "Renewable Energy & Solar Pioneer", "hi": "सौर व नवीकरणीय ऊर्जा विशेषज्ञ" },
+    "category": "it_engineering",
+    "icon": "Sun",
+    "favourableMulank": [1, 4, 9],
+    "favourableBhagyank": [1, 4, 8],
+    "favourableDestiny": [1, 4],
+    "favourableTime": [1, 4],
+    "supportDigits": [1, 4, 9],
+    "reasonTemplates": {
+      "en": "Sun solar energy natural alignment blended with Rahu futuristic green technology.",
+      "hi": "सूर्य की प्राकृतिक सौर ऊर्जा और राहु की भविष्योन्मुखी ग्रीन टेक्नोलॉजी का सामंजस्य।"
+    }
+  }
+]

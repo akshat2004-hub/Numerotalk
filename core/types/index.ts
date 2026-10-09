@@ -12,7 +12,6 @@ export interface UserProfile {
   birthTime?: string; // HH:mm optional
   image?: string; // base64 or url
   consent: boolean;
-  destinySystem: 'chaldean' | 'pythagorean';
 }
 
 export interface NumberReading {
@@ -33,7 +32,6 @@ export interface NumberReading {
 
 export interface DestinyReading {
   number: number;
-  system: 'chaldean' | 'pythagorean';
   title: BilingualText;
   lifeMission: BilingualText;
   coreStrengths: BilingualText[];

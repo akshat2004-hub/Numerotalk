@@ -139,7 +139,7 @@
       "predictionByLevel": {
         "low": { "en": "Current name spelling clashes with core numbers; correction advised.", "hi": "नाम की वर्तनी मूल अंकों से असंगत है; नामांक सुधार हितकर होगा।" },
         "medium": { "en": "Name vibration is reasonably auspicious and supports growth.", "hi": "नाम का स्पंदन शुभ है और सामान्य सफलता में सहायक है।" },
-        "high": { "en": "Perfect Pythagorean & Chaldean alignment creating continuous fame.", "hi": "अत्यंत शुभ नामांक जो निरंतर कीर्ति और आकर्षण प्रदान करता है।" }
+        "high": { "en": "Perfect Vedic alignment creating continuous fame.", "hi": "अत्यंत शुभ नामांक जो निरंतर कीर्ति और आकर्षण प्रदान करता है।" }
       },
       "prescriptions": ["Adjust signature with upward slant", "Add auspicious letter vowel"],
       "favourableYearsRule": "years_aligned_with_destiny"

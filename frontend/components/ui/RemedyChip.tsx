@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Gem, Flame, Heart, Compass, HeartHandshake, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/frontend/utils';
 
 interface RemedyChipProps {
   category: string;

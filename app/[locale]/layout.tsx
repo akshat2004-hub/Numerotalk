@@ -3,7 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { notoSansDevanagari, outfit, cinzel } from '../fonts';
-import { AppShell } from '@/components/AppShell';
+import { AppShell } from '@/frontend/components/AppShell';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

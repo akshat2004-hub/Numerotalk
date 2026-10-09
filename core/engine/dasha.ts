@@ -1,7 +1,7 @@
 import { parseDob, calculateMulank, calculateBhagyank, reduceToSingleDigit } from './numerology';
 import { calculateVedicGrid, VedicGridResult } from './grid';
 import { detectYogas, DetectedYoga } from './yogas';
-import dashaConfig from '@/mocks/rules/dasha.json';
+import dashaConfig from '@/core/mocks/rules/dasha.json';
 
 export interface DashaPeriod {
   level: 'Mahadasha' | 'Antardasha' | 'Pratyantra Dasha';
