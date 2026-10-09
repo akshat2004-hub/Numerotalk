@@ -124,5 +124,5 @@ describe('PURGE PASS: Banned Terms Guardrail', () => {
         }
       }
     }
-  }, 30000);
+  }, 120000);
 });

@@ -16,11 +16,23 @@
     --text: #2B2B3A;
     --text-muted: #8A7F6E;
     --gold: #E8A317;
+    --gold-deep: #C98310;
     --gold-gradient: linear-gradient(135deg, #F0B53A, #C98310);
     --active-bg: #FDE9C4;
     --chip-bg: #FFF1CC;
     --seg-active: #F7C96B;
     --seg-inactive: #F4F1EA;
+
+    /* Text-safe status colors (AA contrast on white) */
+    --success-text: #1E6B3E;
+    --success-bg: #E8F5EC;
+    --success-border: rgba(30, 107, 62, 0.25);
+    --warn-text: #8A5A00;
+    --warn-bg: #FFF1CC;
+    --warn-border: rgba(138, 90, 0, 0.25);
+    --neutral-text: #5B5568;
+    --neutral-bg: #F4F1EA;
+    --neutral-border: rgba(91, 85, 104, 0.25);
 
     /* Theme Aliases */
     --gold-hover: #C98310;
@@ -55,14 +67,14 @@
     --border-card: var(--border);
     --border-input: var(--input-border);
     --color-primary: var(--gold);
-    --color-primary-deep: #C98310;
+    --color-primary-deep: var(--gold-deep);
     --color-gold-soft: var(--chip-bg);
     --color-gold-hairline: var(--border);
     --text-main: var(--heading);
     --text-navy: var(--heading);
     --text-body: var(--text);
     --accent-kumkum: #EF4444;
-    --accent-success: #16A34A;
+    --accent-success: var(--success-text);
     --shadow-warm: var(--shadow-card);
   }
 
@@ -173,8 +185,8 @@
 }
 
 .btn-vedic-secondary:hover {
-  background-color: #F8FAFC;
-  border-color: #CBD5E1;
+  background-color: var(--chip-bg);
+  border-color: var(--gold);
 }
 
 /* Orbit slow spin */
@@ -205,7 +217,7 @@
 }
 
 .vedic-table th {
-  background-color: #F8FAFC;
+  background-color: var(--bg);
   color: var(--text-secondary);
   font-family: var(--font-sans);
   font-weight: 600;

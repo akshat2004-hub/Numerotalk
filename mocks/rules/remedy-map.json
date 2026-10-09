@@ -1,0 +1,212 @@
+{
+  "yog": {
+    "mental": [
+      {
+        "id": "rem_kesar_tilak",
+        "digit": 3,
+        "label": {
+          "en": "Kesar & Chandan Tilak (Jupiter / 3)",
+          "hi": "केसर व चंदन तिलक (गुरु / 3)"
+        }
+      },
+      {
+        "id": "rem_sun_arghya",
+        "digit": 1,
+        "label": {
+          "en": "Surya Jal Arghya with Copper Lota (Sun / 1)",
+          "hi": "तांबे के लोटे से सूर्य अर्घ्य (सूर्य / 1)"
+        }
+      },
+      {
+        "id": "rem_hanuman_chalisa",
+        "digit": 9,
+        "label": {
+          "en": "Shri Hanuman Chalisa & Sindoor (Mars / 9)",
+          "hi": "श्री हनुमान चालीसा पाठ (मंगल / 9)"
+        }
+      }
+    ],
+    "emotional": [
+      {
+        "id": "rem_rose_quartz",
+        "digit": 6,
+        "label": {
+          "en": "Rose Quartz & Natural Itra (Venus / 6)",
+          "hi": "गुलाब स्फटिक व इत्र (शुक्र / 6)"
+        }
+      },
+      {
+        "id": "rem_street_dog_care",
+        "digit": 7,
+        "label": {
+          "en": "Feeding Street Dogs (Ketu / 7)",
+          "hi": "श्वान सेवा (केतु / 7)"
+        }
+      },
+      {
+        "id": "rem_gau_seva",
+        "digit": 5,
+        "label": {
+          "en": "Gau Seva with Green Fodder (Mercury / 5)",
+          "hi": "गौमाता सेवा व हरा चारा (बुध / 5)"
+        }
+      }
+    ],
+    "practical": [
+      {
+        "id": "rem_pearl_silver",
+        "digit": 2,
+        "label": {
+          "en": "Silver Vessel Hydration (Moon / 2)",
+          "hi": "चांदी के पात्र में जलपान (चन्द्र / 2)"
+        }
+      },
+      {
+        "id": "rem_shani_deepam",
+        "digit": 8,
+        "label": {
+          "en": "Mustard Oil Deepam at Peepal (Saturn / 8)",
+          "hi": "पीपल पर सरसों के तेल का दीपक (शनि / 8)"
+        }
+      },
+      {
+        "id": "rem_green_aven",
+        "digit": 4,
+        "label": {
+          "en": "Green Aventurine Pyramid (Rahu / 4)",
+          "hi": "ग्रीन एवेंचुरिन पिरामिड (राहु / 4)"
+        }
+      }
+    ],
+    "vision": [
+      {
+        "id": "rem_kesar_tilak",
+        "digit": 3,
+        "label": {
+          "en": "Kesar & Chandan Tilak (Jupiter / 3)",
+          "hi": "केसर व चंदन तिलक (गुरु / 3)"
+        }
+      },
+      {
+        "id": "rem_rose_quartz",
+        "digit": 6,
+        "label": {
+          "en": "Rose Quartz & Natural Itra (Venus / 6)",
+          "hi": "गुलाब स्फटिक व इत्र (शुक्र / 6)"
+        }
+      },
+      {
+        "id": "rem_pearl_silver",
+        "digit": 2,
+        "label": {
+          "en": "Silver Vessel Hydration (Moon / 2)",
+          "hi": "चांदी के पात्र में जलपान (चन्द्र / 2)"
+        }
+      }
+    ],
+    "willpower": [
+      {
+        "id": "rem_sun_arghya",
+        "digit": 1,
+        "label": {
+          "en": "Surya Jal Arghya with Copper Lota (Sun / 1)",
+          "hi": "तांबे के लोटे से सूर्य अर्घ्य (सूर्य / 1)"
+        }
+      },
+      {
+        "id": "rem_street_dog_care",
+        "digit": 7,
+        "label": {
+          "en": "Feeding Street Dogs (Ketu / 7)",
+          "hi": "श्वान सेवा (केतु / 7)"
+        }
+      },
+      {
+        "id": "rem_shani_deepam",
+        "digit": 8,
+        "label": {
+          "en": "Mustard Oil Deepam at Peepal (Saturn / 8)",
+          "hi": "पीपल पर सरसों के तेल का दीपक (शनि / 8)"
+        }
+      }
+    ],
+    "action": [
+      {
+        "id": "rem_hanuman_chalisa",
+        "digit": 9,
+        "label": {
+          "en": "Shri Hanuman Chalisa & Sindoor (Mars / 9)",
+          "hi": "श्री हनुमान चालीसा पाठ (मंगल / 9)"
+        }
+      },
+      {
+        "id": "rem_gau_seva",
+        "digit": 5,
+        "label": {
+          "en": "Gau Seva with Green Fodder (Mercury / 5)",
+          "hi": "गौमाता सेवा व हरा चारा (बुध / 5)"
+        }
+      },
+      {
+        "id": "rem_green_aven",
+        "digit": 4,
+        "label": {
+          "en": "Green Aventurine Pyramid (Rahu / 4)",
+          "hi": "ग्रीन एवेंचुरिन पिरामिड (राहु / 4)"
+        }
+      }
+    ],
+    "rajayoga_golden": [
+      {
+        "id": "rem_kesar_tilak",
+        "digit": 3,
+        "label": {
+          "en": "Kesar & Chandan Tilak (Jupiter / 3)",
+          "hi": "केसर व चंदन तिलक (गुरु / 3)"
+        }
+      },
+      {
+        "id": "rem_street_dog_care",
+        "digit": 7,
+        "label": {
+          "en": "Feeding Street Dogs (Ketu / 7)",
+          "hi": "श्वान सेवा (केतु / 7)"
+        }
+      },
+      {
+        "id": "rem_green_aven",
+        "digit": 4,
+        "label": {
+          "en": "Green Aventurine Pyramid (Rahu / 4)",
+          "hi": "ग्रीन एवेंचुरिन पिरामिड (राहु / 4)"
+        }
+      }
+    ],
+    "silver_rajayoga": [
+      {
+        "id": "rem_hanuman_chalisa",
+        "digit": 9,
+        "label": {
+          "en": "Shri Hanuman Chalisa & Sindoor (Mars / 9)",
+          "hi": "श्री हनुमान चालीसा पाठ (मंगल / 9)"
+        }
+      },
+      {
+        "id": "rem_street_dog_care",
+        "digit": 7,
+        "label": {
+          "en": "Feeding Street Dogs (Ketu / 7)",
+          "hi": "श्वान सेवा (केतु / 7)"
+        }
+      },
+      {
+        "id": "rem_pearl_silver",
+        "digit": 2,
+        "label": {
+          "en": "Silver Vessel Hydration (Moon / 2)",
+          "hi": "चांदी के पात्र में जलपान (चन्द्र / 2)"
+        }
+      }
+    ]
+  }
+}

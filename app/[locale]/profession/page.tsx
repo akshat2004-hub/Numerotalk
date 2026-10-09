@@ -145,9 +145,9 @@ export default function ProfessionPage() {
 
       {/* Inline Birth Time Card if missing */}
       {!hasBirthTime && (
-        <div className="vedic-card p-4 sm:p-5 border border-amber-300 bg-amber-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="vedic-card p-4 sm:p-5 border border-[var(--border)] bg-[var(--chip-bg)]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-9 h-9 rounded-xl bg-[var(--chip-bg)] text-[var(--gold)] flex items-center justify-center shrink-0 mt-0.5">
               <Clock className="w-5 h-5" />
             </div>
             <div>
@@ -219,7 +219,7 @@ export default function ProfessionPage() {
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide ${
                         idx === 0
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                          ? 'bg-[var(--chip-bg)] text-[var(--heading)] border border-[var(--gold)]'
                           : 'bg-[var(--chip-bg)] text-[var(--heading)] border border-[var(--border)]'
                       }`}
                     >
@@ -227,9 +227,9 @@ export default function ProfessionPage() {
                     </span>
 
                     {/* Match Score Indicator */}
-                    <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                       <span className="font-serif font-bold text-xs lining-nums">{rec.score}%</span>
-                      <span className="text-[10px] uppercase font-bold text-emerald-700">Match</span>
+                      <span className="text-[10px] uppercase font-bold text-[var(--success-text)]">Match</span>
                     </div>
                   </div>
 
@@ -325,7 +325,7 @@ export default function ProfessionPage() {
               <div className="space-y-3.5">
                 {/* Growth Period */}
                 <div className="p-3 rounded-xl bg-[var(--surface-muted)]/50 border border-[var(--border)] flex items-start gap-3">
-                  <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <TrendingUp className="w-4 h-4 text-[var(--success-text)] shrink-0 mt-0.5" />
                   <div>
                     <h5 className="font-serif font-bold text-xs text-[var(--heading)]">
                       {locale === 'hi' ? 'सर्वोत्तम विकास काल (Peak Growth Period)' : 'Peak Growth Period'}
@@ -351,8 +351,8 @@ export default function ProfessionPage() {
 
                 {/* Caution */}
                 <div className="space-y-1.5">
-                  <h5 className="text-xs font-bold text-rose-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <ShieldAlert className="w-3.5 h-3.5 text-rose-600" />
+                  <h5 className="text-xs font-bold text-[var(--warn-text)] uppercase tracking-wider flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-[var(--warn-text)]" />
                     <span>{locale === 'hi' ? 'सावधानी व संतुलन' : 'Cautions & Balance'}</span>
                   </h5>
                   <p className="text-xs text-[var(--text-muted)] leading-relaxed">
@@ -425,7 +425,7 @@ export default function ProfessionPage() {
                           <span className="text-[10px] text-[var(--text-muted)] lining-nums">
                             Sum {pwd.digitSum} → {pwd.reduced}
                           </span>
-                          <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                             {pwd.strength}
                           </span>
                         </div>
@@ -438,8 +438,8 @@ export default function ProfessionPage() {
                       >
                         {copiedIndex === idx ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
-                            <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी' : 'Copied'}</span>
+                            <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
+                            <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी' : 'Copied'}</span>
                           </>
                         ) : (
                           <>
@@ -510,7 +510,7 @@ export default function ProfessionPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   {evaluatedOther.score}% Match
                 </span>
                 <button

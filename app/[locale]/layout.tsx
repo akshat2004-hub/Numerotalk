@@ -31,7 +31,7 @@ export default async function LocaleLayout({
       className={`${notoSansDevanagari.variable} ${outfit.variable} ${cinzel.variable} font-sans`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-[#FFFAF3] text-[#2B2B3A] antialiased selection:bg-[#E8A317] selection:text-[#FFFFFF] transition-colors duration-150">
+      <body className="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased selection:bg-[var(--gold)] selection:text-white transition-colors duration-150">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <AppShell>{children}</AppShell>
         </NextIntlClientProvider>

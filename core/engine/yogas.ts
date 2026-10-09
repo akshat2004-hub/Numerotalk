@@ -31,6 +31,33 @@ export interface DetectedYoga {
   impactEn: string;
   impactHi: string;
 }
+export interface YogStatusResult {
+  present: number[];
+  missing: number[];
+  count: number;
+  status: 'formed' | 'partial' | 'inactive';
+}
+
+export function yogStatus(
+  gridResult: VedicGridResult,
+  digits: [number, number, number] | number[]
+): YogStatusResult {
+  const counts = gridResult.counts;
+  const present = digits.filter((d) => (counts[d] || 0) > 0);
+  const missing = digits.filter((d) => (counts[d] || 0) === 0);
+  const count = present.length;
+
+  let status: 'formed' | 'partial' | 'inactive' = 'inactive';
+  if (count === 3) {
+    status = 'formed';
+  } else if (count === 2) {
+    status = 'partial';
+  } else {
+    status = 'inactive';
+  }
+
+  return { present, missing, count, status };
+}
 
 export const YOGA_DEFINITIONS: YogaDefinition[] = [
   {

@@ -23,6 +23,7 @@ export interface VedicGridProps {
   digitHighlights?: Record<number, 'support' | 'hurdle' | 'dasha' | 'custom'>;
   hideControls?: boolean;
   hideStats?: boolean;
+  yogDigits?: number[];
 }
 
 export function VedicGrid({
@@ -41,7 +42,8 @@ export function VedicGrid({
   newlyAddedNumber,
   digitHighlights,
   hideControls = false,
-  hideStats = false
+  hideStats = false,
+  yogDigits
 }: VedicGridProps) {
   const [includeDriverConductor, setIncludeDriverConductor] = useState(defaultIncludeMulankBhagyank);
   const [selectedCell, setSelectedCell] = useState<GridCell | null>(null);
@@ -131,7 +133,7 @@ export function VedicGrid({
             <span className="text-[10px] font-medium text-[var(--text-muted)] block">
               {locale === 'hi' ? 'अनुपस्थित' : 'Missing'}
             </span>
-            <span className="font-serif font-bold text-sm sm:text-base text-[#E11D48]">
+            <span className="font-serif font-bold text-sm sm:text-base text-[var(--warn-text)]">
               {gridResult.missingNumbers.length}
             </span>
           </div>
@@ -158,45 +160,90 @@ export function VedicGrid({
               const isNewlyAdded = newlyAddedNumber === cell.number;
               const customHighlight = digitHighlights ? digitHighlights[cell.number] : undefined;
 
+              const isYogMode = !!yogDigits && yogDigits.length > 0;
+              const isYogTarget = isYogMode && yogDigits.includes(cell.number);
+
+              let yogCellClasses = '';
+              if (isYogMode) {
+                if (isYogTarget) {
+                  if (cell.isPresent) {
+                    yogCellClasses = 'bg-[var(--chip-bg)] border-[1.5px] border-[var(--gold)] text-[var(--heading)] z-10 shadow-2xs';
+                  } else {
+                    yogCellClasses = 'bg-white border-[1.5px] border-dashed border-[var(--gold)] text-[var(--text-muted)] z-10';
+                  }
+                } else {
+                  yogCellClasses = 'bg-[var(--bg)] border border-[var(--border)] text-[var(--text-muted)]';
+                }
+              }
+
               return (
                 <button
                   key={`${rowIdx}-${colIdx}`}
                   type="button"
                   onClick={() => handleCellSelect(cell)}
                   className={cn(
-                    'aspect-square flex flex-col items-center justify-between transition-all select-none relative cursor-pointer bg-[var(--surface)]',
+                    'aspect-square flex flex-col items-center justify-between transition-all select-none relative cursor-pointer',
+                    !isYogMode && 'bg-[var(--surface)]',
                     cellHeightClass,
-                    isSelected && 'ring-2 ring-[var(--gold)] z-10',
-                    isNewlyAdded && 'ring-2 ring-[var(--gold)] bg-[var(--active-bg)]/40 z-10',
-                    customHighlight === 'support' && 'ring-2 ring-[var(--gold)] bg-[var(--chip-bg)]/50',
-                    customHighlight === 'hurdle' && 'ring-2 ring-rose-400/80 bg-rose-50/40',
-                    isHighlightedMissing && 'bg-rose-50/50',
-                    isHighlightedRepeating && 'bg-[var(--chip-bg)]/40',
-                    !cell.isPresent && !isNewlyAdded && 'opacity-65'
+                    !isYogMode && [
+                      isSelected && 'ring-2 ring-[var(--gold)] z-10',
+                      isNewlyAdded && 'ring-2 ring-[var(--gold)] bg-[var(--active-bg)]/40 z-10',
+                      customHighlight === 'support' && 'ring-2 ring-[var(--gold)] bg-[var(--chip-bg)]/50',
+                      customHighlight === 'hurdle' && 'ring-2 ring-[var(--warn-border)] bg-[var(--warn-bg)]/40',
+                      isHighlightedMissing && 'bg-[var(--warn-bg)]/30',
+                      isHighlightedRepeating && 'bg-[var(--chip-bg)]/40',
+                      !cell.isPresent && !isNewlyAdded && 'opacity-65'
+                    ],
+                    isYogMode && yogCellClasses
                   )}
                 >
                   {/* Top Sector Label & Count Badge */}
-                  <div className="w-full flex items-center justify-between text-[9px] text-[var(--text-muted)]">
-                    <span className="font-semibold text-[var(--gold)]">
+                  <div className="w-full flex items-center justify-between text-[10px] text-[var(--text-muted)]">
+                    <span className="text-[10px] text-[var(--text-muted)] font-medium">
                       #{cell.number}
                     </span>
                     <div className="flex items-center gap-1">
-                      {isNewlyAdded && (
+                      {isNewlyAdded && !isYogMode && (
                         <span className="px-1 py-0.2 rounded-full text-[8.5px] bg-[var(--gold)] text-white font-bold animate-pulse">
                           Dasha
                         </span>
                       )}
                       {cell.isPresent && cell.isRepeating && (
-                        <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-[var(--chip-bg)] text-[var(--gold)] font-bold border border-[var(--border)]">
-                          ×{cell.count}
+                        <span className={cn(
+                          'px-1 py-0.2 rounded-full text-[9px] font-bold border',
+                          isYogMode && isYogTarget
+                            ? 'bg-[var(--gold)] text-white border-[var(--gold)]'
+                            : 'bg-[var(--chip-bg)] text-[var(--gold)] border-[var(--border)]'
+                        )}>
+                          x{cell.count}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Middle Numeral Display */}
+                  {/* Middle Numeral Display (min 16px text-base) */}
                   <div className="flex flex-col items-center justify-center my-auto">
-                    {cell.isPresent ? (
+                    {isYogMode ? (
+                      isYogTarget ? (
+                        cell.isPresent ? (
+                          <span className={cn('font-serif font-bold text-[var(--heading)] tracking-tight lining-nums text-base sm:text-lg', numeralSizeClass)}>
+                            {cell.digitsDisplay}
+                          </span>
+                        ) : (
+                          <span className={cn('font-serif font-semibold text-[var(--text-muted)] tracking-tight lining-nums text-base sm:text-lg', numeralSizeClass)}>
+                            {cell.number}
+                          </span>
+                        )
+                      ) : cell.isPresent ? (
+                        <span className={cn('font-serif font-normal text-[var(--text-muted)] tracking-tight lining-nums text-base sm:text-lg', numeralSizeClass)}>
+                          {cell.digitsDisplay}
+                        </span>
+                      ) : (
+                        <span className="text-base sm:text-lg font-serif text-[var(--text-muted)]">
+                          —
+                        </span>
+                      )
+                    ) : cell.isPresent ? (
                       <span className={cn('font-serif font-bold text-[var(--heading)] tracking-tight', numeralSizeClass)}>
                         {cell.digitsDisplay}
                       </span>
@@ -212,6 +259,13 @@ export function VedicGrid({
           )}
         </div>
 
+        {/* Optional Caption under the grid */}
+        {caption && (
+          <p className="w-full text-center mt-2.5 pt-2 border-t border-[var(--border)] text-[13px] font-medium text-[var(--text-muted)] lining-nums tracking-wide">
+            {caption}
+          </p>
+        )}
+
         {/* Yog Lines drawn as Gold Overlay Lines */}
         {highlightYogLines && activeYogas.length > 0 && (
           <svg
@@ -226,7 +280,7 @@ export function VedicGrid({
                   <line
                     key={yoga.id}
                     x1="25" y1="50" x2="275" y2="50"
-                    stroke="#E8A317"
+                    stroke="var(--gold)"
                     strokeWidth="3.5"
                     strokeDasharray="4 2"
                     className="drop-shadow-sm animate-pulse"
@@ -238,7 +292,7 @@ export function VedicGrid({
                   <line
                     key={yoga.id}
                     x1="25" y1="150" x2="275" y2="150"
-                    stroke="#E8A317"
+                    stroke="var(--gold)"
                     strokeWidth="3.5"
                     strokeDasharray="4 2"
                     className="drop-shadow-sm animate-pulse"
@@ -250,7 +304,7 @@ export function VedicGrid({
                   <line
                     key={yoga.id}
                     x1="25" y1="250" x2="275" y2="250"
-                    stroke="#E8A317"
+                    stroke="var(--gold)"
                     strokeWidth="3.5"
                     strokeDasharray="4 2"
                     className="drop-shadow-sm animate-pulse"
@@ -262,7 +316,7 @@ export function VedicGrid({
                   <line
                     key={yoga.id}
                     x1="50" y1="50" x2="250" y2="250"
-                    stroke="#E8A317"
+                    stroke="var(--gold)"
                     strokeWidth="4"
                     className="drop-shadow-sm animate-pulse"
                   />

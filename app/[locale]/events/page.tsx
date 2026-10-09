@@ -166,13 +166,13 @@ export default function EventsPage() {
           {/* Summary Strip (Strongest 3 vs Weakest 3) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {/* Strongest 3 */}
-            <div className="vedic-card p-4 space-y-2.5 border-l-4 border-l-emerald-500">
+            <div className="vedic-card p-4 space-y-2.5 border-l-4 border-l-[var(--success-text)]">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5 font-serif">
+                <span className="text-xs font-bold text-[var(--success-text)] flex items-center gap-1.5 font-serif">
                   <TrendingUp className="w-4 h-4" />
                   {locale === 'hi' ? 'शीर्ष 3 अनुकूल क्षेत्र (Strongest)' : 'Top 3 Strongest Events'}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                   High Potency
                 </span>
               </div>
@@ -186,20 +186,20 @@ export default function EventsPage() {
                     <span className="font-semibold text-[var(--heading)]">
                       {locale === 'hi' ? st.event.name.hi : st.event.name.en}
                     </span>
-                    <span className="font-serif font-bold text-emerald-700">{st.score}/100</span>
+                    <span className="font-serif font-bold text-[var(--success-text)]">{st.score}/100</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Weakest 3 */}
-            <div className="vedic-card p-4 space-y-2.5 border-l-4 border-l-amber-500">
+            <div className="vedic-card p-4 space-y-2.5 border-l-4 border-l-[var(--warn-text)]">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-700 flex items-center gap-1.5 font-serif">
+                <span className="text-xs font-bold text-[var(--warn-text)] flex items-center gap-1.5 font-serif">
                   <AlertTriangle className="w-4 h-4" />
                   {locale === 'hi' ? 'उपाय योग्य 3 क्षेत्र (Weakest)' : '3 Weakest / Caution Events'}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]">
                   Remedy Advised
                 </span>
               </div>
@@ -213,7 +213,7 @@ export default function EventsPage() {
                     <span className="font-semibold text-[var(--heading)]">
                       {locale === 'hi' ? wk.event.name.hi : wk.event.name.en}
                     </span>
-                    <span className="font-serif font-bold text-amber-700">{wk.score}/100</span>
+                    <span className="font-serif font-bold text-[var(--warn-text)]">{wk.score}/100</span>
                   </div>
                 ))}
               </div>
@@ -239,10 +239,10 @@ export default function EventsPage() {
             const isHigh = item.level === 'High';
             const isLow = item.level === 'Low';
             const badgeColor = isHigh
-              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
               : isLow
-              ? 'bg-rose-50 text-rose-700 border-rose-200'
-              : 'bg-[var(--chip-bg)] text-[var(--gold)] border-[var(--border)]';
+              ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]'
+              : 'bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)]';
 
             return (
               <div
@@ -306,7 +306,7 @@ export default function EventsPage() {
           <button
             type="button"
             onClick={handleAddAllTopRemedies}
-            className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[var(--gold)] to-amber-600 text-white shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer w-fit"
+            className="btn-gold-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer w-fit"
           >
             <PlusCircle className="w-4 h-4" />
             {reportSections?.['events_prescriptions']
@@ -422,7 +422,7 @@ export default function EventsPage() {
                     <span className="w-2 h-2 rounded-full bg-[var(--gold)]" /> Support ({activeEventModal.event.supportDigits.join(', ')})
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-rose-500" /> Hurdle ({activeEventModal.event.hurdleDigits.join(', ') || 'None'})
+                    <span className="w-2 h-2 rounded-full bg-[var(--warn-text)]" /> Hurdle ({activeEventModal.event.hurdleDigits.join(', ') || 'None'})
                   </span>
                 </div>
               </div>
@@ -508,7 +508,7 @@ export default function EventsPage() {
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <span className="text-[11px] font-semibold text-emerald-700 block mb-1">
+                  <span className="text-[11px] font-semibold text-[var(--success-text)] block mb-1">
                     {locale === 'hi' ? 'अनुकूल वर्ष:' : 'Favourable Years:'}
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -516,7 +516,7 @@ export default function EventsPage() {
                       activeEventModal.favourableYears.map((yr) => (
                         <span
                           key={`fav-${yr}`}
-                          className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold font-serif"
+                          className="px-2 py-0.5 rounded-md bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] text-xs font-bold font-serif"
                         >
                           {yr}
                         </span>
@@ -528,7 +528,7 @@ export default function EventsPage() {
                 </div>
 
                 <div>
-                  <span className="text-[11px] font-semibold text-amber-700 block mb-1">
+                  <span className="text-[11px] font-semibold text-[var(--warn-text)] block mb-1">
                     {locale === 'hi' ? 'सावधानी के वर्ष:' : 'Caution Periods:'}
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -536,13 +536,13 @@ export default function EventsPage() {
                       activeEventModal.cautionPeriods.map((cp) => (
                         <span
                           key={`caut-${cp}`}
-                          className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold font-serif"
+                          className="px-2 py-0.5 rounded-md bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)] text-xs font-bold font-serif"
                         >
                           {cp}
                         </span>
                       ))
                     ) : (
-                      <span className="text-emerald-700 text-[11px]">Clear skies, no adverse hurdle cycles</span>
+                      <span className="text-[var(--success-text)] text-[11px]">Clear skies, no adverse hurdle cycles</span>
                     )}
                   </div>
                 </div>
@@ -578,7 +578,7 @@ export default function EventsPage() {
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs font-semibold">
                       <span>{locale === 'hi' ? 'पारंपरिक विवाह' : 'Arranged Marriage'}</span>
-                      <span className="text-indigo-600">{loveMarriageReading.arrangedPct}%</span>
+                      <span className="text-[var(--gold-deep)]">{loveMarriageReading.arrangedPct}%</span>
                     </div>
                     <ScoreMeter score={loveMarriageReading.arrangedPct} showLabel={false} />
                   </div>
@@ -635,7 +635,7 @@ export default function EventsPage() {
                       onClick={() => setPickedWordNumber(num)}
                       className={`w-8 h-8 rounded-full font-serif font-bold text-xs border transition-all cursor-pointer ${
                         pickedWordNumber === num
-                          ? 'bg-[var(--gold)] text-white border-amber-600 shadow-xs'
+                          ? 'bg-[var(--gold)] text-white border-[var(--gold-deep)] shadow-xs'
                           : 'bg-[var(--bg)] text-[var(--text-muted)] border-[var(--border)] hover:bg-[var(--chip-bg)]'
                       }`}
                     >

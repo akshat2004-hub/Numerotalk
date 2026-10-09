@@ -117,9 +117,9 @@ export default function VastuPage() {
                   key={dir.number}
                   className={`p-3.5 rounded-2xl border space-y-2 ${
                     isEmpowered
-                      ? 'bg-emerald-50/60 border-emerald-200'
+                      ? 'bg-[var(--success-bg)]/60 border-[var(--success-border)]'
                       : isDeficient
-                      ? 'bg-rose-50/60 border-rose-200'
+                      ? 'bg-[var(--warn-bg)]/60 border-[var(--warn-border)]'
                       : 'bg-[var(--surface)] border-[var(--border)]'
                   }`}
                 >
@@ -130,9 +130,9 @@ export default function VastuPage() {
                     <span
                       className={`text-[9.5px] font-bold px-2 py-0.5 rounded-full border ${
                         isEmpowered
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                          ? 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
                           : isDeficient
-                          ? 'bg-rose-100 text-rose-800 border-rose-300'
+                          ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border-[var(--warn-border)]'
                           : 'bg-[var(--chip-bg)] text-[var(--text-muted)] border-[var(--border)]'
                       }`}
                     >
@@ -156,7 +156,7 @@ export default function VastuPage() {
                       onClick={() => toggleReportSection(sectionKey)}
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold cursor-pointer ${
                         isAdded
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-[var(--success-bg)] text-[var(--success-text)]'
                           : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--gold)] hover:bg-[var(--chip-bg)]'
                       }`}
                     >

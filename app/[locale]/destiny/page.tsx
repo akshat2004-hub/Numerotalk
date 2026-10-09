@@ -111,12 +111,12 @@ export default function DestinyPage() {
             badge="Superpowers"
             badgeVariant="emerald"
             sectionKey="module2_strengths"
-            icon={<Crown className="w-4 h-4 text-emerald-600 stroke-[1.5]" />}
+            icon={<Crown className="w-4 h-4 text-[var(--success-text)] stroke-[1.5]" />}
           >
             <ul className="space-y-1.5 text-[12.5px]">
               {destinyReading.coreStrengths.map((str, i) => (
                 <li key={i} className="flex items-start gap-2 text-[var(--text)]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[1.5] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success-text)] stroke-[1.5] shrink-0 mt-0.5" />
                   <span>{locale === 'hi' ? str.hi : str.en}</span>
                 </li>
               ))}
@@ -146,7 +146,7 @@ export default function DestinyPage() {
             badge="Social Dynamics"
             badgeVariant="crimson"
             sectionKey="module2_relationship"
-            icon={<Heart className="w-4 h-4 text-rose-500 stroke-[1.5]" />}
+            icon={<Heart className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
           >
             <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
               {locale === 'hi' ? destinyReading.relationshipStyle.hi : destinyReading.relationshipStyle.en}

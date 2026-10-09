@@ -130,8 +130,8 @@ export default function TimePage() {
               <span className="font-bold text-[var(--heading)] text-xs mt-0.5 block">{mulankBadge.text}</span>
             </div>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-              mulankBadge.color === 'emerald' ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' :
-              mulankBadge.color === 'crimson' ? 'bg-rose-50 text-rose-800 border border-rose-300' :
+              mulankBadge.color === 'emerald' ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]' :
+              mulankBadge.color === 'crimson' ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]' :
               'bg-[var(--chip-bg)] text-[var(--gold)]'
             }`}>
               {relationToMulank.toUpperCase()}
@@ -144,8 +144,8 @@ export default function TimePage() {
               <span className="font-bold text-[var(--heading)] text-xs mt-0.5 block">{bhagyankBadge.text}</span>
             </div>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-              bhagyankBadge.color === 'emerald' ? 'bg-emerald-50 text-emerald-800 border border-emerald-300' :
-              bhagyankBadge.color === 'crimson' ? 'bg-rose-50 text-rose-800 border border-rose-300' :
+              bhagyankBadge.color === 'emerald' ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]' :
+              bhagyankBadge.color === 'crimson' ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]' :
               'bg-[var(--chip-bg)] text-[var(--gold)]'
             }`}>
               {relationToBhagyank.toUpperCase()}
@@ -201,7 +201,7 @@ export default function TimePage() {
               <ul className="space-y-1 text-xs">
                 {(locale === 'hi' ? timeResult.bestSuitedForHi : timeResult.bestSuitedForEn).map((item, i) => (
                   <li key={i} className="flex items-center gap-2 text-[var(--heading)]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success-text)] shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}

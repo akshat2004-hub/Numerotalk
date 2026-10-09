@@ -157,7 +157,7 @@ export default function UserDetailPage() {
           {/* LEFT: Profile photo section */}
           <div className="lg:col-span-4 flex flex-col items-center text-center space-y-2">
             <div className="relative group">
-              <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-dashed border-[#F59E0B] bg-[#FFFBF6] flex items-center justify-center shadow-xs">
+              <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-dashed border-[var(--gold)] bg-[var(--surface)] flex items-center justify-center shadow-xs">
                 {imagePreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -166,13 +166,13 @@ export default function UserDetailPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User className="w-9 h-9 text-[#94A3B8] stroke-[1.5]" />
+                  <User className="w-9 h-9 text-[var(--text-muted)] stroke-[1.5]" />
                 )}
               </div>
 
               {/* Small gold camera button */}
               <label
-                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[#D97706] hover:bg-[#B45309] text-white flex items-center justify-center cursor-pointer shadow-xs transition-all hover:scale-105 border-2 border-white"
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-[var(--gold)] hover:bg-[var(--gold-deep)] text-white flex items-center justify-center cursor-pointer shadow-xs transition-all hover:scale-105 border-2 border-white"
                 title="Upload Photo"
               >
                 <Camera className="w-3.5 h-3.5 stroke-[2]" />
@@ -186,17 +186,17 @@ export default function UserDetailPage() {
             </div>
 
             <div className="text-center space-y-0.5">
-              <span className="font-semibold text-[#0F172A] text-xs block">
+              <span className="font-semibold text-[var(--heading)] text-xs block">
                 {locale === 'hi' ? 'प्रोफ़ाइल फोटो' : 'Profile Photo'}
               </span>
-              <p className="text-[11px] text-[#64748B]">
+              <p className="text-[11px] text-[var(--text-muted)]">
                 {locale === 'hi' ? 'फोटो अपलोड करें (वैकल्पिक)' : 'Upload photo (optional)'}
               </p>
               {imagePreview && (
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="text-[#EF4444] hover:underline inline-flex items-center gap-1 text-[10.5px] pt-0.5 cursor-pointer"
+                  className="text-[var(--warn-text)] hover:underline inline-flex items-center gap-1 text-[10.5px] pt-0.5 cursor-pointer"
                 >
                   <Trash2 className="w-2.5 h-2.5 stroke-[1.5]" />
                   <span>{locale === 'hi' ? 'हटाएं' : 'Remove'}</span>
@@ -285,7 +285,7 @@ export default function UserDetailPage() {
                 </span>
               </label>
               {errors.consent && (
-                <p className="text-rose-600 text-xs mt-1">{errors.consent.message}</p>
+                <p className="text-[var(--warn-text)] text-xs mt-1">{errors.consent.message}</p>
               )}
             </div>
 
@@ -405,16 +405,16 @@ export default function UserDetailPage() {
 
               {/* Positive Attributes */}
               <div className="pt-1">
-                <span className="text-[10.5px] font-semibold text-emerald-700 uppercase tracking-wider block mb-1.5">
+                <span className="text-[10.5px] font-semibold text-[var(--success-text)] uppercase tracking-wider block mb-1.5">
                   {locale === 'hi' ? 'सकारात्मक गुण' : 'Positive Attributes'}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11.5px]">
                   {reading.positiveAttributes.map((attr, i) => (
                     <div
                       key={i}
-                      className="p-1.5 rounded-md bg-emerald-50 border border-emerald-200 flex items-center gap-1.5 text-emerald-800"
+                      className="p-1.5 rounded-md bg-[var(--success-bg)] border border-[var(--success-border)] flex items-center gap-1.5 text-[var(--success-text)]"
                     >
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600 stroke-[2] shrink-0" />
+                      <CheckCircle2 className="w-3 h-3 text-[var(--success-text)] stroke-[2] shrink-0" />
                       <span>{locale === 'hi' ? attr.hi : attr.en}</span>
                     </div>
                   ))}
@@ -423,16 +423,16 @@ export default function UserDetailPage() {
 
               {/* Negative / Shadow Attributes */}
               <div className="pt-1">
-                <span className="text-[10.5px] font-semibold text-amber-700 uppercase tracking-wider block mb-1.5">
+                <span className="text-[10.5px] font-semibold text-[var(--warn-text)] uppercase tracking-wider block mb-1.5">
                   {locale === 'hi' ? 'सावधानियां / छाया' : 'Shadow Traits & Cautions'}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11.5px]">
                   {reading.negativeAttributes.map((attr, i) => (
                     <div
                       key={i}
-                      className="p-1.5 rounded-md bg-amber-50 border border-amber-200 flex items-center gap-1.5 text-amber-800"
+                      className="p-1.5 rounded-md bg-[var(--warn-bg)] border border-[var(--warn-border)] flex items-center gap-1.5 text-[var(--warn-text)]"
                     >
-                      <AlertTriangle className="w-3 h-3 text-amber-600 stroke-[2] shrink-0" />
+                      <AlertTriangle className="w-3 h-3 text-[var(--warn-text)] stroke-[2] shrink-0" />
                       <span>{locale === 'hi' ? attr.hi : attr.en}</span>
                     </div>
                   ))}
@@ -472,7 +472,7 @@ export default function UserDetailPage() {
                   <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">
                     {locale === 'hi' ? 'शुभ अंक' : 'Lucky Numbers'}
                   </span>
-                  <span className="font-semibold text-emerald-700 text-xs">
+                  <span className="font-semibold text-[var(--success-text)] text-xs">
                     {reading.luckyNumbers.join(', ')}
                   </span>
                 </div>
@@ -481,7 +481,7 @@ export default function UserDetailPage() {
                   <span className="text-[10px] text-[var(--text-muted)] block mb-0.5">
                     {locale === 'hi' ? 'प्रतिकूल अंक' : 'Enemy Numbers'}
                   </span>
-                  <span className="font-semibold text-amber-700 text-xs">
+                  <span className="font-semibold text-[var(--warn-text)] text-xs">
                     {reading.unfavorableNumbers.length > 0 ? reading.unfavorableNumbers.join(', ') : 'None'}
                   </span>
                 </div>

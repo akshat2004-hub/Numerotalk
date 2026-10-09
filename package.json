@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-banned-terms.mjs",
+    "check:colors": "node scripts/check-colors.mjs",
+    "prebuild": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "node scripts/check-banned-terms.mjs && eslint",
+    "lint": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs && eslint",
     "test": "vitest run"
   },
   "dependencies": {

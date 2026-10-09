@@ -62,7 +62,7 @@ export default function MatchMakingPage() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#FFFAF3',
+        backgroundColor: null,
         logging: false,
         windowWidth: 1200
       });
@@ -103,18 +103,18 @@ export default function MatchMakingPage() {
   const getRelationBadge = (relation: 'friendly' | 'enemy' | 'neutral') => {
     if (relation === 'friendly') {
       return {
-        bg: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+        bg: 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]',
         label: locale === 'hi' ? 'मित्रवत (Friendly)' : 'Friendly'
       };
     }
     if (relation === 'enemy') {
       return {
-        bg: 'bg-rose-50 text-rose-800 border-rose-300',
+        bg: 'bg-[var(--warn-bg)] text-[var(--warn-text)] border-[var(--warn-border)]',
         label: locale === 'hi' ? 'शत्रु / विरोधी (Enemy)' : 'Enemy / Friction'
       };
     }
     return {
-      bg: 'bg-amber-50 text-amber-800 border-amber-300',
+      bg: 'bg-[var(--neutral-bg)] text-[var(--neutral-text)] border-[var(--neutral-border)]',
       label: locale === 'hi' ? 'सामान्य (Neutral)' : 'Neutral'
     };
   };
@@ -225,13 +225,13 @@ export default function MatchMakingPage() {
         </div>
 
         {/* Partner 2 (Girl) */}
-        <div className="vedic-card p-4 sm:p-5 space-y-3.5 border-t-2 border-t-rose-400">
+        <div className="vedic-card p-4 sm:p-5 space-y-3.5 border-t-2 border-t-[var(--gold)]">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold font-serif text-[var(--heading)] flex items-center gap-2">
-              <Heart className="w-4 h-4 text-rose-500" />
+              <Heart className="w-4 h-4 text-[var(--gold)]" />
               <span>{locale === 'hi' ? 'साथी 2 का विवरण' : 'Partner 2 Details'}</span>
             </h3>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[var(--chip-bg)] text-[var(--gold-deep)] border border-[var(--gold)]">
               Partner 2
             </span>
           </div>
@@ -263,7 +263,7 @@ export default function MatchMakingPage() {
               <span className="text-[11px] text-[var(--text-muted)]">
                 {locale === 'hi' ? 'ड्राइवर (मूलांक):' : 'Driver (Mulank):'}
               </span>
-              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold-deep)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--gold)] tabular-nums lining-nums">
                 {matchResult.girl.mulank}
               </span>
             </div>
@@ -271,7 +271,7 @@ export default function MatchMakingPage() {
               <span className="text-[11px] text-[var(--text-muted)]">
                 {locale === 'hi' ? 'कंडक्टर (भाग्यांक):' : 'Conductor (Bhagyank):'}
               </span>
-              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold-deep)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--gold)] tabular-nums lining-nums">
                 {matchResult.girl.bhagyank}
               </span>
             </div>
@@ -279,7 +279,7 @@ export default function MatchMakingPage() {
               <span className="text-[11px] text-[var(--text-muted)]">
                 {locale === 'hi' ? 'डेस्टिनी (नामांक):' : 'Destiny (Namank):'}
               </span>
-              <span className="w-6 h-6 rounded-full bg-rose-50 text-rose-700 font-serif font-bold text-xs flex items-center justify-center border border-rose-200 tabular-nums lining-nums">
+              <span className="w-6 h-6 rounded-full bg-[var(--chip-bg)] text-[var(--gold-deep)] font-serif font-bold text-xs flex items-center justify-center border border-[var(--gold)] tabular-nums lining-nums">
                 {matchResult.girl.destinyNumber}
               </span>
             </div>
@@ -355,7 +355,7 @@ export default function MatchMakingPage() {
                     <span className="text-[11px] text-[var(--text-muted)] block truncate max-w-[130px] mx-auto">
                       {girlName || 'Partner 2'}
                     </span>
-                    <span className="font-serif font-bold text-xl sm:text-2xl text-rose-600 tabular-nums lining-nums">
+                    <span className="font-serif font-bold text-xl sm:text-2xl text-[var(--heading)] tabular-nums lining-nums">
                       {pillar.girlNumber}
                     </span>
                   </div>
@@ -437,13 +437,13 @@ export default function MatchMakingPage() {
                     </div>
                     {matchResult.missingInBoth.length > 0 && (
                       <div className="pt-1 flex flex-wrap items-center gap-1.5 text-[11px]">
-                        <span className="text-rose-600 font-medium">
+                        <span className="text-[var(--warn-text)] font-medium">
                           {locale === 'hi' ? 'दोनों में अनुपस्थित अंक:' : 'Missing in Both:'}
                         </span>
                         {matchResult.missingInBoth.map((mNum) => (
                           <span
                             key={mNum}
-                            className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"
+                            className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]"
                           >
                             Number {mNum}
                           </span>
@@ -512,7 +512,7 @@ export default function MatchMakingPage() {
                   {/* Strengths & Watch Out Bullets */}
                   <div className="pt-2 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                     <div className="space-y-1">
-                      <span className="font-bold text-emerald-700 flex items-center gap-1">
+                      <span className="font-bold text-[var(--success-text)] flex items-center gap-1">
                         <Check className="w-3 h-3" />
                         {locale === 'hi' ? 'सकारात्मक पक्ष' : 'Strengths'}
                       </span>
@@ -524,7 +524,7 @@ export default function MatchMakingPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <span className="font-bold text-amber-700 flex items-center gap-1">
+                      <span className="font-bold text-[var(--warn-text)] flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" />
                         {locale === 'hi' ? 'सावधानी व सुझाव' : 'Watch Out'}
                       </span>
@@ -544,13 +544,13 @@ export default function MatchMakingPage() {
                     onClick={() => toggleReportSection(reportKey)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       isAdded
-                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                        ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
                         : 'bg-[var(--surface)] text-[var(--gold)] hover:bg-[var(--chip-bg)] border border-[var(--border)]'
                     }`}
                   >
                     {isAdded ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
                         <span>{locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report'}</span>
                       </>
                     ) : (
@@ -600,14 +600,14 @@ export default function MatchMakingPage() {
         {/* Top 3 Strengths & Top 3 Cautions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
-            <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-bold text-[var(--success-text)] flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-[var(--success-text)]" />
               {locale === 'hi' ? 'शीर्ष 3 सकारात्मक शक्तियां' : 'Top 3 Relationship Strengths'}
             </span>
             <ul className="space-y-1.5 text-xs text-[var(--text)]">
               {(locale === 'hi' ? matchResult.topStrengthsHi : matchResult.topStrengthsEn).map((str, idx) => (
                 <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-emerald-600 font-bold">✓</span>
+                  <span className="text-[var(--success-text)] font-bold">✓</span>
                   <span>{str}</span>
                 </li>
               ))}
@@ -615,14 +615,14 @@ export default function MatchMakingPage() {
           </div>
 
           <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2">
-            <span className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-bold text-[var(--warn-text)] flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4 text-[var(--warn-text)]" />
               {locale === 'hi' ? 'शीर्ष 3 सावधानी के बिंदु' : 'Top 3 Planetary Cautions'}
             </span>
             <ul className="space-y-1.5 text-xs text-[var(--text)]">
               {(locale === 'hi' ? matchResult.topCautionsHi : matchResult.topCautionsEn).map((caut, idx) => (
                 <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-amber-600 font-bold">!</span>
+                  <span className="text-[var(--warn-text)] font-bold">!</span>
                   <span>{caut}</span>
                 </li>
               ))}
@@ -649,7 +649,7 @@ export default function MatchMakingPage() {
       </div>
 
       {/* DEDICATED PDF REPORT EXPORT BANNER */}
-      <div className="vedic-card p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-gradient-to-r from-amber-500/10 via-[var(--card)] to-rose-500/10 border border-[var(--gold)]/30">
+      <div className="vedic-card p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[var(--surface)] border border-[var(--gold)]/30">
         <div className="space-y-0.5">
           <h3 className="font-serif font-bold text-sm sm:text-base text-[var(--heading)] flex items-center gap-2">
             <Download className="w-4 h-4 text-[var(--gold)]" />
@@ -683,70 +683,70 @@ export default function MatchMakingPage() {
 
       {/* HIDDEN PRINT/PDF TEMPLATE (Captured by html2canvas + jsPDF) */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', width: '1100px' }}>
-        <div ref={pdfRef} className="p-8 bg-[#FFFAF3] text-[#14213D] space-y-6 font-sans">
+        <div ref={pdfRef} className="p-8 bg-[var(--bg)] text-[var(--heading)] space-y-6 font-sans">
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b-2 border-[#E8A317]">
+          <div className="flex items-center justify-between pb-4 border-b-2 border-[var(--gold)]">
             <div>
-              <span className="text-[11px] font-bold text-[#E8A317] uppercase tracking-widest block">
+              <span className="text-[11px] font-bold text-[var(--gold)] uppercase tracking-widest block">
                 NUMEROTALK VEDIC COMPATIBILITY DOSSIER
               </span>
-              <h1 className="text-2xl font-serif font-bold text-[#14213D]">
+              <h1 className="text-2xl font-serif font-bold text-[var(--heading)]">
                 Kundali & Numerological Match Report
               </h1>
             </div>
-            <div className="text-right text-xs text-[#8A7F6E]">
+            <div className="text-right text-xs text-[var(--text-muted)]">
               <span className="block font-semibold">Date: {todayStr}</span>
               <span className="block">DPDP Local Compliance</span>
             </div>
           </div>
 
           {/* Profile Strip */}
-          <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-white border border-[#EADFC8]">
-            <div className="space-y-1 border-r border-[#EADFC8] pr-4">
-              <span className="text-xs font-bold text-[#E8A317]">Partner 1 (Boy)</span>
-              <h3 className="text-base font-bold text-[#14213D]">{boyName}</h3>
-              <p className="text-xs text-[#4A4A5A]">DOB: {boyDob} | Driver: {matchResult.boy.mulank} | Life Path: {matchResult.boy.bhagyank} | Destiny: {matchResult.boy.destinyNumber}</p>
+          <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+            <div className="space-y-1 border-r border-[var(--border)] pr-4">
+              <span className="text-xs font-bold text-[var(--gold)]">Partner 1 (Boy)</span>
+              <h3 className="text-base font-bold text-[var(--heading)]">{boyName}</h3>
+              <p className="text-xs text-[var(--text-muted)]">DOB: {boyDob} | Driver: {matchResult.boy.mulank} | Life Path: {matchResult.boy.bhagyank} | Destiny: {matchResult.boy.destinyNumber}</p>
             </div>
             <div className="space-y-1 pl-4">
-              <span className="text-xs font-bold text-[#E8A317]">Partner 2 (Girl)</span>
-              <h3 className="text-base font-bold text-[#14213D]">{girlName}</h3>
-              <p className="text-xs text-[#4A4A5A]">DOB: {girlDob} | Driver: {matchResult.girl.mulank} | Life Path: {matchResult.girl.bhagyank} | Destiny: {matchResult.girl.destinyNumber}</p>
+              <span className="text-xs font-bold text-[var(--gold)]">Partner 2 (Girl)</span>
+              <h3 className="text-base font-bold text-[var(--heading)]">{girlName}</h3>
+              <p className="text-xs text-[var(--text-muted)]">DOB: {girlDob} | Driver: {matchResult.girl.mulank} | Life Path: {matchResult.girl.bhagyank} | Destiny: {matchResult.girl.destinyNumber}</p>
             </div>
           </div>
 
           {/* Overall Score Box */}
-          <div className="p-5 rounded-xl bg-white border-2 border-[#E8A317] flex items-center justify-between">
+          <div className="p-5 rounded-xl bg-[var(--surface)] border-2 border-[var(--gold)] flex items-center justify-between">
             <div className="space-y-1 max-w-xl">
-              <span className="text-xs font-bold text-[#E8A317] uppercase tracking-wider block">Compatibility Synthesis</span>
-              <h2 className="text-xl font-bold font-serif text-[#14213D]">
+              <span className="text-xs font-bold text-[var(--gold)] uppercase tracking-wider block">Compatibility Synthesis</span>
+              <h2 className="text-xl font-bold font-serif text-[var(--heading)]">
                 {matchResult.tier} Compatibility — {matchResult.total}/100
               </h2>
-              <p className="text-xs text-[#2B2B3A] leading-relaxed">
+              <p className="text-xs text-[var(--text)] leading-relaxed">
                 {matchResult.summaryEn}
               </p>
             </div>
-            <div className="text-center p-3 rounded-xl bg-[#FFF6E5] border border-[#E8A317]">
-              <span className="text-3xl font-serif font-bold text-[#14213D] block">{matchResult.total}</span>
-              <span className="text-[10px] font-bold text-[#E8A317] uppercase">Out of 100</span>
+            <div className="text-center p-3 rounded-xl bg-[var(--chip-bg)] border border-[var(--gold)]">
+              <span className="text-3xl font-serif font-bold text-[var(--heading)] block">{matchResult.total}</span>
+              <span className="text-[10px] font-bold text-[var(--gold)] uppercase">Out of 100</span>
             </div>
           </div>
 
           {/* 5 Pillars Summary */}
           <div className="space-y-3">
-            <h3 className="text-base font-serif font-bold text-[#14213D] border-b border-[#EADFC8] pb-1">
+            <h3 className="text-base font-serif font-bold text-[var(--heading)] border-b border-[var(--border)] pb-1">
               5 Core Vedic Compatibility Pillars
             </h3>
             <div className="grid grid-cols-1 gap-3">
               {matchResult.pillars.map((p) => (
-                <div key={p.id} className="p-3.5 rounded-xl bg-white border border-[#EADFC8] space-y-1.5 text-xs">
+                <div key={p.id} className="p-3.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#14213D] text-sm">{p.titleEn}</span>
-                    <span className="font-bold text-[#E8A317]">{p.score}/20 ({p.relation.toUpperCase()})</span>
+                    <span className="font-bold text-[var(--heading)] text-sm">{p.titleEn}</span>
+                    <span className="font-bold text-[var(--gold)]">{p.score}/20 ({p.relation.toUpperCase()})</span>
                   </div>
-                  <p className="text-[#2B2B3A] leading-relaxed">
+                  <p className="text-[var(--text)] leading-relaxed">
                     <strong>Verdict: </strong>{p.conclusion.verdict.en}
                   </p>
-                  <p className="text-[#4A4A5A] text-[11px] leading-relaxed">
+                  <p className="text-[var(--text-muted)] text-[11px] leading-relaxed">
                     {p.conclusion.meaning.en}
                   </p>
                 </div>
@@ -755,12 +755,12 @@ export default function MatchMakingPage() {
           </div>
 
           {/* Prescribed Remedies */}
-          <div className="p-4 rounded-xl bg-white border border-[#EADFC8] space-y-2 text-xs">
-            <span className="font-bold text-[#E8A317] block">Prescribed Harmonizing Remedies:</span>
-            <ul className="space-y-1 text-[#2B2B3A]">
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-2 text-xs">
+            <span className="font-bold text-[var(--gold)] block">Prescribed Harmonizing Remedies:</span>
+            <ul className="space-y-1 text-[var(--text)]">
               {matchResult.remedies.map((rem, idx) => (
                 <li key={idx} className="flex items-start gap-1.5">
-                  <span className="text-[#E8A317] font-bold">•</span>
+                  <span className="text-[var(--gold)] font-bold">•</span>
                   <span>{rem}</span>
                 </li>
               ))}
@@ -768,7 +768,7 @@ export default function MatchMakingPage() {
           </div>
 
           {/* Statutory Footer */}
-          <div className="pt-4 border-t border-[#EADFC8] text-center text-[10px] text-[#8A7F6E]">
+          <div className="pt-4 border-t border-[var(--border)] text-center text-[10px] text-[var(--text-muted)]">
             NumeroTalk Vedic Match Matrix • For consultative & informational purposes • Generated on {todayStr}
           </div>
         </div>

@@ -221,13 +221,13 @@ export default function RemediesPage() {
                         onClick={() => toggleReportSection(sectionKey)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                           isAdded
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                            ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
                             : 'bg-[var(--chip-bg)] text-[var(--gold)] hover:bg-[var(--active-bg)] border border-[var(--border)]'
                         }`}
                       >
                         {isAdded ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
                             <span>{locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report'}</span>
                           </>
                         ) : (

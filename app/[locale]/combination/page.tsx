@@ -78,9 +78,9 @@ export default function CombinationPage() {
           <div className="text-center md:text-right space-y-1">
             <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold border ${
               badge.color === 'emerald'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
                 : badge.color === 'crimson'
-                ? 'bg-rose-50 text-rose-700 border-rose-200'
+                ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border-[var(--warn-border)]'
                 : 'bg-[var(--chip-bg)] text-[var(--gold)] border-[var(--border)]'
             }`}>
               {badge.text}
@@ -102,12 +102,12 @@ export default function CombinationPage() {
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* Friendly Group */}
-          <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-2">
+          <div className="p-3 rounded-2xl bg-[var(--success-bg)] border border-[var(--success-border)] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-emerald-800">
+              <span className="text-xs font-bold text-[var(--success-text)]">
                 {locale === 'hi' ? 'मित्र अंक (Friendly)' : 'Friendly Numbers'}
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-bold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--surface)] text-[var(--success-text)] font-bold">
                 {allFriends.length}
               </span>
             </div>
@@ -115,7 +115,7 @@ export default function CombinationPage() {
               {allFriends.map((num) => (
                 <span
                   key={num}
-                  className="w-7 h-7 rounded-xl bg-white border border-emerald-300 text-emerald-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                  className="w-7 h-7 rounded-xl bg-[var(--surface)] border border-[var(--success-border)] text-[var(--success-text)] font-bold text-xs flex items-center justify-center shadow-xs"
                 >
                   {num}
                 </span>
@@ -124,12 +124,12 @@ export default function CombinationPage() {
           </div>
 
           {/* Neutral Group */}
-          <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-2">
+          <div className="p-3 rounded-2xl bg-[var(--warn-bg)] border border-[var(--warn-border)] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-800">
+              <span className="text-xs font-bold text-[var(--warn-text)]">
                 {locale === 'hi' ? 'तटस्थ अंक (Neutral)' : 'Neutral Numbers'}
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--surface)] text-[var(--warn-text)] font-bold">
                 {allNeutrals.length}
               </span>
             </div>
@@ -137,7 +137,7 @@ export default function CombinationPage() {
               {allNeutrals.map((num) => (
                 <span
                   key={num}
-                  className="w-7 h-7 rounded-xl bg-white border border-amber-300 text-amber-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                  className="w-7 h-7 rounded-xl bg-[var(--surface)] border border-[var(--warn-border)] text-[var(--warn-text)] font-bold text-xs flex items-center justify-center shadow-xs"
                 >
                   {num}
                 </span>
@@ -146,12 +146,12 @@ export default function CombinationPage() {
           </div>
 
           {/* Enemy Group */}
-          <div className="p-3 rounded-2xl bg-rose-50/60 border border-rose-200/80 space-y-2">
+          <div className="p-3 rounded-2xl bg-[var(--neutral-bg)] border border-[var(--neutral-border)] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-rose-800">
+              <span className="text-xs font-bold text-[var(--neutral-text)]">
                 {locale === 'hi' ? 'शत्रु अंक (Enemy)' : 'Enemy Numbers'}
               </span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-800 font-bold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--surface)] text-[var(--neutral-text)] font-bold">
                 {allEnemies.length}
               </span>
             </div>
@@ -160,7 +160,7 @@ export default function CombinationPage() {
                 allEnemies.map((num) => (
                   <span
                     key={num}
-                    className="w-7 h-7 rounded-xl bg-white border border-rose-300 text-rose-800 font-bold text-xs flex items-center justify-center shadow-xs"
+                    className="w-7 h-7 rounded-xl bg-[var(--surface)] border border-[var(--neutral-border)] text-[var(--neutral-text)] font-bold text-xs flex items-center justify-center shadow-xs"
                   >
                     {num}
                   </span>
@@ -201,7 +201,7 @@ export default function CombinationPage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ अंक:' : 'Lucky Numbers:'}</span>
-              <span className="font-bold text-emerald-700">{mulankInfo?.friends.join(', ')}</span>
+              <span className="font-bold text-[var(--success-text)]">{mulankInfo?.friends.join(', ')}</span>
             </div>
           </div>
 
@@ -224,7 +224,7 @@ export default function CombinationPage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[var(--text-muted)]">{locale === 'hi' ? 'शुभ अंक:' : 'Lucky Numbers:'}</span>
-              <span className="font-bold text-emerald-700">{bhagyankInfo?.friends.join(', ')}</span>
+              <span className="font-bold text-[var(--success-text)]">{bhagyankInfo?.friends.join(', ')}</span>
             </div>
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function CombinationPage() {
             badge="Personal Harmony"
             badgeVariant="crimson"
             sectionKey="module3_personal"
-            icon={<Heart className="w-4 h-4 text-rose-500 stroke-[1.5]" />}
+            icon={<Heart className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
           >
             <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
               {locale === 'hi' ? reading.personalLife.hi : reading.personalLife.en}
@@ -274,12 +274,12 @@ export default function CombinationPage() {
             badge="Remedy Alignment"
             badgeVariant="emerald"
             sectionKey="module3_remedies"
-            icon={<Shield className="w-4 h-4 text-emerald-600 stroke-[1.5]" />}
+            icon={<Shield className="w-4 h-4 text-[var(--success-text)] stroke-[1.5]" />}
           >
             <ul className="space-y-1.5 text-[12.5px]">
               {reading.luckyRemedies.map((rem, i) => (
                 <li key={i} className="flex items-center gap-2 text-[var(--text)]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[1.5] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success-text)] stroke-[1.5] shrink-0" />
                   <span>{locale === 'hi' ? rem.hi : rem.en}</span>
                 </li>
               ))}

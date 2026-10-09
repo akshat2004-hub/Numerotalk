@@ -80,7 +80,7 @@ export default function RepeatingPage() {
 
       {grid.repeatingNumbers.length === 0 ? (
         <div className="vedic-card p-8 text-center space-y-2">
-          <CheckCircle className="w-8 h-8 text-emerald-600 mx-auto stroke-[1.5]" />
+          <CheckCircle className="w-8 h-8 text-[var(--success-text)] mx-auto stroke-[1.5]" />
           <h3 className="text-base font-serif font-bold text-[var(--heading)]">{t('noRepeating')}</h3>
         </div>
       ) : (
@@ -105,8 +105,8 @@ export default function RepeatingPage() {
                 </div>
 
                 <div className="pt-2 border-t border-[var(--border)]">
-                  <span className="text-[10.5px] font-bold text-emerald-700 uppercase tracking-wider block mb-1 flex items-center gap-1">
-                    <Compass className="w-3 h-3 text-emerald-600" />
+                  <span className="text-[10.5px] font-bold text-[var(--success-text)] uppercase tracking-wider block mb-1 flex items-center gap-1">
+                    <Compass className="w-3 h-3 text-[var(--success-text)]" />
                     {t('groundingTitle')}
                   </span>
                   <p className="text-[11.5px] text-[var(--text)] leading-relaxed p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">

@@ -48,7 +48,7 @@ export default function NumberMeaningPage() {
 
           <div className="flex items-center gap-2">
             <span className="text-xs text-[var(--text-muted)]">Selected Bead:</span>
-            <span className="w-8 h-8 rounded-full bg-[var(--gold)] text-slate-900 font-extrabold text-sm flex items-center justify-center shadow-xs">
+            <span className="w-8 h-8 rounded-full bg-[var(--gold)] text-white font-extrabold text-sm flex items-center justify-center shadow-xs">
               {selectedBead}
             </span>
           </div>
@@ -65,7 +65,7 @@ export default function NumberMeaningPage() {
                 onClick={() => setSelectedBead(bead)}
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-serif font-bold transition-all cursor-pointer relative ${
                   isSelected
-                    ? 'bg-gradient-to-br from-[#F0B53A] to-[#C98310] text-slate-950 font-black ring-2 ring-[var(--gold)] shadow-md scale-110 z-10'
+                    ? 'btn-gold-gradient text-white font-black ring-2 ring-[var(--gold)] shadow-md scale-110 z-10'
                     : 'bg-[var(--chip-bg)] text-[var(--heading)] hover:bg-[var(--active-bg)] hover:scale-105 border border-[var(--border)]/60'
                 }`}
                 title={`Bead #${bead}`}
@@ -98,11 +98,11 @@ export default function NumberMeaningPage() {
               onClick={() => toggleReportSection(sectionKey)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 isAdded
-                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                  ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
                   : 'bg-[var(--chip-bg)] text-[var(--gold)] hover:bg-[var(--active-bg)] border border-[var(--border)]'
               }`}
             >
-              {isAdded ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Plus className="w-3.5 h-3.5" />}
+              {isAdded ? <Check className="w-3.5 h-3.5 text-[var(--success-text)]" /> : <Plus className="w-3.5 h-3.5" />}
               <span>{isAdded ? (locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report') : (locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to report')}</span>
             </button>
             <NumberBadge number={meaning.number} size="lg" variant="gold" />

@@ -26,29 +26,29 @@ export default function MobilePage() {
     {
       id: 1,
       title: locale === 'hi' ? 'स्वर्ण सूर्योदय' : 'Golden Sunrise',
-      colors: ['#F0B53A', '#C98310', '#FFF1CC'],
-      bg: 'linear-gradient(135deg, #FDE9C4 0%, #F0B53A 50%, #C98310 100%)',
+      colors: ['var(--gold)', 'var(--gold-deep)', 'var(--chip-bg)'],
+      bg: 'linear-gradient(135deg, var(--chip-bg) 0%, var(--gold) 50%, var(--gold-deep) 100%)',
       symbol: '☀️',
     },
     {
       id: 2,
       title: locale === 'hi' ? 'वैदिक श्री यंत्र' : 'Sacred Mandala',
-      colors: ['#8A7F6E', '#E8A317', '#FFFAF3'],
-      bg: 'linear-gradient(135deg, #FFFAF3 0%, #F3E3C4 50%, #E8A317 100%)',
+      colors: ['var(--text-muted)', 'var(--gold)', 'var(--surface)'],
+      bg: 'linear-gradient(135deg, var(--surface) 0%, var(--chip-bg) 50%, var(--gold) 100%)',
       symbol: '☸️',
     },
     {
       id: 3,
       title: locale === 'hi' ? 'ब्रह्मांडीय कमल' : 'Cosmic Lotus',
-      colors: ['#E9E2FA', '#F0B53A', '#FFFFFF'],
-      bg: 'linear-gradient(135deg, #E9E2FA 0%, #FFF1CC 60%, #F0B53A 100%)',
+      colors: ['var(--neutral-bg)', 'var(--gold)', 'var(--surface)'],
+      bg: 'linear-gradient(135deg, var(--neutral-bg) 0%, var(--chip-bg) 60%, var(--gold) 100%)',
       symbol: '🪷',
     },
     {
       id: 4,
       title: locale === 'hi' ? 'समृद्धि कुबेर' : 'Prosperity Aura',
-      colors: ['#2B2B3A', '#E8A317', '#14213D'],
-      bg: 'linear-gradient(135deg, #14213D 0%, #2B2B3A 50%, #E8A317 100%)',
+      colors: ['var(--heading)', 'var(--gold)', 'var(--surface)'],
+      bg: 'linear-gradient(135deg, var(--surface) 0%, var(--chip-bg) 50%, var(--gold-deep) 100%)',
       symbol: '✨',
     },
   ];
@@ -128,7 +128,7 @@ export default function MobilePage() {
           <div className="text-center md:text-right space-y-1.5">
             <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
               analysis.isFavorableTotal
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                ? 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
                 : 'bg-[var(--chip-bg)] text-[var(--gold)] border-[var(--border)]'
             }`}>
               {analysis.isFavorableTotal ? (locale === 'hi' ? 'अत्यंत शुभ व्यापारिक अंक' : 'Highly Auspicious') : (locale === 'hi' ? 'सामान्य अंक योग' : 'Moderate Commercial')}
@@ -170,7 +170,7 @@ export default function MobilePage() {
                     <span
                       className={`px-1 py-0.5 rounded ${
                         isHighlight
-                          ? 'bg-[var(--gold)] text-slate-900 font-extrabold shadow-xs scale-110'
+                          ? 'bg-[var(--gold)] text-[var(--heading)] font-extrabold shadow-xs scale-110'
                           : 'text-[var(--text-muted)]'
                       }`}
                     >
@@ -265,20 +265,20 @@ export default function MobilePage() {
 
           {/* Summary bar chips + total reduced number */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] shadow-2xs">
+              <CheckCircle className="w-3.5 h-3.5 text-[var(--success-text)]" />
               <span>{locale === 'hi' ? 'शुभ' : 'Auspicious'}</span>
               <span className="lining-nums font-bold ml-0.5">{analysis.auspiciousPairsCount}</span>
             </span>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">
-              <Scale className="w-3.5 h-3.5 text-amber-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)] shadow-2xs">
+              <Scale className="w-3.5 h-3.5 text-[var(--warn-text)]" />
               <span>{locale === 'hi' ? 'सामान्य' : 'Neutral'}</span>
               <span className="lining-nums font-bold ml-0.5">{analysis.neutralPairsCount}</span>
             </span>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 shadow-2xs">
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--neutral-bg)] text-[var(--neutral-text)] border border-[var(--neutral-border)] shadow-2xs">
+              <AlertTriangle className="w-3.5 h-3.5 text-[var(--neutral-text)]" />
               <span>{locale === 'hi' ? 'चुनौतीपूर्ण' : 'Challenging'}</span>
               <span className="lining-nums font-bold ml-0.5">{analysis.challengingPairsCount}</span>
             </span>
@@ -295,16 +295,16 @@ export default function MobilePage() {
         {/* Two Equal-Height Columns: Left Auspicious, Right Neutral */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
           {/* LEFT: Auspicious Pairs */}
-          <div className="vedic-card border-t-[3px] border-t-emerald-500 p-0 flex flex-col overflow-hidden shadow-xs">
+          <div className="vedic-card border-t-[3px] border-t-[var(--success-border)] p-0 flex flex-col overflow-hidden shadow-xs">
             {/* Column Header */}
             <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-muted)]/30 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <CheckCircle className="w-4 h-4 text-[var(--success-text)] shrink-0" />
                 <h4 className="font-serif font-bold text-[15px] text-[var(--heading)]">
                   {locale === 'hi' ? 'शुभ अंक युग्म' : 'Auspicious Pairs'}
                 </h4>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                 {analysis.auspiciousPairsCount}
               </span>
             </div>
@@ -326,7 +326,7 @@ export default function MobilePage() {
                           {p.positionLabel}
                         </span>
                         <span className="text-[10px] text-[var(--text-muted)]">•</span>
-                        <span className="text-[11px] font-semibold text-emerald-700 lining-nums">
+                        <span className="text-[11px] font-semibold text-[var(--success-text)] lining-nums">
                           {p.sumDisplay}
                         </span>
                       </div>
@@ -357,7 +357,7 @@ export default function MobilePage() {
                   {locale === 'hi' ? 'सामान्य अंक युग्म' : 'Neutral Pairs'}
                 </h4>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 lining-nums">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)] lining-nums">
                 {analysis.neutralPairsCount}
               </span>
             </div>
@@ -403,15 +403,15 @@ export default function MobilePage() {
 
         {/* Challenging Pairs: Full-width section below ONLY when count > 0 */}
         {analysis.challengingPairsCount > 0 && (
-          <div className="vedic-card border-t-[3px] border-t-rose-500 p-0 overflow-hidden shadow-xs mt-3">
-            <div className="p-4 border-b border-[var(--border)] bg-rose-50/40 flex items-center justify-between">
+          <div className="vedic-card border-t-[3px] border-t-[var(--warn-border)] p-0 overflow-hidden shadow-xs mt-3">
+            <div className="p-4 border-b border-[var(--border)] bg-[var(--warn-bg)]/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                <h4 className="font-serif font-bold text-[15px] text-rose-950">
+                <AlertTriangle className="w-4 h-4 text-[var(--warn-text)] shrink-0" />
+                <h4 className="font-serif font-bold text-[15px] text-[var(--heading)]">
                   {locale === 'hi' ? 'चुनौतीपूर्ण अंक युग्म (सावधानी)' : 'Challenging Pairs (Friction Warning)'}
                 </h4>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300 lining-nums">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)] lining-nums">
                 {analysis.challengingPairsCount}
               </span>
             </div>
@@ -420,9 +420,9 @@ export default function MobilePage() {
               {analysis.challengingPairs.map((p, idx) => (
                 <div
                   key={`chall-${idx}`}
-                  className="p-3.5 flex items-center gap-3.5 hover:bg-rose-50/20 transition-colors"
+                  className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--active-bg)] transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 font-mono font-bold text-base text-rose-900 flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--warn-bg)] border border-[var(--warn-border)] font-mono font-bold text-base text-[var(--warn-text)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
                     {p.pair}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -431,7 +431,7 @@ export default function MobilePage() {
                         {p.positionLabel}
                       </span>
                       <span className="text-[10px] text-[var(--text-muted)]">•</span>
-                      <span className="text-[11px] font-semibold text-rose-700 lining-nums">
+                      <span className="text-[11px] font-semibold text-[var(--warn-text)] lining-nums">
                         {p.sumDisplay}
                       </span>
                     </div>

@@ -300,7 +300,7 @@ export default function PinPasswordPage() {
                 {/* Badges + Actions */}
                 <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                   {/* Match Badge */}
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                     Match {pwd.matchPercentage}%
                   </span>
 
@@ -308,10 +308,10 @@ export default function PinPasswordPage() {
                   <span
                     className={`px-2 py-0.5 rounded-md text-xs font-medium border ${
                       pwd.strength === 'Very Strong'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
                         : pwd.strength === 'Strong'
-                        ? 'bg-blue-50 text-blue-700 border-blue-200'
-                        : 'bg-amber-50 text-amber-700 border-amber-200'
+                        ? 'bg-[var(--active-bg)] text-[var(--gold-deep)] border border-[var(--gold)]'
+                        : 'bg-[var(--chip-bg)] text-[var(--warn-text)] border border-[var(--warn-border)]'
                     }`}
                   >
                     {pwd.strength}
@@ -335,8 +335,8 @@ export default function PinPasswordPage() {
                   >
                     {isCopied ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                        <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
+                        <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
                       </>
                     ) : (
                       <>
@@ -376,7 +376,7 @@ export default function PinPasswordPage() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   Match {pin4.matchPercentage}%
                 </span>
 
@@ -396,8 +396,8 @@ export default function PinPasswordPage() {
                 >
                   {copiedKey === 'pin-4' ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                      <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
+                      <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
                     </>
                   ) : (
                     <>
@@ -426,7 +426,7 @@ export default function PinPasswordPage() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 lining-nums">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   Match {pin6.matchPercentage}%
                 </span>
 
@@ -446,8 +446,8 @@ export default function PinPasswordPage() {
                 >
                   {copiedKey === 'pin-6' ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700 font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
+                      <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
+                      <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
                     </>
                   ) : (
                     <>
@@ -470,7 +470,7 @@ export default function PinPasswordPage() {
           >
             {addedReport ? (
               <>
-                <Check className="w-4 h-4 text-slate-900" />
+                <Check className="w-4 h-4 text-white" />
                 <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ा गया!' : 'Added to Report!'}</span>
               </>
             ) : (

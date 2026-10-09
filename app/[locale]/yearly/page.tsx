@@ -229,7 +229,7 @@ export default function YearlyPage() {
                   key={y.id}
                   className="p-3 rounded-xl bg-[var(--bg)] border border-[var(--border)] flex items-start gap-2.5"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[var(--success-text)] shrink-0 mt-0.5" />
                   <div className="text-xs space-y-0.5">
                     <span className="font-bold text-[var(--heading)] font-serif block">
                       {locale === 'hi' ? y.nameHi : y.nameEn} ({y.numbers.join('-')})

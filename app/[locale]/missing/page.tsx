@@ -50,7 +50,7 @@ export default function MissingPage() {
         {/* Missing Numbers Summary Card */}
         <div className="vedic-card p-4 sm:p-5 space-y-4">
           <div>
-            <span className="text-[10px] font-bold text-amber-700 uppercase tracking-wider block mb-0.5">
+            <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block mb-0.5">
               {locale === 'hi' ? 'ग्रिड में अनुपस्थित कुल अंक' : 'Total Missing Sectors'}
             </span>
             <h3 className="font-serif text-base sm:text-lg font-bold text-[var(--heading)]">
@@ -69,7 +69,7 @@ export default function MissingPage() {
                 key={num}
                 number={num}
                 size="md"
-                className="border-dashed border-[var(--gold)] text-amber-800"
+                className="border-dashed border-[var(--gold)] text-[var(--gold-deep)]"
               />
             ))}
           </div>
@@ -78,7 +78,7 @@ export default function MissingPage() {
 
       {grid.missingNumbers.length === 0 ? (
         <div className="vedic-card p-8 text-center space-y-2">
-          <CheckCircle className="w-8 h-8 text-emerald-600 mx-auto stroke-[1.5]" />
+          <CheckCircle className="w-8 h-8 text-[var(--success-text)] mx-auto stroke-[1.5]" />
           <h3 className="font-serif text-base font-bold text-[var(--heading)]">{t('noMissing')}</h3>
         </div>
       ) : (
@@ -90,7 +90,7 @@ export default function MissingPage() {
               badge={`Sector ${reading.number}`}
               badgeVariant="gold"
               sectionKey={`module4_missing_${reading.number}`}
-              icon={<ShieldAlert className="w-4 h-4 text-amber-600 stroke-[1.5]" />}
+              icon={<ShieldAlert className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
             >
               <div className="space-y-3">
                 <div>

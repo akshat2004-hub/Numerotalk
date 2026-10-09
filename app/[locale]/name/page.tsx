@@ -181,7 +181,7 @@ export default function NamePage() {
         key: 'harmonious',
         labelEn: 'Harmonious',
         labelHi: 'अत्यंत अनुकूल',
-        colorClass: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60'
+        colorClass: 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
       };
     }
     if (mulankHarmony === 'enemy' || bhagyankHarmony === 'enemy') {
@@ -189,14 +189,14 @@ export default function NamePage() {
         key: 'needsAttention',
         labelEn: 'Needs Attention',
         labelHi: 'सुधार आवश्यक',
-        colorClass: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60'
+        colorClass: 'bg-[var(--warn-bg)] text-[var(--warn-text)] border-[var(--warn-border)]'
       };
     }
     return {
       key: 'balanced',
       labelEn: 'Balanced',
       labelHi: 'संतुलित',
-      colorClass: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60'
+      colorClass: 'bg-[var(--neutral-bg)] text-[var(--neutral-text)] border-[var(--neutral-border)]'
     };
   }, [mulankHarmony, bhagyankHarmony]);
 
@@ -259,23 +259,23 @@ export default function NamePage() {
   const getRelationBadge = (relation: 'friendly' | 'neutral' | 'enemy') => {
     if (relation === 'friendly') {
       return (
-        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 inline-flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--success-text)]" />
           {locale === 'hi' ? 'मित्र (Friendly)' : 'Friendly'}
         </span>
       );
     }
     if (relation === 'enemy') {
       return (
-        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 inline-flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--warn-bg)] text-[var(--warn-text)] border border-[var(--warn-border)] inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--warn-text)]" />
           {locale === 'hi' ? 'शत्रु (Enemy)' : 'Enemy'}
         </span>
       );
     }
     return (
-      <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 inline-flex items-center gap-1">
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+      <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[var(--neutral-bg)] text-[var(--neutral-text)] border border-[var(--neutral-border)] inline-flex items-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--neutral-text)]" />
         {locale === 'hi' ? 'सम (Neutral)' : 'Neutral'}
       </span>
     );
@@ -317,12 +317,12 @@ export default function NamePage() {
           className={cn(
             'h-[40px] px-4 rounded-[12px] text-[13px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 self-start sm:self-center shadow-xs',
             isIncludedInReport
-              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
-              : 'bg-white dark:bg-[#1E1B18] text-[var(--heading)] border border-[var(--border)] hover:border-[var(--gold)] hover:bg-[#FFFDF9] dark:hover:bg-[#25221E]'
+              ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
+              : 'bg-[var(--surface)] text-[var(--heading)] border border-[var(--border)] hover:border-[var(--gold)] hover:bg-[var(--active-bg)]'
           )}
         >
           {isIncludedInReport ? (
-            <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+            <Check className="w-4 h-4 text-[var(--success-text)] stroke-[2.5]" />
           ) : (
             <Plus className="w-4 h-4 text-[var(--gold)] stroke-[2]" />
           )}
@@ -372,14 +372,14 @@ export default function NamePage() {
       </div>
 
       {/* b) HERO RESULT CARD (white, gold hairline, 24px radius, 2 columns on desktop) */}
-      <div className="bg-white dark:bg-[#1E1B18] border border-[#EADFC8] dark:border-[#3A332A] rounded-[24px] p-5 sm:p-7 shadow-xs">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-[#EADFC8] dark:divide-[#3A332A]">
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[24px] p-5 sm:p-7 shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
           {/* Left Column: Big Name Number, Compound, Planet, Essence */}
           <div className="space-y-4">
             <div className="flex items-start gap-4">
               {/* Peach circle with large serif gold numeral */}
-              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#FFF6E9] dark:bg-[#2A231B] border-2 border-[#F9D8A6] dark:border-[#524433] flex items-center justify-center shrink-0 shadow-inner">
-                <span className="font-serif text-3xl sm:text-4xl font-bold text-[#E8A317] tabular-nums lining-nums">
+              <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[var(--chip-bg)] border-2 border-[var(--gold)] flex items-center justify-center shrink-0 shadow-inner">
+                <span className="font-serif text-3xl sm:text-4xl font-bold text-[var(--gold-deep)] tabular-nums lining-nums">
                   {animatedNumber}
                 </span>
               </div>
@@ -393,15 +393,15 @@ export default function NamePage() {
                 </div>
 
                 {/* Ruling planet chip */}
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#FFF1CC] dark:bg-[#342A19] text-[#B45309] dark:text-[#FBBF24] border border-[#FDE68A] dark:border-[#53401F]">
-                  <Star className="w-3.5 h-3.5 fill-[#B45309] dark:fill-[#FBBF24] text-[#B45309] dark:text-[#FBBF24]" />
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--chip-bg)] text-[var(--gold-deep)] border border-[var(--gold)]">
+                  <Star className="w-3.5 h-3.5 fill-[var(--gold)] text-[var(--gold)]" />
                   <span>{locale === 'hi' ? prediction.planetHi : prediction.planetEn}</span>
                 </div>
               </div>
             </div>
 
             {/* 2-line essence */}
-            <div className="p-3.5 rounded-[14px] bg-[#FFFDF9] dark:bg-[#25201B] border border-[#F1E7D6] dark:border-[#3E3427]">
+            <div className="p-3.5 rounded-[14px] bg-[var(--surface-muted)] border border-[var(--border)]">
               <p className="text-[13px] leading-relaxed text-[var(--text)] whitespace-pre-line font-medium">
                 {locale === 'hi' ? prediction.essenceHi : prediction.essenceEn}
               </p>
@@ -472,7 +472,7 @@ export default function NamePage() {
           </h3>
           <div className="flex items-center gap-3 text-xs">
             <span className="inline-flex items-center gap-1 text-[var(--text-muted)]">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFF8E7] dark:bg-[#382C18] border border-[#F3DEAB] dark:border-[#524122]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--chip-bg)] border border-[var(--gold)]" />
               {locale === 'hi' ? 'स्वर (Vowels)' : 'Vowels'}
             </span>
             <span className="inline-flex items-center gap-1 text-[var(--text-muted)]">
@@ -500,8 +500,8 @@ export default function NamePage() {
                       className={cn(
                         'px-2.5 py-1 rounded-xl text-xs font-medium inline-flex items-center gap-1 transition-transform',
                         l.isVowel
-                          ? 'bg-[#FFF8E7] dark:bg-[#342817] border border-[#F3DEAB] dark:border-[#544123] text-[#B45309] dark:text-[#FBBF24] font-semibold'
-                          : 'bg-white dark:bg-[#201D1A] border border-[var(--border)] text-[var(--heading)]'
+                          ? 'bg-[var(--chip-bg)] border border-[var(--gold)] text-[var(--gold-deep)] font-semibold'
+                          : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--heading)]'
                       )}
                     >
                       <span className="font-bold">{l.ch}</span>
@@ -514,7 +514,7 @@ export default function NamePage() {
               </div>
 
               {/* Word subtotal */}
-              <div className="shrink-0 self-end sm:self-center px-3 py-1.5 rounded-xl bg-white dark:bg-[#201D1A] border border-[var(--border)] text-xs font-semibold text-[var(--heading)]">
+              <div className="shrink-0 self-end sm:self-center px-3 py-1.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs font-semibold text-[var(--heading)]">
                 <span className="text-[var(--text-muted)] mr-1">=</span>
                 <span className="font-mono tabular-nums lining-nums">{wordObj.subtotal}</span>
                 <span className="mx-1 text-[var(--gold)]">→</span>
@@ -529,11 +529,11 @@ export default function NamePage() {
         {/* Grand Total Line (NO "/") */}
         <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between flex-wrap gap-2 text-sm font-semibold">
           <span className="text-[var(--heading)]">{t('grandTotal')}:</span>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#FFF6E9] dark:bg-[#2A231B] border border-[#F9D8A6] dark:border-[#524433] text-[var(--heading)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--chip-bg)] border border-[var(--gold)] text-[var(--heading)]">
             <span className="text-xs text-[var(--text-muted)]">{locale === 'hi' ? 'कुल कंपन' : 'Total'}</span>
             <span className="font-mono font-bold tabular-nums lining-nums">{nameResult.compound}</span>
             <span className="text-[var(--gold)] font-bold">→</span>
-            <span className="font-serif text-base font-bold text-[#E8A317] tabular-nums lining-nums">
+            <span className="font-serif text-base font-bold text-[var(--gold-deep)] tabular-nums lining-nums">
               {nameResult.reduced}
             </span>
           </div>
@@ -544,7 +544,7 @@ export default function NamePage() {
       <div className="space-y-4">
         {/* Compound Number Meaning Strip (10-52) */}
         {compoundMeaning && (
-          <div className="p-3.5 sm:p-4 rounded-[16px] bg-[#FFFBF0] dark:bg-[#252019] border border-[#F5E6C4] dark:border-[#423725] flex items-center gap-3">
+          <div className="p-3.5 sm:p-4 rounded-[16px] bg-[var(--chip-bg)] border border-[var(--gold)]/40 flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-[var(--gold)] shrink-0" />
             <p className="text-[13px] leading-relaxed text-[var(--heading)]">
               <strong className="text-[var(--gold)] font-serif mr-1.5">
@@ -581,7 +581,7 @@ export default function NamePage() {
           {/* Card 3: Relationships */}
           <div className="vedic-card p-5 space-y-2.5">
             <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <Heart className="w-4 h-4 text-rose-500" />
+              <Heart className="w-4 h-4 text-[var(--gold)]" />
               <h4>{t('relationships')}</h4>
             </div>
             <p className="text-[13px] leading-relaxed text-[var(--text)]">
@@ -592,7 +592,7 @@ export default function NamePage() {
           {/* Card 4: Strengths & Cautions */}
           <div className="vedic-card p-5 space-y-2.5">
             <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <ShieldAlert className="w-4 h-4 text-amber-500" />
+              <ShieldAlert className="w-4 h-4 text-[var(--warn-text)]" />
               <h4>{t('strengthsCautions')}</h4>
             </div>
             <p className="text-[13px] leading-relaxed text-[var(--text)]">
@@ -619,7 +619,7 @@ export default function NamePage() {
               {luckyNumbers.map((num) => (
                 <div
                   key={num}
-                  className="w-9 h-9 rounded-full bg-[#FFF1CC] dark:bg-[#342A19] border border-[#FDE68A] dark:border-[#53401F] flex items-center justify-center text-[var(--heading)] font-serif font-bold text-sm shadow-2xs tabular-nums lining-nums"
+                  className="w-9 h-9 rounded-full bg-[var(--chip-bg)] border border-[var(--gold)] flex items-center justify-center text-[var(--heading)] font-serif font-bold text-sm shadow-2xs tabular-nums lining-nums"
                 >
                   {num}
                 </div>
@@ -636,7 +636,7 @@ export default function NamePage() {
               {luckyLetters.map((ch) => (
                 <div
                   key={ch}
-                  className="w-8 h-8 rounded-xl bg-white dark:bg-[#201D1A] border border-[var(--border)] flex items-center justify-center text-[var(--heading)] font-bold text-xs shadow-2xs"
+                  className="w-8 h-8 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--heading)] font-bold text-xs shadow-2xs"
                 >
                   {ch}
                 </div>
@@ -688,10 +688,10 @@ export default function NamePage() {
                       </td>
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                             M: Friendly
                           </span>
-                          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                          <span className="px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                             B: Friendly
                           </span>
                         </div>
@@ -727,10 +727,10 @@ export default function NamePage() {
                   <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[var(--border)]/60">
                     <span className="text-[var(--text-muted)]">{sug.changeMade}</span>
                     <div className="flex items-center gap-1">
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                         M: Friendly
                       </span>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]">
                         B: Friendly
                       </span>
                     </div>

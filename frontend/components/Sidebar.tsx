@@ -330,7 +330,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </div>
 
         {/* Pinned Bottom Lotus Footer block outside scrolling list */}
-        <div className="p-2.5 border-t border-[var(--border)] bg-[var(--surface)] text-[10px] text-[var(--text-muted)] text-center leading-relaxed shrink-0">
+        <div className="p-2.5 pb-8 sm:pb-8 border-t border-[var(--border)] bg-[var(--surface)] text-[10px] text-[var(--text-muted)] text-center leading-relaxed shrink-0">
           <span className="font-semibold text-[var(--heading)] block text-[10.5px]">
             {locale === 'hi'
               ? 'शुद्ध वैदिक सिद्धांत · प्राचीन ज्ञान · आधुनिक मार्गदर्शन'
