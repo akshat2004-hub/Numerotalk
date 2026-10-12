@@ -7,6 +7,10 @@
   }
 
   :root {
+    /* Layout Dimensions */
+    --header-h: 52px;
+    --sidebar-w: 218px;
+
     /* Exact Semantic Tokens as specified */
     --bg: #FFFAF3;
     --surface: #FFFFFF;

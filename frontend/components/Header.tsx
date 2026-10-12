@@ -61,7 +61,7 @@ export function Header({ onToggleSidebar }: HeaderProps) {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 w-full h-[52px] bg-[var(--surface)] border-b border-[var(--border)] shadow-xs transition-colors">
+    <header className="fixed top-0 left-0 right-0 z-40 w-full h-[var(--header-h)] bg-[var(--surface)] border-b border-[var(--border)] shadow-xs transition-colors">
         <div className="max-w-[1440px] h-full mx-auto px-2.5 sm:px-5 lg:px-6 flex items-center justify-between gap-1.5 sm:gap-2.5">
           {/* Left: Mobile Toggle + Logo */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">

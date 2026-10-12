@@ -23,13 +23,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Full-width clean SaaS Header (Sticky at top) */}
       <Header onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
 
-      {/* Main Layout Container (pt-[52px] for fixed Header) */}
-      <div className="flex-1 flex max-w-[1440px] w-full mx-auto relative z-10 pt-[52px] pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-0">
-        {/* Sidebar (Fixed/Sticky at top 52px, scrolls independently) */}
+      {/* Main Layout Container */}
+      <div className="flex-1 flex w-full relative z-10 pt-[var(--header-h)] pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-[var(--sidebar-w)]">
+        {/* Sidebar (Fixed on desktop & drawer on mobile) */}
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Content Area */}
-        <main className="flex-1 min-w-0 px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 overflow-x-hidden">
+        <main className="flex-1 min-w-0 max-w-[1440px] mx-auto w-full px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 overflow-x-hidden">
           {children}
         </main>
       </div>

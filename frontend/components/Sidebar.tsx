@@ -65,20 +65,18 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // On route change, scroll active item into view inside the sidebar only (not the page)
+  // On route change, scroll active item into view inside the sidebar list only (not the page)
   useEffect(() => {
     if (activeItemRef.current && navContainerRef.current) {
       const container = navContainerRef.current;
       const item = activeItemRef.current;
-      const itemTop = item.offsetTop;
-      const itemHeight = item.offsetHeight;
-      const containerScrollTop = container.scrollTop;
-      const containerHeight = container.clientHeight;
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
 
-      if (itemTop < containerScrollTop) {
-        container.scrollTop = itemTop;
-      } else if (itemTop + itemHeight > containerScrollTop + containerHeight) {
-        container.scrollTop = itemTop + itemHeight - containerHeight;
+      if (itemRect.top < containerRect.top) {
+        container.scrollTop -= (containerRect.top - itemRect.top + 8);
+      } else if (itemRect.bottom > containerRect.bottom) {
+        container.scrollTop += (itemRect.bottom - containerRect.bottom + 8);
       }
     }
   }, [pathname]);
@@ -148,12 +146,12 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar Container: Sticky at top 52px, height 100vh - 52px, scrolls independently */}
+      {/* Sidebar Container: Fixed on desktop & mobile drawer */}
       <aside
         className={cn(
-          'fixed lg:sticky top-0 lg:top-[52px] left-0 z-50 lg:z-30 h-screen lg:h-[calc(100vh-52px)] w-[218px]',
+          'fixed top-0 lg:top-[var(--header-h)] left-0 bottom-0 z-50 lg:z-30 w-[var(--sidebar-w)]',
           'bg-[var(--surface)] border-r border-[var(--border)]',
-          'flex flex-col select-none transition-transform duration-200 ease-in-out shrink-0 self-start',
+          'flex flex-col select-none transition-transform duration-200 ease-in-out shrink-0',
           'overscroll-contain',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -287,7 +285,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         {/* Navigation list (Independent scrolling, thin gold hover scrollbar, overscroll contained) */}
         <div
           ref={navContainerRef}
-          className="flex-1 overflow-y-auto overscroll-contain px-1.5 py-0.5 space-y-0.5 sidebar-scroll"
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-1.5 py-0.5 space-y-0.5 sidebar-scroll"
         >
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -331,7 +329,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </div>
 
         {/* Pinned Bottom Lotus Footer block outside scrolling list */}
-        <div className="p-2.5 pb-8 sm:pb-8 border-t border-[var(--border)] bg-[var(--surface)] text-[10px] text-[var(--text-muted)] text-center leading-relaxed shrink-0">
+        <div className="p-2.5 border-t border-[var(--border)] bg-[var(--surface)] text-[10px] text-[var(--text-muted)] text-center leading-relaxed shrink-0">
           <span className="font-semibold text-[var(--heading)] block text-[10.5px]">
             {locale === 'hi'
               ? 'शुद्ध वैदिक सिद्धांत · प्राचीन ज्ञान · आधुनिक मार्गदर्शन'
