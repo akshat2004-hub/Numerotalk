@@ -118,3 +118,44 @@ export interface ReportSectionSelection {
   help: boolean;
   remedies: boolean;
 }
+
+export type PredictionKind = 'prediction' | 'strengths' | 'cautions' | 'remedy' | 'tip';
+
+export type PredictionSource =
+  | 'DriverMulank'
+  | 'ConductorBhagyank'
+  | 'Destiny'
+  | 'Compound'
+  | 'MissingDigit'
+  | 'RepeatingDigit'
+  | 'Yog'
+  | 'NameTotal'
+  | 'PairMatch'
+  | 'MobileTotal'
+  | 'MobilePair'
+  | 'BirthTime'
+  | 'Dasha'
+  | 'Event'
+  | 'Profession'
+  | 'NumberLookup'
+  | 'Vastu';
+
+export interface PredictionBasis {
+  source: PredictionSource;
+  values: number[];
+  label: {
+    en: string;
+    hi: string;
+  };
+  derivation: string[];
+}
+
+export interface PredictionCardData {
+  kind?: PredictionKind;
+  basis: PredictionBasis;
+  title: BilingualText;
+  subtitle?: BilingualText;
+  body: BilingualText;
+  derivation?: string[];
+}
+

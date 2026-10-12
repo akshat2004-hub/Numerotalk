@@ -87,26 +87,30 @@ export function YearSelector({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={cn(
-          'h-[38px] px-3.5 rounded-xl border flex items-center gap-2 cursor-pointer transition-all lining-nums',
+          'h-[38px] px-3.5 rounded-[12px] border inline-flex flex-row items-center justify-center gap-2 cursor-pointer transition-all lining-nums whitespace-nowrap select-none leading-none shrink-0',
           'bg-[var(--surface)] text-[var(--heading)] font-serif font-bold text-sm shadow-xs',
           isOpen
             ? 'border-[var(--gold)] ring-2 ring-[var(--gold)]/20 shadow-md'
             : 'border-[var(--border)] hover:border-[var(--gold)]/60 hover:bg-[var(--chip-bg)]/20'
         )}
       >
-        <Calendar className="w-3.5 h-3.5 text-[var(--gold)] shrink-0" />
-        <span className="font-mono tracking-wide">{displayRange}</span>
+        <span className="shrink-0 flex items-center justify-center leading-none [&>svg]:block [&>svg]:shrink-0 [&>svg]:m-0">
+          <Calendar className="w-3.5 h-3.5 text-[var(--gold)] shrink-0" />
+        </span>
+        <span className="font-mono tracking-wide whitespace-nowrap leading-none">{displayRange}</span>
         {selectedYear === currentYear && (
-          <span className="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-sans font-bold border border-emerald-200 uppercase">
+          <span className="px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-sans font-bold border border-emerald-200 uppercase whitespace-nowrap leading-none">
             {locale === 'hi' ? 'वर्तमान' : 'Current'}
           </span>
         )}
-        <ChevronDown
-          className={cn(
-            'w-3.5 h-3.5 text-[var(--text-muted)] transition-transform duration-200',
-            isOpen && 'rotate-180 text-[var(--gold)]'
-          )}
-        />
+        <span className="shrink-0 flex items-center justify-center leading-none [&>svg]:block [&>svg]:shrink-0 [&>svg]:m-0">
+          <ChevronDown
+            className={cn(
+              'w-3.5 h-3.5 text-[var(--text-muted)] transition-transform duration-200 shrink-0',
+              isOpen && 'rotate-180 text-[var(--gold)]'
+            )}
+          />
+        </span>
       </button>
 
       {/* Popover Dropdown */}
@@ -115,7 +119,7 @@ export function YearSelector({
           role="listbox"
           tabIndex={-1}
           className={cn(
-            'absolute left-0 mt-1.5 z-40 w-56 max-h-[320px] overflow-y-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-1.5 shadow-xl',
+            'absolute right-0 sm:left-0 mt-1.5 z-40 w-56 max-w-[calc(100vw-32px)] overflow-y-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-1.5 shadow-xl',
             'divide-y divide-[var(--border)]/40 [scrollbar-width:thin] [scrollbar-color:rgba(201,131,16,0.3)_transparent]'
           )}
         >

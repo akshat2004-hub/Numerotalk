@@ -84,39 +84,22 @@ export default function RepeatingPage() {
           <h3 className="text-base font-serif font-bold text-[var(--heading)]">{t('noRepeating')}</h3>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {repeatingReadings.map((reading) => (
-            <PredictionCard
-              key={`${reading.number}-${reading.frequency}`}
-              title={`${locale === 'hi' ? 'अंक' : 'Number'} ${reading.number} (${String(reading.number).repeat(reading.frequency)})`}
-              badge={t('frequencyBadge', { count: reading.frequency })}
-              badgeVariant="gold"
-              sectionKey={`module5_repeating_${reading.number}_${reading.frequency}`}
-              icon={<Repeat className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-            >
-              <div className="space-y-3">
-                <div>
-                  <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider block mb-0.5">
-                    {locale === 'hi' ? reading.nature.hi : reading.nature.en}
-                  </span>
-                  <p className="text-[12.5px] text-[var(--text)] leading-relaxed">
-                    {locale === 'hi' ? reading.overloadImpact.hi : reading.overloadImpact.en}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-[var(--border)]">
-                  <span className="text-[10.5px] font-bold text-[var(--success-text)] uppercase tracking-wider block mb-1 flex items-center gap-1">
-                    <Compass className="w-3 h-3 text-[var(--success-text)]" />
-                    {t('groundingTitle')}
-                  </span>
-                  <p className="text-[11.5px] text-[var(--text)] leading-relaxed p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-                    {locale === 'hi' ? reading.groundingRemedy.hi : reading.groundingRemedy.en}
-                  </p>
-                </div>
-              </div>
-            </PredictionCard>
-          ))}
-        </div>
+        <PredictionCard
+          title={locale === 'hi' ? 'पुनरावृत्त अंक भविष्यफल' : 'Repeating Number Prediction'}
+          intro={
+            locale === 'hi'
+              ? 'ग्रिड में एकाधिक बार आने वाले अंकों का प्रभाव, ऊर्जा अतिभार एवं संतुलनकारी अभ्यास'
+              : 'Energetic intensity, cognitive amplification, and daily grounding practices for repeated digits'
+          }
+          itemKey="repeating:repeating_prediction"
+          points={repeatingReadings.map((reading) => ({
+            id: `rep_${reading.number}`,
+            heading: `${locale === 'hi' ? 'अंक' : 'Digit'} ${reading.number} (${String(reading.number).repeat(reading.frequency)}) — ${locale === 'hi' ? reading.nature.hi : reading.nature.en}`,
+            body: locale === 'hi' ? reading.overloadImpact.hi : reading.overloadImpact.en,
+            subline: `${locale === 'hi' ? 'संतुलन अभ्यास:' : 'Grounding practice:'} ${locale === 'hi' ? reading.groundingRemedy.hi : reading.groundingRemedy.en}`,
+            itemKey: `repeating:digit:${reading.number}`
+          }))}
+        />
       )}
     </div>
   );

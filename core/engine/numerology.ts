@@ -375,3 +375,208 @@ export function suggestNameVariants(
 
   return validSuggestions.slice(0, 5);
 }
+
+/**
+ * Generates plain-text derivation string for Driver / Mulank.
+ * E.g., Day 23 → 2 + 3 = 5, or Day 5 = 5.
+ */
+export function getDriverDerivation(dob: string | Date): string {
+  const { day } = parseDob(dob);
+  if (day <= 9) {
+    return `Day ${day} = ${day}`;
+  }
+  const digits = String(day).split('').map(Number);
+  const sum = digits.reduce((a, b) => a + b, 0);
+  const reduced = reduceToSingleDigit(sum);
+  if (sum > 9 && sum !== reduced) {
+    return `Day ${day} → ${digits.join(' + ')} = ${sum} → ${reduced}`;
+  }
+  return `Day ${day} → ${digits.join(' + ')} = ${reduced}`;
+}
+
+/**
+ * Generates plain-text derivation string for Conductor / Bhagyank.
+ * E.g., Full date 23-10-1995 → 30 → 3.
+ */
+export function getConductorDerivation(dob: string | Date): string {
+  const { day, month, year, digits } = parseDob(dob);
+  const padDay = String(day).padStart(2, '0');
+  const padMonth = String(month).padStart(2, '0');
+  const rawSum = digits.reduce((a, b) => a + b, 0);
+  const reduced = reduceToSingleDigit(rawSum);
+  return `Full date ${padDay}-${padMonth}-${year} → ${rawSum} → ${reduced}`;
+}
+
+/**
+ * Generates plain-text derivation string for Destiny / Namank.
+ * E.g., RAHUL SHARMA → 33 → 6.
+ */
+export function getDestinyDerivation(name: string): string {
+  const calc = nameNumber(name || 'Rahul Sharma');
+  const upper = (calc.transliteratedName || name || 'Name').toUpperCase().trim();
+  if (calc.compound > 9) {
+    return `${upper} → ${calc.compound} → ${calc.reduced}`;
+  }
+  return `${upper} → ${calc.reduced}`;
+}
+
+export interface ConductorReadingItem {
+  number: number;
+  title: { en: string; hi: string };
+  description: { en: string; hi: string };
+  lifePurpose: { en: string; hi: string };
+  favorablePath: { en: string; hi: string };
+}
+
+export const CONDUCTOR_READINGS: Record<number, ConductorReadingItem> = {
+  1: {
+    number: 1,
+    title: { en: 'The Visionary Pioneer', hi: 'दूरदर्शी पथप्रदर्शक' },
+    description: {
+      en: 'Your life path is destined for authoritative leadership, trailblazing ventures, and independent achievement. The universe commands you to create paths where none exist.',
+      hi: 'आपका जीवन पथ नेतृत्व, नवोन्मेष और स्वतंत्र उपलब्धियों के लिए निर्धारित है। ब्रह्मांड आपको स्वयं अपना मार्ग प्रशस्त करने की प्रेरणा देता है।'
+    },
+    lifePurpose: {
+      en: 'Inspire and guide others through unwavering self-reliance and initiative.',
+      hi: 'आत्मविश्वास और नवाचार के माध्यम से दूसरों को प्रेरित करना।'
+    },
+    favorablePath: {
+      en: 'Entrepreneurship, administration, political diplomacy, and strategic innovation.',
+      hi: 'उद्यमिता, प्रशासनिक सेवाएं, कूटनीति और रणनीतिक नवाचार।'
+    }
+  },
+  2: {
+    number: 2,
+    title: { en: 'The Peacemaker & Diplomat', hi: 'शांतिदूत एवं कूटनीतिज्ञ' },
+    description: {
+      en: 'Your life path evolves through harmonious collaboration, deep empathy, and intuitive wisdom. You are the emotional anchor who unites divided realms.',
+      hi: 'आपका जीवन पथ सामंजस्यपूर्ण साझेदारी, गहन सहानुभूति और सहज अंतर्ज्ञान के माध्यम से विकसित होता है।'
+    },
+    lifePurpose: {
+      en: 'Bridge conflicts and restore cosmic balance through patient mediation.',
+      hi: 'मतभेदों को दूर कर जीवन में शांति और संतुलन स्थापित करना।'
+    },
+    favorablePath: {
+      en: 'Counseling, diplomacy, creative arts, healing, and human relations.',
+      hi: 'परामर्श, कूटनीति, ललित कलाएं, हीलिंग और जनसंपर्क।'
+    }
+  },
+  3: {
+    number: 3,
+    title: { en: 'The Creative Philosopher & Mentor', hi: 'सृजनशील दार्शनिक एवं मार्गदर्शक' },
+    description: {
+      en: 'Your destiny flows with profound wisdom, expressive creativity, and inspiring speech. You expand consciousness wherever you go and uplift society.',
+      hi: 'आपका भाग्य गहन ज्ञान, अभिव्यक्ति की कला और प्रेरक वाणी से आलोकित है। आप जहां भी जाते हैं, सकारात्मक चेतना का विस्तार करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Educate, inspire joy, and communicate higher truth to the world.',
+      hi: 'संसार को शिक्षित करना, आनंद का प्रसार करना और उच्च ज्ञान साझा करना।'
+    },
+    favorablePath: {
+      en: 'Teaching, literature, public speaking, advisory roles, and higher counsel.',
+      hi: 'शिक्षण, साहित्य, व्याख्यान, परामर्श और उच्च बौद्धिक कार्यक्षेत्र।'
+    }
+  },
+  4: {
+    number: 4,
+    title: { en: 'The Master Architect & Disciplinarian', hi: 'दृढ़ शिल्पी एवं व्यवस्थापक' },
+    description: {
+      en: 'Your life path is structured around enduring foundations, meticulous discipline, and practical mastery. You turn abstract ideas into permanent realities.',
+      hi: 'आपका जीवन पथ सुदृढ़ नींव, कठोर अनुशासन और व्यावहारिक दक्षता पर आधारित है। आप विचारों को ठोस यथार्थ में परिवर्तित करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Construct resilient structures and bring systematic order to chaotic environments.',
+      hi: 'अव्यवस्थित परिस्थितियों में नियम, स्थिरता और सुदृढ़ प्रणाली स्थापित करना।'
+    },
+    favorablePath: {
+      en: 'Engineering, law, infrastructure, project administration, and finance.',
+      hi: 'अभियांत्रिकी, विधि, आधारभूत संरचना, परियोजना प्रबंधन और वित्त।'
+    }
+  },
+  5: {
+    number: 5,
+    title: { en: 'The Catalyst of Commerce & Freedom', hi: 'व्यापार एवं स्वतंत्रता का प्रेरक' },
+    description: {
+      en: 'Your life path thrives on agile transformation, commercial intelligence, and versatile exploration. You excel where rapid change and communication intersect.',
+      hi: 'आपका जीवन पथ गतिशील परिवर्तन, व्यापारिक बुद्धिमत्ता और बहुमुखी अन्वेषण से समृद्ध है। आप संवाद और त्वरित निर्णय क्षमता में उत्कृष्ट हैं।'
+    },
+    lifePurpose: {
+      en: 'Embrace progressive change, network widely, and catalyze economic growth.',
+      hi: 'प्रगतिशील परिवर्तनों को अपनाना, संबंधों का विस्तार करना और आर्थिक विकास को गति देना।'
+    },
+    favorablePath: {
+      en: 'International trade, media, technology sales, travel, and financial investments.',
+      hi: 'अंतरराष्ट्रीय व्यापार, मीडिया, तकनीकी विक्रय, यात्रा और वित्तीय निवेश।'
+    }
+  },
+  6: {
+    number: 6,
+    title: { en: 'The Harmonic Guardian & Healer', hi: 'सौंदर्य, पोषण एवं सद्भाव का संरक्षक' },
+    description: {
+      en: 'Your destiny embodies domestic grace, aesthetic brilliance, and nurturing responsibility. You attract luxury, love, and harmonious environments naturally.',
+      hi: 'आपका भाग्य पारिवारिक गरिमा, सौंदर्यबोध और सेवा भाव का प्रतीक है। आप स्वाभाविक रूप से समृद्धि, प्रेम और सामंजस्य को आकर्षित करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Nurture family and community while beautifying the material and social world.',
+      hi: 'परिवार व समाज का पोषण करना और सांसारिक व सामाजिक वातावरण को सुंदर बनाना।'
+    },
+    favorablePath: {
+      en: 'Design, hospitality, medicine, luxury goods, public welfare, and entertainment.',
+      hi: 'डिजाइन, आतिथ्य, चिकित्सा, विलासिता, समाज कल्याण और कला क्षेत्र।'
+    }
+  },
+  7: {
+    number: 7,
+    title: { en: 'The Mystic Researcher & Truth-Seeker', hi: 'रहस्यदर्शी शोधकर्ता एवं तत्वज्ञानी' },
+    description: {
+      en: 'Your life path is dedicated to introspection, intellectual inquiry, and spiritual realization. You look beyond surface appearances to reveal hidden truths.',
+      hi: 'आपका जीवन पथ आत्मनिरीक्षण, बौद्धिक अन्वेषण और आध्यात्मिक अनुभूति को समर्पित है। आप बाह्य आवरण से परे जाकर सत्य का साक्षात्कार करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Uncover esoteric secrets, develop inner awareness, and share philosophical depth.',
+      hi: 'गूढ़ सत्यों की खोज करना, अंतर्दृष्टि विकसित करना और दार्शनिक ज्ञान प्रदान करना।'
+    },
+    favorablePath: {
+      en: 'Scientific research, analytics, metaphysics, psychology, and spiritual teaching.',
+      hi: 'वैज्ञानिक शोध, विश्लेषण, पराविद्या, मनोविज्ञान और आध्यात्मिक चिंतन।'
+    }
+  },
+  8: {
+    number: 8,
+    title: { en: 'The Sovereign Karmic Ruler', hi: 'कर्मयोगी शासक एवं न्यायप्रिय नियंत्रक' },
+    description: {
+      en: 'Your life path demands karmic mastery, immense perseverance, and material-spiritual equilibrium. You rise to formidable power through sheer endurance.',
+      hi: 'आपका जीवन पथ कर्म के संतुलन, अपार धैर्य और भौतिक-आध्यात्मिक सामंजस्य की मांग करता है। आप सतत परिश्रम से असाधारण ऊंचाई प्राप्त करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Execute righteous authority, manage large-scale resources, and manifest enduring karma.',
+      hi: 'न्यायपूर्ण शक्ति का संचालन करना, वृहद संसाधनों का प्रबंधन और स्थायी उपलब्धियां हासिल करना।'
+    },
+    favorablePath: {
+      en: 'Real estate, judicial leadership, manufacturing, mining, and executive governance.',
+      hi: 'रियल एस्टेट, न्यायिक क्षेत्र, विनिर्माण, उद्योग और कॉर्पोरेट प्रशासन।'
+    }
+  },
+  9: {
+    number: 9,
+    title: { en: 'The Universal Humanitarian & Champion', hi: 'वैश्विक मानवतावादी एवं पराक्रमी योद्धा' },
+    description: {
+      en: 'Your life path encompasses universal compassion, fiery courage, and boundless philanthropy. You fight for the disenfranchised and complete grand life cycles.',
+      hi: 'आपका जीवन पथ सार्वभौमिक करुणा, असीम साहस और उदार परोपकार का परिचायक है। आप समाज के उत्थान के लिए निर्भीकता से संघर्ष करते हैं।'
+    },
+    lifePurpose: {
+      en: 'Serve humanity selflessly, lead courageous missions, and elevate global consciousness.',
+      hi: 'मानवता की निःस्वार्थ सेवा, साहसिक अभियानों का नेतृत्व और चेतना का उन्नयन।'
+    },
+    favorablePath: {
+      en: 'Defense, humanitarian leadership, sports, social activism, and healing arts.',
+      hi: 'रक्षा सेवाएं, परोपकारी नेतृत्व, खेलकूद, सामाजिक आंदोलन और चिकित्सा विज्ञान।'
+    }
+  }
+};
+
+export function getConductorReading(bhagyank: number): ConductorReadingItem {
+  const safe = Math.min(9, Math.max(1, bhagyank || 1));
+  return CONDUCTOR_READINGS[safe] || CONDUCTOR_READINGS[3];
+}
+

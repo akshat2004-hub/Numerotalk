@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useCallback, useId } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useId, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/frontend/utils';
+
+const emptySubscribe = () => () => {};
 
 export interface ModalProps {
   isOpen: boolean;
@@ -37,7 +39,7 @@ export function Modal({
   closeAriaLabel = 'Close modal',
   className
 }: ModalProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchTranslate, setTouchTranslate] = useState<number>(0);
 
@@ -45,10 +47,6 @@ export function Modal({
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const generatedId = useId();
   const titleId = `modal-title-${generatedId}`;
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Handle focus trap & body scroll locking
   useEffect(() => {
@@ -209,7 +207,8 @@ export function Modal({
               type="button"
               onClick={onClose}
               aria-label={closeAriaLabel}
-              className="w-10 h-10 -mr-2 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--heading)] hover:bg-[var(--chip-bg)] transition-colors cursor-pointer shrink-0"
+              title={closeAriaLabel}
+              className="w-10 h-10 -mr-2 rounded-[12px] inline-flex flex-row items-center justify-center text-[var(--text-muted)] hover:text-[var(--heading)] hover:bg-[var(--chip-bg)] transition-colors cursor-pointer shrink-0 select-none leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
             >
               <X className="w-5 h-5 stroke-[2]" />
             </button>

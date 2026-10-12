@@ -22,6 +22,9 @@ import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
 import { RemedyChip } from '@/frontend/components/ui/RemedyChip';
+import { Button } from '@/frontend/components/ui/Button';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import {
   nameNumber,
@@ -311,25 +314,12 @@ export default function NamePage() {
           className="mb-0"
         />
 
-        <button
-          type="button"
-          onClick={() => toggleReportSection('nameNumerology')}
-          className={cn(
-            'h-[40px] px-4 rounded-[12px] text-[13px] font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 self-start sm:self-center shadow-xs',
-            isIncludedInReport
-              ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-              : 'bg-[var(--surface)] text-[var(--heading)] border border-[var(--border)] hover:border-[var(--gold)] hover:bg-[var(--active-bg)]'
-          )}
-        >
-          {isIncludedInReport ? (
-            <Check className="w-4 h-4 text-[var(--success-text)] stroke-[2.5]" />
-          ) : (
-            <Plus className="w-4 h-4 text-[var(--gold)] stroke-[2]" />
-          )}
-          <span>
-            {isIncludedInReport ? t('addedToReport') : t('addToReport')}
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <span className="text-xs text-[var(--text-muted)] font-medium">
+            {locale === 'hi' ? 'रिपोर्ट में शामिल करें' : 'Include in report'}
           </span>
-        </button>
+          <ReportCheckbox itemKey="name:full_page" title="Include Name Analysis in report" />
+        </div>
       </div>
 
       <ProfileEmptyBanner />
@@ -349,16 +339,18 @@ export default function NamePage() {
                 ? 'नाम दर्ज करें (जैसे: Rahul / राहुल / Rahul Sharma)...'
                 : 'Type any name (e.g. Rahul / राहुल / Rahul Sharma)...'
             }
-            className="flex-1 w-full h-[44px] px-[14px] rounded-[12px] bg-[var(--surface)] border border-[var(--input-border)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[var(--gold)]/20 text-[16px] text-[var(--heading)] placeholder:text-[var(--text-muted)] leading-[1.5] outline-hidden transition-all"
+            className="flex-1 w-full h-[40px] px-[14px] rounded-[12px] bg-[var(--surface)] border border-[var(--input-border)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[var(--gold)]/20 text-[15px] text-[var(--heading)] placeholder:text-[var(--text-muted)] leading-[1.5] outline-hidden transition-all"
           />
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="md"
+            icon={<RefreshCw className="w-4 h-4 text-[var(--gold)] stroke-[2]" />}
             onClick={() => setTestName(profile.name || 'Rahul Sharma')}
-            className="btn-vedic-secondary h-[44px] px-5 rounded-[12px] text-[14px] font-semibold flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto"
+            className="w-full sm:w-auto"
           >
-            <RefreshCw className="w-4 h-4 text-[var(--gold)] stroke-[2]" />
-            <span>{t('resetToProfile')}</span>
-          </button>
+            {t('resetToProfile')}
+          </Button>
         </div>
 
         {translit.isDevanagari && (
@@ -540,65 +532,100 @@ export default function NamePage() {
         </div>
       </div>
 
-      {/* d) PREDICTION SECTION (2x2 grid, 1 col mobile) + Compound Meaning Strip */}
+      {/* d) PREDICTION SECTION: Compound Number Prediction, Name Prediction, Strengths, and Cautions */}
       <div className="space-y-4">
-        {/* Compound Number Meaning Strip (10-52) */}
+        {/* Compound Number Prediction Card */}
         {compoundMeaning && (
-          <div className="p-3.5 sm:p-4 rounded-[16px] bg-[var(--chip-bg)] border border-[var(--gold)]/40 flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-[var(--gold)] shrink-0" />
-            <p className="text-[13px] leading-relaxed text-[var(--heading)]">
-              <strong className="text-[var(--gold)] font-serif mr-1.5">
-                {locale === 'hi' ? `संयुक्त अंक ${nameResult.compound} का प्रभाव:` : `Compound Vibration ${nameResult.compound}:`}
-              </strong>
-              {compoundMeaning}
-            </p>
-          </div>
+          <PredictionCard
+            title={locale === 'hi' ? 'संयुक्त अंक भविष्यफल' : 'Compound Number Prediction'}
+            intro={
+              locale === 'hi'
+                ? `संयुक्त नामांक ${nameResult.compound} — आंतरिक कंपन एवं गूढ़ ऊर्जा प्रभाव`
+                : `Compound Vibration ${nameResult.compound} — Internal resonance and esoteric planetary vibration`
+            }
+            body={compoundMeaning}
+            itemKey="name:compound_number_prediction"
+          />
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-          {/* Card 1: Personality & Nature */}
-          <div className="vedic-card p-5 space-y-2.5">
-            <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <User className="w-4 h-4 text-[var(--gold)]" />
-              <h4>{t('personalityNature')}</h4>
-            </div>
-            <p className="text-[13px] leading-relaxed text-[var(--text)]">
-              {locale === 'hi' ? prediction.sections.personality.hi : prediction.sections.personality.en}
-            </p>
-          </div>
+        {/* ONE Name Prediction Card with 3 Numbered Points */}
+        <PredictionCard
+          title={locale === 'hi' ? 'नामांक भविष्यफल' : 'Name Prediction'}
+          intro={
+            locale === 'hi'
+              ? `नामांक ${nameResult.reduced} (${prediction.planetHi}) — व्यक्तित्व, आजीविका एवं संबंध विश्लेषण`
+              : `Name Number ${nameResult.reduced} (${prediction.planetEn}) — Comprehensive personality, career, and relationship reading`
+          }
+          itemKey="name:name_prediction"
+          points={[
+            {
+              id: 'name_pt_personality',
+              heading: t('personalityNature'),
+              body: locale === 'hi' ? prediction.sections.personality.hi : prediction.sections.personality.en,
+              itemKey: 'name:point:personality_nature'
+            },
+            {
+              id: 'name_pt_career',
+              heading: t('careerFinance'),
+              body: locale === 'hi' ? prediction.sections.career.hi : prediction.sections.career.en,
+              itemKey: 'name:point:career_finance'
+            },
+            {
+              id: 'name_pt_relationships',
+              heading: t('relationships'),
+              body: locale === 'hi' ? prediction.sections.relationships.hi : prediction.sections.relationships.en,
+              itemKey: 'name:point:relationships'
+            }
+          ]}
+        />
 
-          {/* Card 2: Career & Finance */}
-          <div className="vedic-card p-5 space-y-2.5">
-            <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <Briefcase className="w-4 h-4 text-[var(--gold)]" />
-              <h4>{t('careerFinance')}</h4>
-            </div>
-            <p className="text-[13px] leading-relaxed text-[var(--text)]">
-              {locale === 'hi' ? prediction.sections.career.hi : prediction.sections.career.en}
-            </p>
-          </div>
+        {/* Separate Strengths and Cautions cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <PredictionCard
+            title={locale === 'hi' ? 'सकारात्मक शक्तियां' : 'Strengths'}
+            intro={
+              locale === 'hi'
+                ? 'नामांक की स्वाभाविक शक्तियां एवं प्रमुख क्षमताएं'
+                : 'Primary empowering virtues and core name vibrations'
+            }
+            variant="strengths"
+            itemKey="name:strengths"
+            points={[
+              {
+                id: 'name_strength_1',
+                heading: locale === 'hi' ? 'मूल प्रभाव एवं क्षमता' : 'Core Resonance & Capacity',
+                body: locale === 'hi' ? prediction.essenceHi : prediction.essenceEn,
+                itemKey: 'name:strengths:core'
+              },
+              {
+                id: 'name_strength_2',
+                heading: locale === 'hi' ? 'अभिव्यक्ति एवं सामाजिक आकर्षण' : 'Expressive Magnetic Appeal',
+                body: locale === 'hi' ? prediction.sections.personality.hi : prediction.sections.personality.en,
+                itemKey: 'name:strengths:expressive'
+              }
+            ]}
+          />
 
-          {/* Card 3: Relationships */}
-          <div className="vedic-card p-5 space-y-2.5">
-            <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <Heart className="w-4 h-4 text-[var(--gold)]" />
-              <h4>{t('relationships')}</h4>
-            </div>
-            <p className="text-[13px] leading-relaxed text-[var(--text)]">
-              {locale === 'hi' ? prediction.sections.relationships.hi : prediction.sections.relationships.en}
-            </p>
-          </div>
-
-          {/* Card 4: Strengths & Cautions */}
-          <div className="vedic-card p-5 space-y-2.5">
-            <div className="flex items-center gap-2 text-sm font-bold font-serif text-[var(--heading)] border-b border-[var(--border)] pb-2.5">
-              <ShieldAlert className="w-4 h-4 text-[var(--warn-text)]" />
-              <h4>{t('strengthsCautions')}</h4>
-            </div>
-            <p className="text-[13px] leading-relaxed text-[var(--text)]">
-              {locale === 'hi' ? prediction.sections.cautions.hi : prediction.sections.cautions.en}
-            </p>
-          </div>
+          <PredictionCard
+            title={locale === 'hi' ? 'सावधानियां एवं सतर्कता' : 'Cautions'}
+            intro={
+              locale === 'hi'
+                ? 'संवेदनशील प्रवृत्तियां एवं संतुलन हेतु सावधानियां'
+                : 'Vulnerable tendencies and cautionary guidance to sustain balance'
+            }
+            variant="cautions"
+            itemKey="name:cautions"
+            points={(locale === 'hi' ? prediction.sections.cautions.hi : prediction.sections.cautions.en)
+              .split(/[।.]/)
+              .map((s: string) => s.trim())
+              .filter((s: string) => s.length > 5)
+              .map((sentence: string, idx: number) => ({
+                id: `name_caution_${idx}`,
+                heading: `${locale === 'hi' ? 'सतर्कता बिंदु' : 'Mindfulness Point'} ${idx + 1}`,
+                body: sentence,
+                itemKey: `name:cautions:${idx + 1}`
+              }))}
+          />
         </div>
       </div>
 

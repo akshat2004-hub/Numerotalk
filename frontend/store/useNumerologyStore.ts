@@ -2,10 +2,13 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { UserProfile } from '@/core/types';
 
+export const DEFAULT_REPORT_SELECTION = false;
+
 interface NumerologyStoreState {
   profile: UserProfile;
   customRemedies: string[];
   reportSections: Record<string, boolean>;
+  reportSelection: string[];
   isHydrated: boolean;
   setProfile: (updates: Partial<UserProfile>) => void;
   resetProfile: () => void;
@@ -14,6 +17,10 @@ interface NumerologyStoreState {
   toggleReportSection: (sectionKey: string) => void;
   selectAllReportSections: () => void;
   deselectAllReportSections: () => void;
+  toggleReportItem: (key: string) => void;
+  isReportItemSelected: (key: string) => boolean;
+  setReportItem: (key: string, selected: boolean) => void;
+  clearReportSelection: () => void;
   selectedProfession: string;
   setSelectedProfession: (profId: string) => void;
   setHydrated: (hydrated: boolean) => void;
@@ -57,6 +64,7 @@ export const useNumerologyStore = create<NumerologyStoreState>()(
         'Place a natural brass bell at the entrance and ring it every morning with positive prayer.'
       ],
       reportSections: DEFAULT_REPORT_SECTIONS,
+      reportSelection: [],
       selectedProfession: 'tech_entrepreneur',
       isHydrated: false,
 
@@ -80,14 +88,57 @@ export const useNumerologyStore = create<NumerologyStoreState>()(
         })),
 
       addCustomRemedy: (remedy) =>
-        set((state) => ({
-          customRemedies: [...state.customRemedies, remedy.trim()]
-        })),
+        set((state) => {
+          const trimmed = remedy.trim();
+          const key = `remedies:custom:${trimmed}`;
+          const current = state.reportSelection || [];
+          return {
+            customRemedies: [...state.customRemedies, trimmed],
+            reportSelection: current.includes(key) ? current : [...current, key]
+          };
+        }),
 
       removeCustomRemedy: (index) =>
-        set((state) => ({
-          customRemedies: state.customRemedies.filter((_, i) => i !== index)
-        })),
+        set((state) => {
+          const remedyToRemove = state.customRemedies[index];
+          const key = `remedies:custom:${remedyToRemove}`;
+          return {
+            customRemedies: state.customRemedies.filter((_, i) => i !== index),
+            reportSelection: (state.reportSelection || []).filter((k) => k !== key)
+          };
+        }),
+
+      toggleReportItem: (key: string) =>
+        set((state) => {
+          const current = state.reportSelection || [];
+          const exists = current.includes(key);
+          return {
+            reportSelection: exists
+              ? current.filter((k) => k !== key)
+              : [...current, key]
+          };
+        }),
+
+      isReportItemSelected: (key: string) => {
+        // Will be called via get() or store selector
+        return false;
+      },
+
+      setReportItem: (key: string, selected: boolean) =>
+        set((state) => {
+          const current = state.reportSelection || [];
+          if (selected) {
+            return {
+              reportSelection: current.includes(key) ? current : [...current, key]
+            };
+          } else {
+            return {
+              reportSelection: current.filter((k) => k !== key)
+            };
+          }
+        }),
+
+      clearReportSelection: () => set({ reportSelection: [] }),
 
       toggleReportSection: (sectionKey) =>
         set((state) => ({

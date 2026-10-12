@@ -82,67 +82,22 @@ export default function MissingPage() {
           <h3 className="font-serif text-base font-bold text-[var(--heading)]">{t('noMissing')}</h3>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {missingReadings.map((reading) => (
-            <PredictionCard
-              key={reading.number}
-              title={`${locale === 'hi' ? 'अनुपस्थित अंक' : 'Missing Number'} ${reading.number}`}
-              badge={`Sector ${reading.number}`}
-              badgeVariant="gold"
-              sectionKey={`module4_missing_${reading.number}`}
-              icon={<ShieldAlert className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-            >
-              <div className="space-y-3">
-                <div>
-                  <span className="text-[10.5px] font-bold text-[var(--text-muted)] uppercase tracking-wider block mb-0.5">
-                    {t('impactTitle')}
-                  </span>
-                  <p className="text-[12.5px] text-[var(--heading)] leading-relaxed font-medium">
-                    {locale === 'hi' ? reading.deficiencyImpact.hi : reading.deficiencyImpact.en}
-                  </p>
-                  <p className="text-[11.5px] text-[var(--text)] mt-1.5 leading-relaxed">
-                    {locale === 'hi' ? reading.psychologicalEffect.hi : reading.psychologicalEffect.en}
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-[var(--border)]">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10.5px] font-bold text-[var(--gold)] uppercase tracking-wider">
-                      {t('remediesTitle')}
-                    </span>
-                  </div>
-
-                  {/* Linked Remedy Chips */}
-                  <div className="flex flex-wrap gap-1.5 mb-2.5">
-                    {reading.remedies.map((rem, idx) => (
-                      <Link
-                        key={idx}
-                        href="/remedies"
-                        className="px-2 py-0.5 rounded-lg bg-[var(--chip-bg)] border border-[var(--border)] text-[10.5px] font-semibold text-[var(--heading)] hover:bg-[var(--active-bg)] transition-colors flex items-center gap-1"
-                      >
-                        <span className="text-[var(--gold)]">✦</span>
-                        <span>{locale === 'hi' ? rem.typeHi : rem.type}</span>
-                      </Link>
-                    ))}
-                  </div>
-
-                  <div className="space-y-1.5">
-                    {reading.remedies.map((rem, idx) => (
-                      <div key={idx} className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] space-y-0.5">
-                        <span className="text-xs font-bold text-[var(--gold)]">
-                          {locale === 'hi' ? rem.typeHi : rem.type}:
-                        </span>
-                        <p className="text-[11.5px] text-[var(--text)] leading-relaxed">
-                          {locale === 'hi' ? rem.action.hi : rem.action.en}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </PredictionCard>
-          ))}
-        </div>
+        <PredictionCard
+          title={locale === 'hi' ? 'अनुपस्थित अंक भविष्यफल' : 'Missing Number Prediction'}
+          intro={
+            locale === 'hi'
+              ? 'जन्म ग्रिड में अनुपस्थित ऊर्जाओं का प्रभाव, मनोवैज्ञानिक प्रभाव एवं आवश्यक संतुलनकारी उपाय'
+              : 'Deficiency impacts, psychological tendencies, and grounding remedial practices for missing digits'
+          }
+          itemKey="missing:missing_prediction"
+          points={missingReadings.map((reading) => ({
+            id: `missing_${reading.number}`,
+            heading: `${locale === 'hi' ? 'अनुपस्थित अंक' : 'Missing Digit'} ${reading.number}`,
+            body: `${locale === 'hi' ? reading.deficiencyImpact.hi : reading.deficiencyImpact.en} ${locale === 'hi' ? reading.psychologicalEffect.hi : reading.psychologicalEffect.en}`,
+            subline: `${locale === 'hi' ? 'संतुलन अभ्यास / उपाय:' : 'Grounding practice:'} ${reading.remedies.map((r) => `${locale === 'hi' ? r.typeHi : r.type}: ${locale === 'hi' ? r.action.hi : r.action.en}`).join(' • ')}`,
+            itemKey: `missing:digit:${reading.number}`
+          }))}
+        />
       )}
     </div>
   );

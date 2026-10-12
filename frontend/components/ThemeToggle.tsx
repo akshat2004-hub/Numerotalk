@@ -9,8 +9,6 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   useEffect(() => {
     document.documentElement.classList.remove('dark');
-    localStorage.setItem('numerotalk-theme', 'light');
-    setTheme('light');
   }, []);
 
   const toggleTheme = () => {
@@ -24,14 +22,18 @@ export function ThemeToggle({ className }: { className?: string }) {
     }
   };
 
+  const label = theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+      aria-label={label}
+      title={label}
       className={cn(
-        'w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border transition-all duration-150',
-        'bg-white border-[#F3E3C4] text-[#14213D] hover:border-[#E8A317] hover:bg-[#FFF6E3] shadow-xs cursor-pointer',
+        'w-10 h-10 rounded-[12px] inline-flex flex-row items-center justify-center shrink-0 border transition-all duration-150',
+        'bg-white border-[#F3E3C4] text-[#14213D] hover:border-[#E8A317] hover:bg-[#FFF6E3] shadow-xs cursor-pointer select-none leading-none',
+        '[&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0',
         className
       )}
     >

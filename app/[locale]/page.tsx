@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { BasedOnStrip } from '@/frontend/components/ui/BasedOnStrip';
 import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
@@ -34,9 +35,13 @@ import {
   calculateBhagyank,
   calculateDestinyNumber,
   transliterateDevanagari,
-  numerologyService
+  numerologyService,
+  getDriverDerivation,
+  getConductorDerivation,
+  getDestinyDerivation,
+  getConductorReading
 } from '@/frontend';
-import { NumberReading } from '@/types';
+import { NumberReading, DestinyReading } from '@/types';
 import { cn } from '@/frontend/utils';
 
 export default function UserDetailPage() {
@@ -47,6 +52,7 @@ export default function UserDetailPage() {
   const { profile, setProfile } = useNumerologyStore();
 
   const [reading, setReading] = useState<NumberReading | null>(null);
+  const [destinyReading, setDestinyReading] = useState<DestinyReading | null>(null);
   const [imagePreview, setImagePreview] = useState<string>(profile.image || '');
 
   const profileSchema = z.object({
@@ -102,7 +108,13 @@ export default function UserDetailPage() {
 
   useEffect(() => {
     numerologyService.getNumberReading(mulankData.mulank, locale).then(setReading);
-  }, [mulankData.mulank, locale]);
+    numerologyService.getDestinyReading(destinyData.destinyNumber, locale).then(setDestinyReading);
+  }, [mulankData.mulank, destinyData.destinyNumber, locale]);
+
+  const conductorReading = useMemo(
+    () => getConductorReading(bhagyankData.bhagyank),
+    [bhagyankData.bhagyank]
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -145,6 +157,15 @@ export default function UserDetailPage() {
             : 'Enter your birth details and name to generate your personalized Vedic energy map.'
         }
         showOrbit={true}
+      />
+
+      <BasedOnStrip
+        items={[
+          { label: { en: 'Driver (Mulank)', hi: 'मूलांक' }, value: mulankData.mulank, source: 'DriverMulank' },
+          { label: { en: 'Conductor (Bhagyank)', hi: 'भाग्यांक' }, value: bhagyankData.bhagyank, source: 'ConductorBhagyank' },
+          { label: { en: 'Destiny (Namank)', hi: 'नामांक' }, value: destinyData.destinyNumber, source: 'Destiny' }
+        ]}
+        locale={locale}
       />
 
       {/* 7. FORM CARD (24px radius with semantic tokens) */}
@@ -196,10 +217,10 @@ export default function UserDetailPage() {
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="text-[var(--warn-text)] hover:underline inline-flex items-center gap-1 text-[10.5px] pt-0.5 cursor-pointer"
+                  className="text-[var(--warn-text)] hover:underline inline-flex flex-row items-center gap-1 text-[10.5px] pt-0.5 cursor-pointer whitespace-nowrap leading-none shrink-0"
                 >
-                  <Trash2 className="w-2.5 h-2.5 stroke-[1.5]" />
-                  <span>{locale === 'hi' ? 'हटाएं' : 'Remove'}</span>
+                  <Trash2 className="w-2.5 h-2.5 stroke-[1.5] shrink-0 block m-0" />
+                  <span className="whitespace-nowrap leading-none">{locale === 'hi' ? 'हटाएं' : 'Remove'}</span>
                 </button>
               )}
             </div>
@@ -294,11 +315,12 @@ export default function UserDetailPage() {
               <Button
                 type="submit"
                 size="lg"
-                className="flex items-center gap-2"
+                variant="primary"
+                icon={<Sparkles className="w-4 h-4 stroke-[2]" />}
+                trailingIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
+                className="w-full sm:w-auto self-center"
               >
-                <Sparkles className="w-4 h-4 stroke-[2]" />
-                <span>{locale === 'hi' ? 'गणना करें' : 'Calculate Dashboard'}</span>
-                <ArrowRight className="w-4 h-4 stroke-[2]" />
+                {locale === 'hi' ? 'गणना करें' : 'Calculate Dashboard'}
               </Button>
             </div>
           </div>
@@ -376,69 +398,55 @@ export default function UserDetailPage() {
         {/* Vedic Grid Component */}
         <VedicGrid dob={watchedDob} locale={locale} />
 
-        {/* Synthesis & Attributes Card */}
+        {/* Synthesis & Prediction Cards */}
         <div className="space-y-4">
           {reading && (
-            <PredictionCard
-              title={`${reading.number} — ${locale === 'hi' ? reading.title.hi : reading.title.en}`}
-              badge={locale === 'hi' ? reading.planet.hi : reading.planet.en}
-              badgeVariant="gold"
-              sectionKey="module1_mulank"
-              reportSectionKey="module1_mulank"
-              icon={<Sun className="w-4 h-4 text-[var(--gold)] stroke-[1.75]" />}
-              footer={
-                <div className="w-full flex items-center justify-between text-xs text-[var(--text-muted)]">
-                  <span>
-                    {locale === 'hi' ? 'शासक तत्व:' : 'Cosmic Element:'}{' '}
-                    <strong className="text-[var(--heading)]">{locale === 'hi' ? reading.element.hi : reading.element.en}</strong>
-                  </span>
-                  <span>
-                    {locale === 'hi' ? 'ग्रह देवता:' : 'Governing Deity:'}{' '}
-                    <strong className="text-[var(--gold)]">{locale === 'hi' ? reading.deity.hi : reading.deity.en}</strong>
-                  </span>
-                </div>
-              }
-            >
-              <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-                {locale === 'hi' ? reading.description.hi : reading.description.en}
-              </p>
+            <>
+              <PredictionCard
+                title={locale === 'hi' ? 'व्यक्तित्व भविष्यफल (मूलांक)' : 'Personality Prediction (Driver / Mulank)'}
+                intro={locale === 'hi' ? `${reading.number} — ${reading.title.hi} (${reading.planet.hi})` : `${reading.number} — ${reading.title.en} (${reading.planet.en})`}
+                body={locale === 'hi' ? reading.description.hi : reading.description.en}
+                itemKey="user_detail:personality_prediction"
+                footer={
+                  <div className="w-full flex items-center justify-between text-xs text-[var(--text-muted)]">
+                    <span>
+                      {locale === 'hi' ? 'शासक तत्व:' : 'Cosmic Element:'}{' '}
+                      <strong className="text-[var(--heading)]">{locale === 'hi' ? reading.element.hi : reading.element.en}</strong>
+                    </span>
+                    <span>
+                      {locale === 'hi' ? 'ग्रह देवता:' : 'Governing Deity:'}{' '}
+                      <strong className="text-[var(--gold)]">{locale === 'hi' ? reading.deity.hi : reading.deity.en}</strong>
+                    </span>
+                  </div>
+                }
+              />
 
-              {/* Positive Attributes */}
-              <div className="pt-1">
-                <span className="text-[10.5px] font-semibold text-[var(--success-text)] uppercase tracking-wider block mb-1.5">
-                  {locale === 'hi' ? 'सकारात्मक गुण' : 'Positive Attributes'}
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11.5px]">
-                  {reading.positiveAttributes.map((attr, i) => (
-                    <div
-                      key={i}
-                      className="p-1.5 rounded-md bg-[var(--success-bg)] border border-[var(--success-border)] flex items-center gap-1.5 text-[var(--success-text)]"
-                    >
-                      <CheckCircle2 className="w-3 h-3 text-[var(--success-text)] stroke-[2] shrink-0" />
-                      <span>{locale === 'hi' ? attr.hi : attr.en}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <PredictionCard
+                title={locale === 'hi' ? 'सकारात्मक शक्तियां' : 'Strengths'}
+                intro={locale === 'hi' ? 'मूलांक के प्रमुख स्वाभाविक सामर्थ्य एवं क्षमताएं' : 'Primary empowering traits and natural assets of this driver'}
+                variant="strengths"
+                itemKey="user_detail:strengths"
+                points={reading.positiveAttributes.map((attr, i) => ({
+                  id: `strength_${i}`,
+                  heading: locale === 'hi' ? attr.hi : attr.en,
+                  body: locale === 'hi' ? 'सकारात्मक प्रभाव एवं सहज जीवन शक्ति' : 'Natural positive vitality and core empowering vibration',
+                  itemKey: `user_detail:strengths:${i + 1}`
+                }))}
+              />
 
-              {/* Negative / Shadow Attributes */}
-              <div className="pt-1">
-                <span className="text-[10.5px] font-semibold text-[var(--warn-text)] uppercase tracking-wider block mb-1.5">
-                  {locale === 'hi' ? 'सावधानियां / छाया' : 'Shadow Traits & Cautions'}
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11.5px]">
-                  {reading.negativeAttributes.map((attr, i) => (
-                    <div
-                      key={i}
-                      className="p-1.5 rounded-md bg-[var(--warn-bg)] border border-[var(--warn-border)] flex items-center gap-1.5 text-[var(--warn-text)]"
-                    >
-                      <AlertTriangle className="w-3 h-3 text-[var(--warn-text)] stroke-[2] shrink-0" />
-                      <span>{locale === 'hi' ? attr.hi : attr.en}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </PredictionCard>
+              <PredictionCard
+                title={locale === 'hi' ? 'सावधानियां एवं छाया पहलू' : 'Cautions'}
+                intro={locale === 'hi' ? 'सतर्क रहने योग्य छाया प्रवृत्तियां एवं संवेदनशील क्षेत्र' : 'Vulnerable shadow inclinations and areas requiring vigilance'}
+                variant="cautions"
+                itemKey="user_detail:cautions"
+                points={reading.negativeAttributes.map((attr, i) => ({
+                  id: `caution_${i}`,
+                  heading: locale === 'hi' ? attr.hi : attr.en,
+                  body: locale === 'hi' ? 'संतुलन बनाए रखने हेतु आत्म-निरीक्षण आवश्यक' : 'Requires mindful awareness to maintain harmony and focus',
+                  itemKey: `user_detail:cautions:${i + 1}`
+                }))}
+              />
+            </>
           )}
 
           {/* Lucky Alignment Guide */}

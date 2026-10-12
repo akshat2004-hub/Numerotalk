@@ -18,6 +18,8 @@ import {
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
 import { VedicGrid } from '@/frontend/components/VedicGrid';
+import { Button } from '@/frontend/components/ui/Button';
+import { cn } from '@/frontend/utils';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { calculateVedicGrid, yogStatus } from '@/core';
 import yogsData from '@/mocks/rules/yogs.json';
@@ -225,7 +227,7 @@ export default function YogasPage() {
           <button
             type="button"
             onClick={() => scrollJumpBar(-180)}
-            className="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--active-bg)] text-[var(--heading)] cursor-pointer shrink-0 z-20 transition-all shadow-2xs"
+            className="hidden md:inline-flex flex-row items-center justify-center w-6 h-6 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--active-bg)] text-[var(--heading)] cursor-pointer shrink-0 z-20 transition-all shadow-2xs leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-3.5 h-3.5 stroke-[2]" />
@@ -260,14 +262,14 @@ export default function YogasPage() {
                       }
                       setActiveYogId(yog.id);
                     }}
-                    className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium transition-all cursor-pointer whitespace-nowrap ${
+                    className={`shrink-0 inline-flex flex-row items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium transition-all cursor-pointer whitespace-nowrap select-none leading-none ${
                       isActive
                         ? 'border-[1.5px] border-[var(--gold)] bg-[var(--active-bg)] text-[var(--heading)] font-semibold shadow-2xs'
                         : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] hover:bg-[var(--active-bg)]'
                     }`}
                   >
-                    <span className={`w-2 h-2 rounded-full ${dotColor} shrink-0`} />
-                    <span>{yog.name[locale]}</span>
+                    <span className={`w-2 h-2 rounded-full ${dotColor} shrink-0 block m-0`} />
+                    <span className="whitespace-nowrap leading-none">{yog.name[locale]}</span>
                   </button>
                 );
               })}
@@ -281,7 +283,7 @@ export default function YogasPage() {
           <button
             type="button"
             onClick={() => scrollJumpBar(180)}
-            className="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--active-bg)] text-[var(--heading)] cursor-pointer shrink-0 z-20 transition-all shadow-2xs"
+            className="hidden md:inline-flex flex-row items-center justify-center w-6 h-6 rounded-full bg-[var(--surface)] border border-[var(--border)] hover:bg-[var(--active-bg)] text-[var(--heading)] cursor-pointer shrink-0 z-20 transition-all shadow-2xs leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-3.5 h-3.5 stroke-[2]" />
@@ -359,27 +361,25 @@ export default function YogasPage() {
 
                 <div className="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
                   {statusBadge}
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => toggleReportSection(sectionReportKey)}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
-                      isAddedToReport
-                        ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-                        : 'bg-[var(--surface)] text-[var(--gold-deep)] hover:bg-[var(--chip-bg)] border border-[var(--gold)]'
-                    }`}
-                  >
-                    {isAddedToReport ? (
-                      <>
+                    size="sm"
+                    variant={isAddedToReport ? 'secondary' : 'outline'}
+                    icon={
+                      isAddedToReport ? (
                         <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                        <span>{t('inReport')}</span>
-                      </>
-                    ) : (
-                      <>
+                      ) : (
                         <Plus className="w-3.5 h-3.5 text-[var(--gold-deep)]" />
-                        <span>{t('addToReport')}</span>
-                      </>
+                      )
+                    }
+                    onClick={() => toggleReportSection(sectionReportKey)}
+                    className={cn(
+                      'h-7 px-2.5 text-[11px] rounded-[10px]',
+                      isAddedToReport && 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
                     )}
-                  </button>
+                  >
+                    {isAddedToReport ? t('inReport') : t('addToReport')}
+                  </Button>
                 </div>
               </div>
 
@@ -487,28 +487,23 @@ export default function YogasPage() {
               </p>
             </div>
 
-            <button
+            <Button
               type="button"
+              variant={allRemediesInReport ? 'secondary' : 'primary'}
+              size="sm"
+              icon={
+                allRemediesInReport ? (
+                  <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
+                ) : (
+                  <Plus className="w-3.5 h-3.5 text-white" />
+                )
+              }
               onClick={handleAddAllRemediesToReport}
               disabled={allRemediesInReport}
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
-                allRemediesInReport
-                  ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] cursor-default'
-                  : 'btn-gold-gradient shadow-2xs'
-              }`}
+              className={allRemediesInReport ? 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)] cursor-default' : undefined}
             >
-              {allRemediesInReport ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                  <span>{t('allRemediesAdded')}</span>
-                </>
-              ) : (
-                <>
-                  <Plus className="w-3.5 h-3.5 text-white" />
-                  <span>{t('addAllToReport')}</span>
-                </>
-              )}
-            </button>
+              {allRemediesInReport ? t('allRemediesAdded') : t('addAllToReport')}
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -544,27 +539,25 @@ export default function YogasPage() {
                     </p>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => toggleReportSection(`remedy_${rem.id}`)}
-                    className={`w-full inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
-                      isAdded
-                        ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-                        : 'bg-[var(--surface)] text-[var(--gold-deep)] hover:bg-[var(--chip-bg)] border border-[var(--gold)]'
-                    }`}
-                  >
-                    {isAdded ? (
-                      <>
+                    size="sm"
+                    variant={isAdded ? 'secondary' : 'outline'}
+                    icon={
+                      isAdded ? (
                         <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                        <span>{t('inReport')}</span>
-                      </>
-                    ) : (
-                      <>
+                      ) : (
                         <Plus className="w-3.5 h-3.5 text-[var(--gold-deep)]" />
-                        <span>{t('addToReport')}</span>
-                      </>
+                      )
+                    }
+                    onClick={() => toggleReportSection(`remedy_${rem.id}`)}
+                    className={cn(
+                      'w-full h-7 px-2.5 text-[11px] rounded-[10px]',
+                      isAdded && 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
                     )}
-                  </button>
+                  >
+                    {isAdded ? t('inReport') : t('addToReport')}
+                  </Button>
                 </div>
               );
             })}

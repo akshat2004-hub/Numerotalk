@@ -31,7 +31,10 @@ const IGNORED_DIRS = new Set([
   'dist',
   'build',
   '.idea',
-  '.vscode'
+  '.vscode',
+  'temp-chrome-test',
+  'temp-chrome-profile',
+  'chrome-temp'
 ]);
 
 function walk(dir) {

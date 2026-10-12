@@ -24,7 +24,11 @@ import {
   getNumberMeaning,
   generatePasswordByProfession,
   generatePinByNumerology,
-  MatchProfileInput
+  MatchProfileInput,
+  getConductorReading,
+  getDriverDerivation,
+  getConductorDerivation,
+  getDestinyDerivation
 } from '@/core/engine';
 
 export const numerologyService = {
@@ -231,5 +235,22 @@ export const numerologyService = {
 
   generatePinByNumerology(digits: 4 | 6, sum: number) {
     return generatePinByNumerology(digits, sum);
+  },
+
+  getConductorReading(bhagyank: number) {
+    return getConductorReading(bhagyank);
+  },
+
+  getDriverDerivation(dob: string | Date) {
+    return getDriverDerivation(dob);
+  },
+
+  getConductorDerivation(dob: string | Date) {
+    return getConductorDerivation(dob);
+  },
+
+  getDestinyDerivation(name: string) {
+    return getDestinyDerivation(name);
   }
 };
+

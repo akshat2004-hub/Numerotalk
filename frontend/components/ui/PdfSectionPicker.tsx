@@ -47,16 +47,16 @@ export function PdfSectionPicker({
           <button
             type="button"
             onClick={onSelectAll}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)] hover:bg-[var(--active-bg)] transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-[12px] text-[13px] font-semibold bg-[var(--chip-bg)] text-[var(--gold)] border border-[var(--border)] hover:bg-[var(--active-bg)] transition-colors cursor-pointer inline-flex flex-row items-center justify-center whitespace-nowrap select-none leading-none shrink-0"
           >
-            {currentLocale === 'hi' ? 'सभी चुनें' : 'Select All'}
+            <span className="whitespace-nowrap leading-none">{currentLocale === 'hi' ? 'सभी चुनें' : 'Select All'}</span>
           </button>
           <button
             type="button"
             onClick={onDeselectAll}
-            className="px-3 py-1.5 rounded-xl text-xs font-medium bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-[12px] text-[13px] font-semibold bg-[var(--surface)] text-[var(--text-muted)] border border-[var(--border)] hover:bg-[var(--bg)] transition-colors cursor-pointer inline-flex flex-row items-center justify-center whitespace-nowrap select-none leading-none shrink-0"
           >
-            {currentLocale === 'hi' ? 'सभी हटाएं' : 'Deselect All'}
+            <span className="whitespace-nowrap leading-none">{currentLocale === 'hi' ? 'सभी हटाएं' : 'Deselect All'}</span>
           </button>
         </div>
       </div>

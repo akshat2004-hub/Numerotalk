@@ -32,9 +32,9 @@ export function DisclaimerFooter() {
           <button
             type="button"
             onClick={resetProfile}
-            className="text-[11px] text-rose-600 hover:underline underline-offset-4 transition-colors font-medium cursor-pointer"
+            className="text-[11px] text-rose-600 hover:underline underline-offset-4 transition-colors font-medium cursor-pointer whitespace-nowrap leading-none shrink-0 inline-flex flex-row items-center"
           >
-            {tp('deleteMyData')}
+            <span className="whitespace-nowrap leading-none">{tp('deleteMyData')}</span>
           </button>
         </div>
       </div>

@@ -65,7 +65,8 @@ export function DateInput({
   const inputId = id || (label ? label.toLowerCase().replace(/[^a-z0-9]/g, '-') : undefined);
 
   useEffect(() => {
-    setDisplayValue(isoToDisplay(value));
+    const formatted = isoToDisplay(value);
+    setDisplayValue((prev) => (prev === formatted ? prev : formatted));
   }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +154,8 @@ export function DateInput({
           disabled={disabled}
           tabIndex={-1}
           aria-label="Open calendar"
-          className="absolute right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--gold)] transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+          title="Open calendar"
+          className="absolute right-2.5 p-1 text-[var(--text-muted)] hover:text-[var(--gold)] transition-colors cursor-pointer shrink-0 disabled:opacity-50 inline-flex flex-row items-center justify-center leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
         >
           <Calendar className="w-4 h-4 stroke-[1.8]" />
         </button>

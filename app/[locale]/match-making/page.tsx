@@ -23,11 +23,14 @@ import {
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
+import { cn } from '@/frontend/utils';
 import { CircularScoreMeter } from '@/frontend/components/ui/CircularScoreMeter';
 import { VedicGrid } from '@/frontend/components/VedicGrid';
 import { RemedyChip } from '@/frontend/components/ui/RemedyChip';
 import { Input } from '@/frontend/components/ui/Input';
 import { DateInput } from '@/frontend/components/ui/DateInput';
+import { Button } from '@/frontend/components/ui/Button';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { matchScore, MatchScoreResult, MatchPillar } from '@/core/engine/compatibility';
 
@@ -140,24 +143,19 @@ export default function MatchMakingPage() {
           className="mb-0"
         />
 
-        {/* Quick Top Export Button: md = 44px, 15px text */}
-        <button
+        {/* Quick Top Export Button */}
+        <Button
           type="button"
+          size="md"
+          variant="primary"
           onClick={handleExportPdf}
           disabled={isExporting}
-          className="btn-gold-gradient h-[44px] px-5 text-[15px] font-semibold flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer rounded-[12px] shadow-[0_4px_12px_rgba(201,131,16,0.25)] transition-all hover:scale-[1.01] active:scale-[0.99]"
+          icon={isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 stroke-[2]" />}
         >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4 stroke-[2]" />
-          )}
-          <span>
-            {isExporting 
-              ? (locale === 'hi' ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...') 
-              : (locale === 'hi' ? 'मैच रिपोर्ट डाउनलोड (PDF)' : 'Export Match Report (PDF)')}
-          </span>
-        </button>
+          {isExporting 
+            ? (locale === 'hi' ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...') 
+            : (locale === 'hi' ? 'मैच रिपोर्ट डाउनलोड (PDF)' : 'Export Match Report (PDF)')}
+        </Button>
       </div>
 
       {/* Partner Input Form Cards */}
@@ -368,7 +366,7 @@ export default function MatchMakingPage() {
                     <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
                       {locale === 'hi' ? 'दोहरा ऊर्जा विनिमय (Dual Energy Cross)' : 'Dual Energy Cross Exchange'}
                     </span>
-                    <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
                       <div className="text-center space-y-1">
                         <span className="text-[10px] text-[var(--text-muted)] block">
                           Boy Mulank ({matchResult.boy.mulank}) × Girl Bhagyank ({matchResult.girl.bhagyank})
@@ -405,7 +403,7 @@ export default function MatchMakingPage() {
                     <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider block">
                       {locale === 'hi' ? 'समान सक्रिय ऊर्जा तल (Common Resonance)' : 'Common Vedic Resonance'}
                     </span>
-                    <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
                       <div className="text-center space-y-1">
                         <span className="text-[10px] text-[var(--text-muted)] block truncate">
                           {boyName || 'Partner 1'} ({matchResult.common.commonNumbers.length} Common)
@@ -453,7 +451,7 @@ export default function MatchMakingPage() {
                   </div>
                 ) : (
                   /* Standard 2 Mini grids side by side */
-                  <div className="grid grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
                     <div className="text-center space-y-1">
                       <span className="text-[10px] text-[var(--text-muted)] block truncate">
                         {boyName || 'Partner 1'} ({pillar.boyNumber})
@@ -537,29 +535,9 @@ export default function MatchMakingPage() {
                   </div>
                 </div>
 
-                {/* 5. Add to report button */}
+                {/* 5. Report checkbox */}
                 <div className="pt-2 border-t border-[var(--border)] flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => toggleReportSection(reportKey)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                      isAdded
-                        ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-                        : 'bg-[var(--surface)] text-[var(--gold)] hover:bg-[var(--chip-bg)] border border-[var(--border)]'
-                    }`}
-                  >
-                    {isAdded ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                        <span>{locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report'}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Plus className="w-3.5 h-3.5 text-[var(--gold)]" />
-                        <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to report'}</span>
-                      </>
-                    )}
-                  </button>
+                  <ReportCheckbox itemKey={reportKey} title="Include in report" />
                 </div>
               </div>
             );
@@ -636,7 +614,7 @@ export default function MatchMakingPage() {
             <Sparkles className="w-3.5 h-3.5" />
             {locale === 'hi' ? 'अनुशंसित वैदिक उपाय (Harmonizing Remedies)' : 'Prescribed Harmonizing Remedies'}
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-2">
             {matchResult.remedies.map((rem, idx) => (
               <RemedyChip
                 key={idx}
@@ -662,23 +640,18 @@ export default function MatchMakingPage() {
           </p>
         </div>
 
-        <button
+        <Button
           type="button"
+          size="md"
+          variant="primary"
           onClick={handleExportPdf}
           disabled={isExporting}
-          className="btn-gold-gradient h-[44px] px-5 text-[15px] font-semibold flex items-center gap-2 shrink-0 disabled:opacity-50 cursor-pointer rounded-[12px] shadow-[0_4px_12px_rgba(201,131,16,0.25)] transition-all hover:scale-[1.01] active:scale-[0.99]"
+          icon={isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 stroke-[2]" />}
         >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4 stroke-[2]" />
-          )}
-          <span>
-            {isExporting 
-              ? (locale === 'hi' ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...') 
-              : (locale === 'hi' ? 'मैच रिपोर्ट डाउनलोड (PDF)' : 'Export Match Report (PDF)')}
-          </span>
-        </button>
+          {isExporting 
+            ? (locale === 'hi' ? 'पीडीएफ तैयार हो रहा है...' : 'Generating PDF...') 
+            : (locale === 'hi' ? 'मैच रिपोर्ट डाउनलोड (PDF)' : 'Export Match Report (PDF)')}
+        </Button>
       </div>
 
       {/* HIDDEN PRINT/PDF TEMPLATE (Captured by html2canvas + jsPDF) */}

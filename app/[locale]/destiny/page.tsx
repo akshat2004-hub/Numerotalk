@@ -89,70 +89,43 @@ export default function DestinyPage() {
         </div>
       </div>
 
-      {/* Reading Grid */}
+      {/* Reading Grid: Single Destiny Prediction Card with 4 Numbered Points */}
       {destinyReading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Life Mission */}
-          <PredictionCard
-            title={t('missionTitle')}
-            badge={`Destiny ${destinyReading.number}`}
-            badgeVariant="gold"
-            sectionKey="module2_mission"
-            icon={<Sparkles className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-              {locale === 'hi' ? destinyReading.lifeMission.hi : destinyReading.lifeMission.en}
-            </p>
-          </PredictionCard>
-
-          {/* Core Strengths */}
-          <PredictionCard
-            title={t('strengthsTitle')}
-            badge="Superpowers"
-            badgeVariant="emerald"
-            sectionKey="module2_strengths"
-            icon={<Crown className="w-4 h-4 text-[var(--success-text)] stroke-[1.5]" />}
-          >
-            <ul className="space-y-1.5 text-[12.5px]">
-              {destinyReading.coreStrengths.map((str, i) => (
-                <li key={i} className="flex items-start gap-2 text-[var(--text)]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success-text)] stroke-[1.5] shrink-0 mt-0.5" />
-                  <span>{locale === 'hi' ? str.hi : str.en}</span>
-                </li>
-              ))}
-            </ul>
-          </PredictionCard>
-
-          {/* Career Avenues */}
-          <PredictionCard
-            title={t('careerTitle')}
-            badge="Professional Scope"
-            badgeVariant="indigo"
-            sectionKey="module2_career"
-            icon={<Briefcase className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <ul className="space-y-1.5 text-[12.5px] text-[var(--text)]">
-              {destinyReading.careerAvenues.map((car, i) => (
-                <li key={i} className="p-2 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
-                  {locale === 'hi' ? car.hi : car.en}
-                </li>
-              ))}
-            </ul>
-          </PredictionCard>
-
-          {/* Relationship Style */}
-          <PredictionCard
-            title={t('relationshipTitle')}
-            badge="Social Dynamics"
-            badgeVariant="crimson"
-            sectionKey="module2_relationship"
-            icon={<Heart className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-              {locale === 'hi' ? destinyReading.relationshipStyle.hi : destinyReading.relationshipStyle.en}
-            </p>
-          </PredictionCard>
-        </div>
+        <PredictionCard
+          title={locale === 'hi' ? 'भाग्यांक भविष्यफल' : 'Destiny Prediction'}
+          intro={
+            locale === 'hi'
+              ? `भाग्यांक ${destinyReading.number} — जीवन का सर्वोच्च उद्देश्य, करियर एवं सामाजिक सामर्थ्य`
+              : `Destiny Number ${destinyReading.number} — Comprehensive cosmic purpose, core strengths, and career avenues`
+          }
+          itemKey="destiny:destiny_prediction"
+          points={[
+            {
+              id: 'destiny_pt_1',
+              heading: locale === 'hi' ? 'जीवन उद्देश्य एवं पुकार' : 'Life Mission & Calling',
+              body: locale === 'hi' ? destinyReading.lifeMission.hi : destinyReading.lifeMission.en,
+              itemKey: 'destiny:point:life_mission'
+            },
+            {
+              id: 'destiny_pt_2',
+              heading: locale === 'hi' ? 'मूल शक्तियां' : 'Core Strengths',
+              body: destinyReading.coreStrengths.map((str) => (locale === 'hi' ? str.hi : str.en)).join(' • '),
+              itemKey: 'destiny:point:core_strengths'
+            },
+            {
+              id: 'destiny_pt_3',
+              heading: locale === 'hi' ? 'सर्वोत्तम करियर क्षेत्र' : 'Optimal Career Avenues',
+              body: destinyReading.careerAvenues.map((car) => (locale === 'hi' ? car.hi : car.en)).join(' • '),
+              itemKey: 'destiny:point:optimal_career_avenues'
+            },
+            {
+              id: 'destiny_pt_4',
+              heading: locale === 'hi' ? 'संबंध एवं सामाजिक व्यक्तित्व' : 'Relationship & Social Persona',
+              body: locale === 'hi' ? destinyReading.relationshipStyle.hi : destinyReading.relationshipStyle.en,
+              itemKey: 'destiny:point:relationship_social_persona'
+            }
+          ]}
+        />
       )}
     </div>
   );

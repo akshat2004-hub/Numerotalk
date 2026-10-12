@@ -45,26 +45,26 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
         type="button"
         onClick={() => handleSwitch('en')}
         className={cn(
-          'px-2.5 py-1 rounded-lg transition-all duration-150 font-medium',
+          'inline-flex flex-row items-center justify-center px-2.5 py-1 rounded-[10px] transition-all duration-150 font-medium whitespace-nowrap select-none leading-none shrink-0 cursor-pointer',
           locale === 'en'
             ? 'bg-[var(--color-primary)] text-[#3A2A14] font-bold shadow-xs'
             : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface-alt)]'
         )}
       >
-        EN
+        <span className="whitespace-nowrap leading-none">EN</span>
       </button>
 
       <button
         type="button"
         onClick={() => handleSwitch('hi')}
         className={cn(
-          'px-2.5 py-1 rounded-lg transition-all duration-150 font-medium',
+          'inline-flex flex-row items-center justify-center px-2.5 py-1 rounded-[10px] transition-all duration-150 font-medium whitespace-nowrap select-none leading-none shrink-0 cursor-pointer',
           locale === 'hi'
             ? 'bg-[var(--color-primary)] text-[#3A2A14] font-bold shadow-xs'
             : 'text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface-alt)]'
         )}
       >
-        हिंदी
+        <span className="whitespace-nowrap leading-none">हिंदी</span>
       </button>
     </div>
   );

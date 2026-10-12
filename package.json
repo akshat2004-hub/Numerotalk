@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "check:colors": "node scripts/check-colors.mjs",
-    "prebuild": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs",
+    "check:buttons": "node scripts/check-button-guardrails.mjs",
+    "prebuild": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs && node scripts/check-button-guardrails.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs && eslint",
+    "lint": "node scripts/check-banned-terms.mjs && node scripts/check-colors.mjs && node scripts/check-button-guardrails.mjs && eslint",
     "test": "vitest run"
   },
   "dependencies": {

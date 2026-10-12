@@ -6,6 +6,7 @@ import { Clock, Sparkles, CheckCircle2 } from 'lucide-react';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { Button } from '@/frontend/components/ui/Button';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { calculateMulank, calculateBhagyank, getNumberRelationship } from '@/frontend';
@@ -108,13 +109,14 @@ export default function TimePage() {
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="md"
             onClick={handleSetCurrent}
-            className="btn-vedic-secondary px-4 py-2 h-[40px] text-xs font-semibold rounded-xl cursor-pointer"
           >
             {t('useCurrentTime')}
-          </button>
+          </Button>
         </div>
       </div>
 

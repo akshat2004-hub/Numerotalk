@@ -230,62 +230,43 @@ export default function CombinationPage() {
         </div>
       </div>
 
-      {/* Reading Breakdown with Add to report */}
+      {/* Reading Breakdown: Single Combination Prediction Card with 4 Numbered Points */}
       {reading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <PredictionCard
-            title={t('synergyTitle')}
-            badge="Combined Vibration"
-            badgeVariant="gold"
-            sectionKey="module3_synergy"
-            icon={<Sparkles className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-              {locale === 'hi' ? reading.synergyAnalysis.hi : reading.synergyAnalysis.en}
-            </p>
-          </PredictionCard>
-
-          <PredictionCard
-            title={t('careerGuidanceTitle')}
-            badge="Career Flow"
-            badgeVariant="indigo"
-            sectionKey="module3_career"
-            icon={<Briefcase className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-              {locale === 'hi' ? reading.careerGuidance.hi : reading.careerGuidance.en}
-            </p>
-          </PredictionCard>
-
-          <PredictionCard
-            title={t('personalLifeTitle')}
-            badge="Personal Harmony"
-            badgeVariant="crimson"
-            sectionKey="module3_personal"
-            icon={<Heart className="w-4 h-4 text-[var(--gold)] stroke-[1.5]" />}
-          >
-            <p className="text-[var(--text)] leading-relaxed text-[12.5px]">
-              {locale === 'hi' ? reading.personalLife.hi : reading.personalLife.en}
-            </p>
-          </PredictionCard>
-
-          <PredictionCard
-            title={t('recommendedRemedies')}
-            badge="Remedy Alignment"
-            badgeVariant="emerald"
-            sectionKey="module3_remedies"
-            icon={<Shield className="w-4 h-4 text-[var(--success-text)] stroke-[1.5]" />}
-          >
-            <ul className="space-y-1.5 text-[12.5px]">
-              {reading.luckyRemedies.map((rem, i) => (
-                <li key={i} className="flex items-center gap-2 text-[var(--text)]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--success-text)] stroke-[1.5] shrink-0" />
-                  <span>{locale === 'hi' ? rem.hi : rem.en}</span>
-                </li>
-              ))}
-            </ul>
-          </PredictionCard>
-        </div>
+        <PredictionCard
+          title={locale === 'hi' ? 'संयोजन भविष्यफल' : 'Combination Prediction'}
+          intro={
+            locale === 'hi'
+              ? 'मूलांक एवं भाग्यांक के संयुक्त प्रभाव से उत्पन्न समग्र जीवन ऊर्जा एवं करियर मार्गदर्शन'
+              : 'Combined vibration of Driver & Conductor numbers revealing life synergy and strategic remedies'
+          }
+          itemKey="combination:combination_prediction"
+          points={[
+            {
+              id: 'comb_pt_1',
+              heading: locale === 'hi' ? 'संयुक्त ऊर्जा विश्लेषण' : 'Combined Energy Analysis',
+              body: locale === 'hi' ? reading.synergyAnalysis.hi : reading.synergyAnalysis.en,
+              itemKey: 'combination:point:combined_energy_analysis'
+            },
+            {
+              id: 'comb_pt_2',
+              heading: locale === 'hi' ? 'रणनीतिक करियर संरेखण' : 'Strategic Career Alignment',
+              body: locale === 'hi' ? reading.careerGuidance.hi : reading.careerGuidance.en,
+              itemKey: 'combination:point:strategic_career_alignment'
+            },
+            {
+              id: 'comb_pt_3',
+              heading: locale === 'hi' ? 'व्यक्तिगत एवं पारिवारिक जीवन' : 'Personal & Domestic Sphere',
+              body: locale === 'hi' ? reading.personalLife.hi : reading.personalLife.en,
+              itemKey: 'combination:point:personal_domestic_sphere'
+            },
+            {
+              id: 'comb_pt_4',
+              heading: locale === 'hi' ? 'समन्वय एवं संतुलनकारी उपाय' : 'Harmonizing Recommendations',
+              body: reading.luckyRemedies.map((rem) => (locale === 'hi' ? rem.hi : rem.en)).join(' • '),
+              itemKey: 'combination:point:harmonizing_recommendations'
+            }
+          ]}
+        />
       )}
     </div>
   );

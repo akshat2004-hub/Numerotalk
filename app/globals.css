@@ -20,6 +20,7 @@
     --gold-gradient: linear-gradient(135deg, #F0B53A, #C98310);
     --active-bg: #FDE9C4;
     --chip-bg: #FFF1CC;
+    --surface-muted: #F8F4EC;
     --seg-active: #F7C96B;
     --seg-inactive: #F4F1EA;
 
@@ -148,26 +149,55 @@
   box-shadow: 0 6px 28px rgba(190, 130, 20, 0.12);
 }
 
-/* Primary Gold Button CTA: 16px radius, gold gradient */
+/* Root Button Guardrails: all standard action buttons render nowrap unless explicitly marked whitespace-normal */
+button:not(.whitespace-normal), [role="button"]:not(.whitespace-normal), .btn-gold-gradient, .btn-vedic-primary, .btn-vedic-secondary {
+  white-space: nowrap;
+}
+
+.whitespace-normal {
+  white-space: normal !important;
+}
+
+/* Custom utility: hide scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+button svg, [role="button"] svg {
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* Primary Gold Button CTA: 12px radius, gold gradient */
 .btn-gold-gradient, .btn-vedic-primary {
   background: var(--gold-gradient);
   color: #FFFFFF;
   font-weight: 600;
-  font-size: 12.5px;
-  border-radius: 16px;
+  font-size: 13px;
+  border-radius: 12px;
   border: none;
-  box-shadow: 0 2px 10px rgba(232, 163, 23, 0.25);
+  box-shadow: 0 2px 8px rgba(201, 131, 16, 0.18);
   transition: all 0.15s ease;
   display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1;
   cursor: pointer;
 }
 
 .btn-gold-gradient:hover, .btn-vedic-primary:hover {
   transform: translateY(-0.5px);
   filter: brightness(1.04);
-  box-shadow: 0 4px 14px rgba(232, 163, 23, 0.32);
+  box-shadow: 0 4px 12px rgba(201, 131, 16, 0.25);
 }
 
 .btn-gold-gradient:active, .btn-vedic-primary:active {
@@ -178,10 +208,20 @@
   background-color: var(--surface);
   color: var(--text);
   font-weight: 500;
-  font-size: 12.5px;
-  border-radius: 16px;
+  font-size: 13px;
+  border-radius: 12px;
   border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(201, 131, 16, 0.05);
   transition: all 0.15s ease;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .btn-vedic-secondary:hover {

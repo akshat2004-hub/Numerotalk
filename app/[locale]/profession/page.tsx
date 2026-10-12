@@ -20,6 +20,8 @@ import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
 import { Select } from '@/frontend/components/ui/Select';
+import { Button } from '@/frontend/components/ui/Button';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import {
   recommendProfessions,
@@ -37,8 +39,6 @@ export default function ProfessionPage() {
   const setProfile = useNumerologyStore((s) => s.setProfile);
   const storedProfession = useNumerologyStore((s) => s.selectedProfession);
   const setSelectedProfession = useNumerologyStore((s) => s.setSelectedProfession);
-  const toggleReportSection = useNumerologyStore((s) => s.toggleReportSection);
-  const reportSections = useNumerologyStore((s) => s.reportSections);
 
   // Birth time inline editor
   const [inlineTime, setInlineTime] = useState(profile.birthTime || '');
@@ -79,7 +79,6 @@ export default function ProfessionPage() {
   // Passwords for the selected profession
   const [passwords, setPasswords] = useState<GeneratedPasswordMatch[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [addedReport, setAddedReport] = useState<boolean>(false);
 
   useEffect(() => {
     if (activeResult) {
@@ -100,14 +99,6 @@ export default function ProfessionPage() {
   const handleSelectProfession = (profId: string) => {
     setSelectedProfId(profId);
     setSelectedProfession(profId);
-  };
-
-  const handleAddToReport = () => {
-    if (!reportSections.profession) {
-      toggleReportSection('profession');
-    }
-    setAddedReport(true);
-    setTimeout(() => setAddedReport(false), 2500);
   };
 
   // Secondary "Check another profession" searchable dropdown
@@ -169,14 +160,15 @@ export default function ProfessionPage() {
               onChange={(e) => setInlineTime(e.target.value)}
               className="h-[38px] px-3 rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-xs text-[var(--heading)] focus:border-[var(--gold)] outline-hidden font-mono"
             />
-            <button
+            <Button
               type="button"
+              variant="primary"
+              size="sm"
+              icon={<Check className="w-3.5 h-3.5" />}
               onClick={handleSaveBirthTime}
-              className="btn-gold-gradient h-[38px] px-4 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <Check className="w-3.5 h-3.5" />
-              <span>{locale === 'hi' ? 'सुरक्षित करें' : 'Save Time'}</span>
-            </button>
+              {locale === 'hi' ? 'सुरक्षित करें' : 'Save Time'}
+            </Button>
           </div>
         </div>
       )}
@@ -284,14 +276,14 @@ export default function ProfessionPage() {
       {/* Selected Profession Detailed Analysis Section */}
       {activeResult && (
         <div className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--heading)] flex items-center gap-2">
-                <span className="text-xl">{activeResult.profession.icon}</span>
-                <span>
-                  {locale === 'hi' ? 'विस्तृत विश्लेषण:' : 'Detailed Career Forecast:'}{' '}
-                  <span className="text-[var(--gold)]">{activeResult.profession.name[locale]}</span>
-                </span>
+              <span className="text-[10px] uppercase font-bold text-[var(--gold)] tracking-wider block">
+                {locale === 'hi' ? 'विस्तृत करियर भविष्यवाणी' : 'Detailed Career Forecast'}
+              </span>
+              <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--heading)] flex items-center gap-2 mt-0.5">
+                <span className="text-xl shrink-0">{activeResult.profession.icon}</span>
+                <span className="text-[var(--gold)]">{activeResult.profession.name[locale]}</span>
               </h3>
               <p className="text-xs text-[var(--text-muted)] mt-0.5">
                 {locale === 'hi'
@@ -300,23 +292,12 @@ export default function ProfessionPage() {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={handleAddToReport}
-              className="btn-gold-gradient px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
-            >
-              {addedReport ? (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ा गया' : 'Added to Report'}</span>
-                </>
-              ) : (
-                <>
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to Report'}</span>
-                </>
-              )}
-            </button>
+            <div className="shrink-0 self-start sm:self-center">
+              <ReportCheckbox
+                itemKey={`profession:${activeResult.profession.id}`}
+                title={locale === 'hi' ? 'रिपोर्ट में शामिल करें' : 'Include in report'}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -431,23 +412,20 @@ export default function ProfessionPage() {
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => copyPassword(pwd.password, idx)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer shrink-0 text-[var(--heading)]"
-                      >
-                        {copiedIndex === idx ? (
-                          <>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        icon={
+                          copiedIndex === idx ? (
                             <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                            <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी' : 'Copied'}</span>
-                          </>
-                        ) : (
-                          <>
+                          ) : (
                             <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                            <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
-                          </>
-                        )}
-                      </button>
+                          )
+                        }
+                        onClick={() => copyPassword(pwd.password, idx)}
+                      >
+                        {copiedIndex === idx ? (locale === 'hi' ? 'कॉपी' : 'Copied') : (locale === 'hi' ? 'कॉपी' : 'Copy')}
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -464,7 +442,7 @@ export default function ProfessionPage() {
       )}
 
       {/* Secondary "Check another profession" searchable dropdown */}
-      <div className="vedic-card p-4 sm:p-5 space-y-3.5">
+      <div className="vedic-card p-4 sm:p-5 space-y-3.5 mb-8 sm:mb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h4 className="font-serif font-bold text-sm sm:text-base text-[var(--heading)] flex items-center gap-2">
@@ -513,13 +491,13 @@ export default function ProfessionPage() {
                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   {evaluatedOther.score}% Match
                 </span>
-                <button
-                  type="button"
+                <Button
+                  size="sm"
+                  variant="gold"
                   onClick={() => handleSelectProfession(evaluatedOther.profession.id)}
-                  className="btn-gold-gradient px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer shadow-xs"
                 >
                   {locale === 'hi' ? 'इसे चुनें' : 'Select'}
-                </button>
+                </Button>
               </div>
             </div>
 

@@ -15,8 +15,6 @@ import {
   Lightbulb,
   Table
 } from 'lucide-react';
-import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
-import { Input } from '@/frontend/components/ui/Input';
 import lettersData from '@/mocks/rules/letters.json';
 
 interface FaqItem {
@@ -312,39 +310,124 @@ export default function HelpPage() {
       .filter((sec) => sec.items.length > 0);
   }, [sections, search]);
 
-  return (
-    <div className="space-y-6 sm:space-y-7">
-      <SectionHeader
-        title={locale === 'hi' ? 'सहायता और' : 'Help &'}
-        goldTitle={locale === 'hi' ? 'गाइड' : 'Guide'}
-        subtitle={
-          locale === 'hi'
-            ? 'वैदिक अंकशास्त्र के गूढ़ सिद्धांतों, गणना विधियों एवं अनुप्रयोग की संपूर्ण मार्गदर्शिका।'
-            : 'Comprehensive Vedic numerology reference, calculation methods, and user guide.'
-        }
-        icon={<HelpCircle className="w-5 h-5 stroke-[1.5]" />}
-      />
+  const totalMatches = useMemo(() => {
+    return filteredSections.reduce((acc, s) => acc + s.items.length, 0);
+  }, [filteredSections]);
 
-      {/* Search Input Box */}
-      <div className="vedic-card p-4 sm:p-5">
-        <Input
-          placeholder={locale === 'hi' ? 'मार्गदर्शिका में खोजें (उदा. मूलांक, ग्रिड, नामांक)...' : 'Search guide & FAQ (e.g. Driver, Grid, Destiny, Report)...'}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          icon={<Search className="w-4 h-4 text-[var(--text-muted)]" />}
-        />
+  return (
+    <div className="space-y-4 sm:space-y-5">
+      {/* Compact Header with Integrated Search */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 pb-3.5 border-b border-[var(--border)]">
+        <div>
+          <h1 className="font-serif text-xl sm:text-2xl font-semibold tracking-tight text-[var(--heading)] flex items-center gap-2">
+            <HelpCircle className="w-5 h-5 text-[var(--gold)] shrink-0 stroke-[1.75]" />
+            <span>{locale === 'hi' ? 'सहायता और' : 'Help &'}</span>
+            <span className="text-[var(--gold)]">{locale === 'hi' ? 'गाइड' : 'Guide'}</span>
+          </h1>
+          <p className="text-xs text-[var(--text-muted)] mt-1 max-w-xl leading-relaxed">
+            {locale === 'hi'
+              ? 'वैदिक अंकशास्त्र सिद्धांतों, गणना विधियों एवं अनुप्रयोग की संपूर्ण मार्गदर्शिका।'
+              : 'Comprehensive Vedic numerology reference, calculation methods, and user guide.'}
+          </p>
+        </div>
+
+        {/* Compact, Sensibly-Sized Search Input */}
+        <div className="relative w-full sm:w-72 md:w-80 shrink-0">
+          <Search className="w-3.5 h-3.5 text-[var(--text-muted)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={locale === 'hi' ? 'खोजें (उदा. मूलांक, ग्रिड, रिपोर्ट)...' : 'Search FAQ (Driver, Grid, Report)...'}
+            className="w-full h-9 pl-9 pr-8 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs text-[var(--heading)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] transition-colors shadow-2xs"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[var(--text-muted)] hover:text-[var(--heading)] inline-flex flex-row items-center justify-center w-4 h-4 rounded-full cursor-pointer leading-none"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Grouped Accordions */}
-      <div className="space-y-6">
-        {filteredSections.map((sec) => (
-          <div key={sec.id} id={sec.id} className="space-y-3 scroll-mt-24">
-            {/* Section Header */}
-            <div className="flex items-center gap-2 pb-1 border-b border-[var(--border)]">
+      {/* Quick Jump Category Pills (when not searching) */}
+      {!search && (
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+          <span className="text-[11px] text-[var(--text-muted)] font-medium shrink-0 mr-1 hidden sm:inline">
+            {locale === 'hi' ? 'अनुभाग:' : 'Sections:'}
+          </span>
+          {sections.map((sec) => (
+            <a
+              key={sec.id}
+              href={`#${sec.id}`}
+              className="inline-flex flex-row items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--chip-bg)] hover:border-[var(--gold)]/40 text-[var(--text-muted)] hover:text-[var(--gold-deep)] text-[11px] font-medium whitespace-nowrap transition-colors select-none leading-none shadow-2xs"
+            >
               {sec.icon}
-              <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--heading)]">
-                {locale === 'hi' ? sec.title.hi : sec.title.en}
-              </h3>
+              <span>{locale === 'hi' ? sec.title.hi : sec.title.en}</span>
+            </a>
+          ))}
+        </div>
+      )}
+
+      {/* Search Matches Count */}
+      {search && (
+        <div className="flex items-center justify-between text-xs text-[var(--text-muted)] px-1">
+          <span>
+            {locale === 'hi'
+              ? `खोज परिणाम: ${totalMatches} प्रश्न मिले`
+              : `Search results: ${totalMatches} question(s) found`}
+          </span>
+          <button
+            type="button"
+            onClick={() => setSearch('')}
+            className="inline-flex flex-row items-center text-[var(--gold)] hover:underline cursor-pointer select-none font-medium leading-none"
+          >
+            {locale === 'hi' ? 'खोज हटाएं' : 'Clear search'}
+          </button>
+        </div>
+      )}
+
+      {/* Empty State when no results found */}
+      {filteredSections.length === 0 && (
+        <div className="vedic-card p-8 text-center space-y-3">
+          <HelpCircle className="w-8 h-8 text-[var(--text-muted)] mx-auto opacity-50" />
+          <p className="text-sm font-medium text-[var(--heading)]">
+            {locale === 'hi' ? 'कोई प्रश्न नहीं मिला' : 'No matching questions found'}
+          </p>
+          <p className="text-xs text-[var(--text-muted)]">
+            {locale === 'hi'
+              ? 'कृपया किसी अन्य शब्द या प्रश्न को खोज कर देखें।'
+              : 'Try searching with different keywords like Driver, Grid, Destiny, or Remedies.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => setSearch('')}
+            className="inline-flex flex-row items-center justify-center px-3.5 py-1.5 rounded-lg border border-[var(--gold)] text-xs font-semibold text-[var(--gold-deep)] bg-[var(--chip-bg)] hover:bg-[var(--gold)]/15 transition-colors cursor-pointer select-none leading-none mx-auto"
+          >
+            {locale === 'hi' ? 'सभी प्रश्न देखें' : 'View all questions'}
+          </button>
+        </div>
+      )}
+
+      {/* Grouped Accordions */}
+      <div className="space-y-4 sm:space-y-5">
+        {filteredSections.map((sec) => (
+          <div key={sec.id} id={sec.id} className="space-y-2.5 scroll-mt-20">
+            {/* Section Header */}
+            <div className="flex items-center justify-between pb-1 border-b border-[var(--border)]">
+              <div className="flex items-center gap-2">
+                {sec.icon}
+                <h2 className="font-serif font-bold text-sm sm:text-base text-[var(--heading)]">
+                  {locale === 'hi' ? sec.title.hi : sec.title.en}
+                </h2>
+              </div>
+              <span className="text-[11px] font-mono text-[var(--text-muted)] lining-nums">
+                {sec.items.length} {locale === 'hi' ? 'प्रश्न' : 'Q&A'}
+              </span>
             </div>
 
             {/* Accordion Items in ONE Card */}
@@ -352,18 +435,18 @@ export default function HelpPage() {
               {sec.items.map((item) => {
                 const isOpen = !!openItems[item.id] || Boolean(search.trim());
                 return (
-                  <div key={item.id} id={item.id} className="transition-colors scroll-mt-28">
+                  <div key={item.id} id={item.id} className="transition-colors scroll-mt-24">
                     <button
                       type="button"
                       onClick={() => toggleItem(item.id)}
-                      className="w-full p-4 flex items-center justify-between text-left gap-3 cursor-pointer select-none hover:bg-[var(--surface-muted)]/30 transition-colors"
+                      className="w-full p-3.5 sm:p-4 inline-flex flex-row items-start sm:items-center justify-between text-left gap-2.5 sm:gap-3 cursor-pointer select-none hover:bg-[var(--surface-muted)]/30 transition-colors whitespace-normal"
                     >
-                      <span className="font-serif font-bold text-xs sm:text-sm text-[var(--heading)] flex items-center gap-2">
-                        <Sparkles className="w-3.5 h-3.5 text-[var(--gold)] shrink-0" />
-                        <span>{locale === 'hi' ? item.question.hi : item.question.en}</span>
+                      <span className="font-serif font-bold text-xs sm:text-sm text-[var(--heading)] flex flex-row items-start gap-2 flex-1 min-w-0 whitespace-normal leading-snug">
+                        <Sparkles className="w-3.5 h-3.5 text-[var(--gold)] shrink-0 mt-0.5" />
+                        <span className="break-words flex-1 min-w-0">{locale === 'hi' ? item.question.hi : item.question.en}</span>
                       </span>
                       <ChevronDown
-                        className={`w-4 h-4 text-[var(--text-muted)] shrink-0 transition-transform duration-200 ${
+                        className={`w-4 h-4 text-[var(--text-muted)] shrink-0 mt-0.5 sm:mt-0 transition-transform duration-200 ${
                           isOpen ? 'rotate-180 text-[var(--gold)]' : ''
                         }`}
                       />
@@ -384,7 +467,7 @@ export default function HelpPage() {
       </div>
 
       {/* Bottom Disclaimer */}
-      <div className="pt-4 border-t border-[var(--border)] text-center text-xs text-[var(--text-muted)]">
+      <div className="pt-3 border-t border-[var(--border)] text-center text-xs text-[var(--text-muted)]">
         <p className="italic">
           {locale === 'hi'
             ? 'केवल मार्गदर्शन एवं सामान्य जानकारी हेतु।'

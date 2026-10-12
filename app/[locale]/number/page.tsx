@@ -2,23 +2,17 @@
 
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { BookOpen, Sparkles, Check, Plus } from 'lucide-react';
+import { BookOpen, Sparkles } from 'lucide-react';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
-import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
-import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { getNumberMeaning, NumberMeaningInfo } from '@/core/engine/meanings108';
 
 export default function NumberMeaningPage() {
   const t = useTranslations('numberMeaningsPage');
   const locale = (useLocale() || 'en') as 'en' | 'hi';
-  const { reportSections, toggleReportSection } = useNumerologyStore();
-
   const [selectedBead, setSelectedBead] = useState<number>(23);
   const meaning: NumberMeaningInfo = getNumberMeaning(selectedBead);
-
-  const sectionKey = `number_108_${selectedBead}`;
-  const isAdded = !!reportSections?.[sectionKey];
 
   // Array of 1 to 108 for the Mala
   const allBeads = Array.from({ length: 108 }, (_, i) => i + 1);
@@ -55,7 +49,7 @@ export default function NumberMeaningPage() {
         </div>
 
         {/* The 108 Beads Grid */}
-        <div className="grid grid-cols-9 sm:grid-cols-12 md:grid-cols-18 gap-1.5 p-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] max-h-56 overflow-y-auto scrollbar-thin">
+        <div className="grid grid-cols-6 min-[400px]:grid-cols-8 sm:grid-cols-12 md:grid-cols-18 gap-1.5 p-2 rounded-2xl bg-[var(--surface)] border border-[var(--border)] max-h-56 overflow-y-auto scrollbar-thin">
           {allBeads.map((bead) => {
             const isSelected = selectedBead === bead;
             return (
@@ -63,7 +57,7 @@ export default function NumberMeaningPage() {
                 key={bead}
                 type="button"
                 onClick={() => setSelectedBead(bead)}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-serif font-bold transition-all cursor-pointer relative ${
+                className={`inline-flex flex-row items-center justify-center w-8 h-8 rounded-full text-xs font-serif font-bold transition-all cursor-pointer relative select-none leading-none whitespace-nowrap ${
                   isSelected
                     ? 'btn-gold-gradient text-white font-black ring-2 ring-[var(--gold)] shadow-md scale-110 z-10'
                     : 'bg-[var(--chip-bg)] text-[var(--heading)] hover:bg-[var(--active-bg)] hover:scale-105 border border-[var(--border)]/60'
@@ -93,18 +87,7 @@ export default function NumberMeaningPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => toggleReportSection(sectionKey)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                isAdded
-                  ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-                  : 'bg-[var(--chip-bg)] text-[var(--gold)] hover:bg-[var(--active-bg)] border border-[var(--border)]'
-              }`}
-            >
-              {isAdded ? <Check className="w-3.5 h-3.5 text-[var(--success-text)]" /> : <Plus className="w-3.5 h-3.5" />}
-              <span>{isAdded ? (locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report') : (locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to report')}</span>
-            </button>
+            <ReportCheckbox itemKey={`number:bead:${meaning.number}`} />
             <NumberBadge number={meaning.number} size="lg" variant="gold" />
           </div>
         </div>

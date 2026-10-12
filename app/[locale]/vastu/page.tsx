@@ -12,6 +12,8 @@ import { calculateVastuNumerology, VastuNumerologyResult } from '@/core/engine/v
 import { Input } from '@/frontend/components/ui/Input';
 import { DateInput } from '@/frontend/components/ui/DateInput';
 import { Button } from '@/frontend/components/ui/Button';
+import { PredictionCard } from '@/frontend/components/ui/PredictionCard';
+import { cn } from '@/frontend/utils';
 
 export default function VastuPage() {
   const t = useTranslations('vastuPage');
@@ -56,14 +58,14 @@ export default function VastuPage() {
               type="button"
               variant="outline"
               size="md"
+              icon={<RefreshCw className="w-4 h-4 text-[var(--gold)]" />}
               onClick={() => {
                 setInputName(profile.name || 'Rahul Sharma');
                 setInputDob(profile.dob || '1995-10-23');
               }}
-              className="w-full md:w-auto flex items-center justify-center gap-2"
+              className="w-full md:w-auto"
             >
-              <RefreshCw className="w-4 h-4 text-[var(--gold)] shrink-0" />
-              <span>{locale === 'hi' ? 'प्रोफ़ाइल से रीसेट करें' : 'Reset to Profile'}</span>
+              {locale === 'hi' ? 'प्रोफ़ाइल से रीसेट करें' : 'Reset to Profile'}
             </Button>
           </div>
         </div>
@@ -99,75 +101,74 @@ export default function VastuPage() {
           />
         </div>
 
-        <div className="lg:col-span-2 space-y-3">
-          <h3 className="text-base font-bold font-serif text-[var(--heading)] flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[var(--gold)]" />
-            {t('directionsAnalysis')}
-          </h3>
+        <div className="lg:col-span-2 space-y-4">
+          {/* 1. Empowered Directions Prediction (Green) */}
+          {vastu.directions.filter((d) => d.status === 'Empowered').length > 0 && (
+            <PredictionCard
+              title={`${locale === 'hi' ? 'सशक्त दिशा भविष्यफल' : 'Empowered Directions Prediction'} (${vastu.directions.filter((d) => d.status === 'Empowered').length})`}
+              intro={
+                locale === 'hi'
+                  ? 'जन्म ग्रिड में पूर्णतः सक्रिय और ऊर्जावान दिशाएं जो समृद्धि व सकारात्मकता प्रदान करती हैं'
+                  : 'Cardinal zones strongly activated by birth digits bringing natural vitality and prosperity'
+              }
+              variant="strengths"
+              itemKey="vastu:empowered_directions"
+              points={vastu.directions
+                .filter((d) => d.status === 'Empowered')
+                .map((dir) => ({
+                  id: `emp_${dir.number}`,
+                  heading: locale === 'hi' ? dir.directionHi : dir.directionEn,
+                  body: `${locale === 'hi' ? 'अनुशंसित कक्ष उपयोग:' : 'Recommended room usage:'} ${locale === 'hi' ? dir.roomUsageHi : dir.roomUsageEn}`,
+                  subline: `${locale === 'hi' ? 'वास्तु उपाय:' : 'Vastu remedy:'} ${locale === 'hi' ? dir.remedyHi : dir.remedyEn}`,
+                  itemKey: `vastu:dir:${dir.number}`
+                }))}
+            />
+          )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {vastu.directions.map((dir) => {
-              const isEmpowered = dir.status === 'Empowered';
-              const isDeficient = dir.status === 'Deficient / Missing';
-              const sectionKey = `vastu_dir_${dir.number}`;
-              const isAdded = !!reportSections?.[sectionKey];
+          {/* 2. Balanced Directions Prediction (Neutral) */}
+          {vastu.directions.filter((d) => d.status === 'Balanced').length > 0 && (
+            <PredictionCard
+              title={`${locale === 'hi' ? 'संतुलित दिशा भविष्यफल' : 'Balanced Directions Prediction'} (${vastu.directions.filter((d) => d.status === 'Balanced').length})`}
+              intro={
+                locale === 'hi'
+                  ? 'स्थिर और सामंजस्यपूर्ण दिशाएं जो नियमित कार्यों और स्थिरता के लिए उपयुक्त हैं'
+                  : 'Harmonious cardinal zones maintaining steady grounding and consistent domestic balance'
+              }
+              itemKey="vastu:balanced_directions"
+              points={vastu.directions
+                .filter((d) => d.status === 'Balanced')
+                .map((dir) => ({
+                  id: `bal_${dir.number}`,
+                  heading: locale === 'hi' ? dir.directionHi : dir.directionEn,
+                  body: `${locale === 'hi' ? 'अनुशंसित कक्ष उपयोग:' : 'Recommended room usage:'} ${locale === 'hi' ? dir.roomUsageHi : dir.roomUsageEn}`,
+                  subline: `${locale === 'hi' ? 'वास्तु उपाय:' : 'Vastu remedy:'} ${locale === 'hi' ? dir.remedyHi : dir.remedyEn}`,
+                  itemKey: `vastu:dir:${dir.number}`
+                }))}
+            />
+          )}
 
-              return (
-                <div
-                  key={dir.number}
-                  className={`p-3.5 rounded-2xl border space-y-2 ${
-                    isEmpowered
-                      ? 'bg-[var(--success-bg)]/60 border-[var(--success-border)]'
-                      : isDeficient
-                      ? 'bg-[var(--warn-bg)]/60 border-[var(--warn-border)]'
-                      : 'bg-[var(--surface)] border-[var(--border)]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-serif text-[var(--heading)]">
-                      {locale === 'hi' ? dir.directionHi : dir.directionEn} (Sector {dir.number})
-                    </span>
-                    <span
-                      className={`text-[9.5px] font-bold px-2 py-0.5 rounded-full border ${
-                        isEmpowered
-                          ? 'bg-[var(--success-bg)] text-[var(--success-text)] border-[var(--success-border)]'
-                          : isDeficient
-                          ? 'bg-[var(--warn-bg)] text-[var(--warn-text)] border-[var(--warn-border)]'
-                          : 'bg-[var(--chip-bg)] text-[var(--text-muted)] border-[var(--border)]'
-                      }`}
-                    >
-                      {locale === 'hi' ? dir.statusHi : dir.status}
-                    </span>
-                  </div>
-
-                  <p className="text-[11.5px] text-[var(--text)] leading-relaxed">
-                    <strong className="text-[var(--heading)]">{t('roomRecommendation')}: </strong>
-                    {locale === 'hi' ? dir.roomUsageHi : dir.roomUsageEn}
-                  </p>
-
-                  <div className="pt-1.5 text-[11px] text-[var(--gold)] font-medium leading-relaxed border-t border-[var(--border)]">
-                    <strong className="text-[var(--heading)]">{t('directionRemedy')}: </strong>
-                    {locale === 'hi' ? dir.remedyHi : dir.remedyEn}
-                  </div>
-
-                  <div className="pt-1 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => toggleReportSection(sectionKey)}
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold cursor-pointer ${
-                        isAdded
-                          ? 'bg-[var(--success-bg)] text-[var(--success-text)]'
-                          : 'bg-[var(--surface)] border border-[var(--border)] text-[var(--gold)] hover:bg-[var(--chip-bg)]'
-                      }`}
-                    >
-                      {isAdded ? <Check className="w-2.5 h-2.5" /> : <Plus className="w-2.5 h-2.5" />}
-                      <span>{isAdded ? 'In Report' : 'Add to report'}</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {/* 3. Deficient / Missing Directions Prediction (Amber) */}
+          {vastu.directions.filter((d) => d.status === 'Deficient / Missing').length > 0 && (
+            <PredictionCard
+              title={`${locale === 'hi' ? 'अभावग्रस्त / अनुपस्थित दिशा भविष्यफल' : 'Deficient / Missing Directions Prediction'} (${vastu.directions.filter((d) => d.status === 'Deficient / Missing').length})`}
+              intro={
+                locale === 'hi'
+                  ? 'अंकों के अभाव वाली दिशाएं जहां संतुलन और वास्तु उपायों की आवश्यकता है'
+                  : 'Zones lacking numeric activation requiring conscious remedial alignment and color therapy'
+              }
+              variant="cautions"
+              itemKey="vastu:deficient_directions"
+              points={vastu.directions
+                .filter((d) => d.status === 'Deficient / Missing')
+                .map((dir) => ({
+                  id: `def_${dir.number}`,
+                  heading: locale === 'hi' ? dir.directionHi : dir.directionEn,
+                  body: `${locale === 'hi' ? 'अनुशंसित कक्ष उपयोग:' : 'Recommended room usage:'} ${locale === 'hi' ? dir.roomUsageHi : dir.roomUsageEn}`,
+                  subline: `${locale === 'hi' ? 'वास्तु उपाय:' : 'Vastu remedy:'} ${locale === 'hi' ? dir.remedyHi : dir.remedyEn}`,
+                  itemKey: `vastu:dir:${dir.number}`
+                }))}
+            />
+          )}
         </div>
       </div>
     </div>

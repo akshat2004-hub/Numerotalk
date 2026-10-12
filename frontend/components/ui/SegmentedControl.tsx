@@ -39,15 +39,19 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(opt.value)}
             className={cn(
-              'flex items-center justify-center gap-1.5 font-medium transition-all rounded-lg cursor-pointer',
-              size === 'sm' ? 'px-2.5 py-1 text-[11px]' : 'px-3.5 py-1.5 text-xs',
+              'inline-flex flex-row items-center justify-center gap-1.5 font-medium transition-all rounded-[10px] cursor-pointer whitespace-nowrap select-none leading-none shrink-0',
+              size === 'sm' ? 'px-2.5 py-1 text-[11px] [&_svg]:w-3 [&_svg]:h-3' : 'px-3.5 py-1.5 text-xs [&_svg]:w-3.5 [&_svg]:h-3.5',
               isActive
                 ? 'bg-[var(--seg-active)] text-[var(--heading)] font-semibold shadow-xs'
                 : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
             )}
           >
-            {opt.icon && <span className="shrink-0">{opt.icon}</span>}
-            <span>{opt.label}</span>
+            {opt.icon && (
+              <span className="shrink-0 flex items-center justify-center leading-none [&>svg]:block [&>svg]:shrink-0 [&>svg]:m-0">
+                {opt.icon}
+              </span>
+            )}
+            <span className="whitespace-nowrap leading-none">{opt.label}</span>
           </button>
         );
       })}

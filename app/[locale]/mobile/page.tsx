@@ -7,6 +7,7 @@ import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
+import { Button } from '@/frontend/components/ui/Button';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { analyzeMobileNumber, calculateMulank, MobileAnalysisResult } from '@/frontend';
 import pairMeaningsData from '@/mocks/rules/pair-meanings.json';
@@ -93,14 +94,15 @@ export default function MobilePage() {
             placeholder={locale === 'hi' ? '10 अंकों का मोबाइल नंबर दर्ज करें...' : 'Enter 10 digit mobile...'}
             className="flex-1 w-full h-[44px] px-[14px] rounded-[12px] bg-[var(--surface)] border border-[var(--input-border)] text-[16px] font-mono text-[var(--heading)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold)] focus:ring-2 focus:ring-[var(--gold)]/20 outline-hidden transition-all leading-[1.5] lining-nums"
           />
-          <button
-            type="button"
+          <Button
+            size="md"
+            variant="gold"
+            icon={<Sparkles className="w-4 h-4 stroke-[2]" />}
             onClick={() => setInputMobile(profile.mobile || '9876543210')}
-            className="btn-gold-gradient h-[44px] px-5 rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 cursor-pointer shrink-0 w-full sm:w-auto shadow-[0_4px_12px_rgba(201,131,16,0.25)]"
+            className="w-full sm:w-auto"
           >
-            <Sparkles className="w-4 h-4 stroke-[2]" />
-            <span>{locale === 'hi' ? 'कंपन विश्लेषण करें' : 'Analyze Vibrations'}</span>
-          </button>
+            {locale === 'hi' ? 'कंपन विश्लेषण करें' : 'Analyze Vibrations'}
+          </Button>
         </div>
       </div>
 
@@ -315,9 +317,9 @@ export default function MobilePage() {
                 analysis.auspiciousPairs.map((p, idx) => (
                   <div
                     key={`ausp-${idx}`}
-                    className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
+                    className="p-3 sm:p-3.5 flex items-start sm:items-center gap-2.5 sm:gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs mt-0.5 sm:mt-0">
                       {p.pair}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -333,7 +335,7 @@ export default function MobilePage() {
                       <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
                         {locale === 'hi' ? p.titleHi : p.titleEn}
                       </h5>
-                      <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                      <p className="text-[11.5px] text-[var(--text-muted)] leading-snug line-clamp-2">
                         {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
                       </p>
                     </div>
@@ -368,9 +370,9 @@ export default function MobilePage() {
                 analysis.neutralPairs.map((p, idx) => (
                   <div
                     key={`neut-${idx}`}
-                    className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
+                    className="p-3 sm:p-3.5 flex items-start sm:items-center gap-2.5 sm:gap-3.5 hover:bg-[var(--surface-muted)]/40 transition-colors"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] border border-[var(--border)] font-mono font-bold text-base text-[var(--heading)] flex items-center justify-center shrink-0 lining-nums shadow-2xs mt-0.5 sm:mt-0">
                       {p.pair}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -386,7 +388,7 @@ export default function MobilePage() {
                       <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
                         {locale === 'hi' ? p.titleHi : p.titleEn}
                       </h5>
-                      <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                      <p className="text-[11.5px] text-[var(--text-muted)] leading-snug line-clamp-2">
                         {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
                       </p>
                     </div>
@@ -403,7 +405,7 @@ export default function MobilePage() {
 
         {/* Challenging Pairs: Full-width section below ONLY when count > 0 */}
         {analysis.challengingPairsCount > 0 && (
-          <div className="vedic-card border-t-[3px] border-t-[var(--warn-border)] p-0 overflow-hidden shadow-xs mt-3">
+          <div className="vedic-card border-t-[3px] border-t-[var(--warn-border)] p-0 overflow-hidden shadow-xs mt-3 mb-8 sm:mb-12">
             <div className="p-4 border-b border-[var(--border)] bg-[var(--warn-bg)]/40 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-[var(--warn-text)] shrink-0" />
@@ -420,9 +422,9 @@ export default function MobilePage() {
               {analysis.challengingPairs.map((p, idx) => (
                 <div
                   key={`chall-${idx}`}
-                  className="p-3.5 flex items-center gap-3.5 hover:bg-[var(--active-bg)] transition-colors"
+                  className="p-3 sm:p-3.5 flex items-start sm:items-center gap-2.5 sm:gap-3.5 hover:bg-[var(--active-bg)] transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[var(--warn-bg)] border border-[var(--warn-border)] font-mono font-bold text-base text-[var(--warn-text)] flex items-center justify-center shrink-0 lining-nums shadow-2xs">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--warn-bg)] border border-[var(--warn-border)] font-mono font-bold text-base text-[var(--warn-text)] flex items-center justify-center shrink-0 lining-nums shadow-2xs mt-0.5 sm:mt-0">
                     {p.pair}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -438,7 +440,7 @@ export default function MobilePage() {
                     <h5 className="text-[13px] font-bold text-[var(--heading)] truncate">
                       {locale === 'hi' ? p.titleHi : p.titleEn}
                     </h5>
-                    <p className="text-[11.5px] text-[var(--text-muted)] truncate">
+                    <p className="text-[11.5px] text-[var(--text-muted)] leading-snug line-clamp-2">
                       {locale === 'hi' ? p.descriptionHi : p.descriptionEn}
                     </p>
                   </div>

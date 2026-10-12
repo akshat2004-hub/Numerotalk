@@ -8,14 +8,16 @@ import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { Button } from '@/frontend/components/ui/Button';
 import { Input } from '@/frontend/components/ui/Input';
 import { Select } from '@/frontend/components/ui/Select';
+import { cn } from '@/frontend/utils';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { numerologyService } from '@/frontend';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { RemedyMasterItem } from '@/types';
 
 export default function RemediesPage() {
   const t = useTranslations('remediesPage');
   const locale = (useLocale() || 'en') as 'en' | 'hi';
-  const { reportSections, toggleReportSection, addCustomRemedy } = useNumerologyStore();
+  const { addCustomRemedy } = useNumerologyStore();
 
   const [remedies, setRemedies] = useState<RemedyMasterItem[]>([]);
 
@@ -133,25 +135,16 @@ export default function RemediesPage() {
             />
           </div>
 
-          {/* Submit Button: Single line, icon 16px inline left, md button (40px high, 14px text, px 16) */}
+          {/* Submit Button: Save Remedy */}
           <div className="w-full lg:w-auto shrink-0">
             <Button
               type="submit"
               variant="primary"
               size="md"
-              className="w-full lg:w-auto whitespace-nowrap"
+              icon={customAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              className="w-full lg:w-auto"
             >
-              {customAdded ? (
-                <>
-                  <Check className="w-4 h-4 mr-1.5" />
-                  <span>{locale === 'hi' ? 'जोड़ा गया!' : 'Added!'}</span>
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-1.5" />
-                  <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to Report'}</span>
-                </>
-              )}
+              {customAdded ? (locale === 'hi' ? 'सहेजा गया!' : 'Saved!') : (locale === 'hi' ? 'उपाय सहेजें' : 'Save Remedy')}
             </Button>
           </div>
         </form>
@@ -175,9 +168,6 @@ export default function RemediesPage() {
             {/* Remedies Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {group.items.map((rem) => {
-                const sectionKey = `remedy_${rem.id}`;
-                const isAdded = !!reportSections?.[sectionKey];
-
                 return (
                   <div
                     key={rem.id}
@@ -216,27 +206,7 @@ export default function RemediesPage() {
                         <span>{locale === 'hi' ? rem.bestDayTime.hi : rem.bestDayTime.en}</span>
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={() => toggleReportSection(sectionKey)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                          isAdded
-                            ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
-                            : 'bg-[var(--chip-bg)] text-[var(--gold)] hover:bg-[var(--active-bg)] border border-[var(--border)]'
-                        }`}
-                      >
-                        {isAdded ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                            <span>{locale === 'hi' ? 'रिपोर्ट में शामिल' : 'In Report'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Plus className="w-3.5 h-3.5 text-[var(--gold)]" />
-                            <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to report'}</span>
-                          </>
-                        )}
-                      </button>
+                      <ReportCheckbox itemKey={`remedies:${rem.id}`} />
                     </div>
                   </div>
                 );

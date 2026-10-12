@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { KeyRound, RefreshCw, Copy, Check, ShieldCheck, Sparkles, SlidersHorizontal, FileText } from 'lucide-react';
+import { KeyRound, RefreshCw, Copy, Check, ShieldCheck, Sparkles, SlidersHorizontal } from 'lucide-react';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { ProfileEmptyBanner } from '@/frontend/components/ProfileEmptyBanner';
 import { Select } from '@/frontend/components/ui/Select';
+import { Button, IconButton } from '@/frontend/components/ui/Button';
+import { ReportCheckbox } from '@/frontend/components/ui/ReportCheckbox';
 import { useNumerologyStore } from '@/frontend/store/useNumerologyStore';
 import { recommendProfessions, PROFESSIONS_LIST, ProfessionItem } from '@/core/engine/profession';
 import { generateSecurePassword, generateSecurePin, GeneratedPasswordMatch, GeneratedPinMatch } from '@/core/engine/security';
@@ -17,8 +19,6 @@ export default function PinPasswordPage() {
   const profile = useNumerologyStore((s) => s.profile);
   const storedProfession = useNumerologyStore((s) => s.selectedProfession);
   const setSelectedProfession = useNumerologyStore((s) => s.setSelectedProfession);
-  const toggleReportSection = useNumerologyStore((s) => s.toggleReportSection);
-  const reportSections = useNumerologyStore((s) => s.reportSections);
 
   // Recommendations from Module 10
   const recommendedList = useMemo(() => recommendProfessions(profile, 3), [profile]);
@@ -56,7 +56,6 @@ export default function PinPasswordPage() {
 
   // Copy feedback state
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [addedReport, setAddedReport] = useState<boolean>(false);
 
   // Generator handler
   const generateAll = useCallback(() => {
@@ -126,14 +125,6 @@ export default function PinPasswordPage() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const handleAddToReport = () => {
-    if (!reportSections.pinPassword) {
-      toggleReportSection('pinPassword');
-    }
-    setAddedReport(true);
-    setTimeout(() => setAddedReport(false), 2500);
-  };
-
   // Build partitioned profession dropdown options
   const recommendedIds = useMemo(() => new Set(recommendedList.map((r) => r.profession.id)), [recommendedList]);
   const otherProfessions = useMemo(() => PROFESSIONS_LIST.filter((p) => !recommendedIds.has(p.id)), [recommendedIds]);
@@ -182,9 +173,9 @@ export default function PinPasswordPage() {
         </Select>
 
         {/* Step 2: Options Row */}
-        <div className="pt-2 border-t border-[var(--border)] flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        <div className="pt-2 border-t border-[var(--border)] flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-5">
           {/* Length Slider */}
-          <div className="flex-1 max-w-sm space-y-1.5">
+          <div className="w-full md:max-w-xs lg:max-w-sm space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-[var(--heading)] flex items-center gap-1.5">
                 <SlidersHorizontal className="w-3.5 h-3.5 text-[var(--gold)]" />
@@ -200,7 +191,7 @@ export default function PinPasswordPage() {
               max={20}
               value={pwdLength}
               onChange={(e) => setPwdLength(Number(e.target.value))}
-              className="w-full h-2 bg-[var(--surface-muted)] rounded-lg appearance-none cursor-pointer accent-[var(--gold)]"
+              className="w-full h-2 bg-[var(--border)] rounded-lg appearance-none cursor-pointer accent-[var(--gold)]"
             />
             <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-mono lining-nums">
               <span>8</span>
@@ -210,7 +201,7 @@ export default function PinPasswordPage() {
           </div>
 
           {/* Toggles: Uppercase and Symbols */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
@@ -237,39 +228,44 @@ export default function PinPasswordPage() {
           </div>
 
           {/* One Medium Gold Generate Button */}
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="md"
+            icon={<Sparkles className="w-4 h-4 stroke-[2]" />}
             onClick={generateAll}
-            className="btn-gold-gradient h-[42px] px-6 rounded-[12px] text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer shrink-0 shadow-[0_4px_12px_rgba(201,131,16,0.25)] hover:scale-[1.01] active:scale-[0.99] transition-all"
+            className="w-full sm:w-auto"
           >
-            <Sparkles className="w-4 h-4 stroke-[2]" />
-            <span>{locale === 'hi' ? 'बनाएं' : 'Generate'}</span>
-          </button>
+            {locale === 'hi' ? 'बनाएं' : 'Generate'}
+          </Button>
         </div>
       </div>
 
       {/* Results Section: "Password Matches" */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
           <h3 className="font-serif font-bold text-base sm:text-lg text-[var(--heading)] flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-[var(--gold)]" />
             <span>{locale === 'hi' ? 'पासवर्ड मैच' : 'Password Matches'}</span>
           </h3>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[var(--text-muted)] font-medium">
-              {locale === 'hi' ? 'शुभ अंक योग:' : 'Harmonized Lucky Sum:'}
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-[var(--chip-bg)] border border-[var(--gold)]/40 text-xs font-bold text-[var(--gold)] lining-nums">
-              {luckyTargetSum}
-            </span>
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-xs text-[var(--text-muted)] font-medium">
+                {locale === 'hi' ? 'शुभ अंक योग:' : 'Harmonized Lucky Sum:'}
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[var(--chip-bg)] border border-[var(--gold)]/40 text-xs font-bold text-[var(--gold)] lining-nums">
+                {luckyTargetSum}
+              </span>
+            </div>
+            <ReportCheckbox itemKey="pin-password:matches" title={locale === 'hi' ? 'रिपोर्ट में शामिल करें' : 'Include in report'} />
           </div>
         </div>
 
         {/* ONE Card with 2 Groups: 3 Passwords + 2 PINs */}
         <div className="vedic-card p-0 overflow-hidden divide-y divide-[var(--border)] shadow-xs">
           {/* Group 1 Header: Passwords */}
-          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex items-center justify-between">
+          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex flex-wrap items-center justify-between gap-1.5">
             <span className="text-xs uppercase tracking-wider font-bold text-[var(--gold)]">
               {locale === 'hi' ? 'सुरक्षित पासवर्ड (3 विकल्प)' : 'Secure Passwords (3 Matches)'}
             </span>
@@ -285,28 +281,28 @@ export default function PinPasswordPage() {
             return (
               <div
                 key={rowKey}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors"
+                className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors"
               >
                 {/* Value */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="w-6 text-xs text-[var(--text-muted)] font-mono text-center shrink-0 lining-nums">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  <span className="w-5 sm:w-6 text-xs text-[var(--text-muted)] font-mono text-center shrink-0 lining-nums">
                     #{idx + 1}
                   </span>
-                  <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-wider select-all truncate lining-nums">
+                  <span className="font-mono text-sm sm:text-[16px] font-bold text-[var(--heading)] tracking-wider select-all truncate lining-nums">
                     {pwd.password}
                   </span>
                 </div>
 
                 {/* Badges + Actions */}
-                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-center">
                   {/* Match Badge */}
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
+                  <span className="px-2 sm:px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                     Match {pwd.matchPercentage}%
                   </span>
 
                   {/* Strength Meter Badge */}
                   <span
-                    className={`px-2 py-0.5 rounded-md text-xs font-medium border ${
+                    className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium border ${
                       pwd.strength === 'Very Strong'
                         ? 'bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)]'
                         : pwd.strength === 'Strong'
@@ -318,40 +314,37 @@ export default function PinPasswordPage() {
                   </span>
 
                   {/* Per-row regenerate */}
-                  <button
-                    type="button"
+                  <IconButton
+                    size="sm"
+                    variant="outline"
+                    icon={<RefreshCw className="w-3.5 h-3.5" />}
                     onClick={() => regeneratePasswordRow(idx)}
-                    title={locale === 'hi' ? 'नया पासवर्ड बनाएं' : 'Regenerate this password'}
-                    className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                  </button>
+                    aria-label={locale === 'hi' ? 'नया पासवर्ड बनाएं' : 'Regenerate this password'}
+                    tooltip={locale === 'hi' ? 'नया पासवर्ड बनाएं' : 'Regenerate this password'}
+                  />
 
                   {/* Copy Button */}
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(pwd.password, rowKey)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
-                  >
-                    {isCopied ? (
-                      <>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    icon={
+                      isCopied ? (
                         <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                        <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
-                      </>
-                    ) : (
-                      <>
+                      ) : (
                         <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                        <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
-                      </>
-                    )}
-                  </button>
+                      )
+                    }
+                    onClick={() => copyToClipboard(pwd.password, rowKey)}
+                  >
+                    {isCopied ? (locale === 'hi' ? 'कॉपी हुआ' : 'Copied') : (locale === 'hi' ? 'कॉपी' : 'Copy')}
+                  </Button>
                 </div>
               </div>
             );
           })}
 
           {/* Group 2 Header: PINs */}
-          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex items-center justify-between border-t border-[var(--border)]">
+          <div className="p-3.5 bg-[var(--surface-muted)]/40 flex flex-wrap items-center justify-between gap-1.5 border-t border-[var(--border)]">
             <span className="text-xs uppercase tracking-wider font-bold text-[var(--gold)]">
               {locale === 'hi' ? 'शुभ अंक पिन (4 व 6 अंक)' : 'Auspicious PIN Matches (4 & 6 Digits)'}
             </span>
@@ -362,124 +355,97 @@ export default function PinPasswordPage() {
 
           {/* PIN 4 Row */}
           {pin4 && (
-            <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
-              <div className="flex items-center gap-3">
+            <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span className="px-2 py-0.5 rounded-md bg-[var(--surface-muted)] text-[11px] font-bold text-[var(--text-muted)] shrink-0">
                   4-Digit
                 </span>
-                <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
+                <span className="font-mono text-sm sm:text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
                   {pin4.pin}
                 </span>
-                <span className="text-xs text-[var(--text-muted)] lining-nums">
+                <span className="text-[11px] sm:text-xs text-[var(--text-muted)] lining-nums">
                   (Sum {pin4.sum} → {pin4.reduced})
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-center">
+                <span className="px-2 sm:px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   Match {pin4.matchPercentage}%
                 </span>
 
-                <button
-                  type="button"
+                <IconButton
+                  size="sm"
+                  variant="outline"
+                  icon={<RefreshCw className="w-3.5 h-3.5" />}
                   onClick={() => regeneratePinRow(4)}
-                  title={locale === 'hi' ? 'नया 4-अंकीय पिन बनाएं' : 'Regenerate 4-digit PIN'}
-                  className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </button>
+                  aria-label={locale === 'hi' ? 'नया 4-अंकीय पिन बनाएं' : 'Regenerate 4-digit PIN'}
+                  tooltip={locale === 'hi' ? 'नया 4-अंकीय पिन बनाएं' : 'Regenerate 4-digit PIN'}
+                />
 
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard(pin4.pin, 'pin-4')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
-                >
-                  {copiedKey === 'pin-4' ? (
-                    <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon={
+                    copiedKey === 'pin-4' ? (
                       <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                      <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
-                    </>
-                  ) : (
-                    <>
+                    ) : (
                       <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                      <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
-                    </>
-                  )}
-                </button>
+                    )
+                  }
+                  onClick={() => copyToClipboard(pin4.pin, 'pin-4')}
+                >
+                  {copiedKey === 'pin-4' ? (locale === 'hi' ? 'कॉपी हुआ' : 'Copied') : (locale === 'hi' ? 'कॉपी' : 'Copy')}
+                </Button>
               </div>
             </div>
           )}
 
           {/* PIN 6 Row */}
           {pin6 && (
-            <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
-              <div className="flex items-center gap-3">
+            <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[var(--surface-muted)]/20 transition-colors">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span className="px-2 py-0.5 rounded-md bg-[var(--surface-muted)] text-[11px] font-bold text-[var(--text-muted)] shrink-0">
                   6-Digit
                 </span>
-                <span className="font-mono text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
+                <span className="font-mono text-sm sm:text-[16px] font-bold text-[var(--heading)] tracking-[0.25em] select-all lining-nums">
                   {pin6.pin}
                 </span>
-                <span className="text-xs text-[var(--text-muted)] lining-nums">
+                <span className="text-[11px] sm:text-xs text-[var(--text-muted)] lining-nums">
                   (Sum {pin6.sum} → {pin6.reduced})
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0 self-start sm:self-center">
+                <span className="px-2 sm:px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-semibold bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--success-border)] lining-nums">
                   Match {pin6.matchPercentage}%
                 </span>
 
-                <button
-                  type="button"
+                <IconButton
+                  size="sm"
+                  variant="outline"
+                  icon={<RefreshCw className="w-3.5 h-3.5" />}
                   onClick={() => regeneratePinRow(6)}
-                  title={locale === 'hi' ? 'नया 6-अंकीय पिन बनाएं' : 'Regenerate 6-digit PIN'}
-                  className="p-1.5 rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors cursor-pointer"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </button>
+                  aria-label={locale === 'hi' ? 'नया 6-अंकीय पिन बनाएं' : 'Regenerate 6-digit PIN'}
+                  tooltip={locale === 'hi' ? 'नया 6-अंकीय पिन बनाएं' : 'Regenerate 6-digit PIN'}
+                />
 
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard(pin6.pin, 'pin-6')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--surface-muted)] border border-[var(--border)] hover:border-[var(--gold)] transition-colors cursor-pointer text-[var(--heading)]"
-                >
-                  {copiedKey === 'pin-6' ? (
-                    <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon={
+                    copiedKey === 'pin-6' ? (
                       <Check className="w-3.5 h-3.5 text-[var(--success-text)]" />
-                      <span className="text-[var(--success-text)] font-bold">{locale === 'hi' ? 'कॉपी हुआ' : 'Copied'}</span>
-                    </>
-                  ) : (
-                    <>
+                    ) : (
                       <Copy className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                      <span>{locale === 'hi' ? 'कॉपी' : 'Copy'}</span>
-                    </>
-                  )}
-                </button>
+                    )
+                  }
+                  onClick={() => copyToClipboard(pin6.pin, 'pin-6')}
+                >
+                  {copiedKey === 'pin-6' ? (locale === 'hi' ? 'कॉपी हुआ' : 'Copied') : (locale === 'hi' ? 'कॉपी' : 'Copy')}
+                </Button>
               </div>
             </div>
           )}
-        </div>
-
-        {/* Add to Report Button */}
-        <div className="flex justify-end pt-2">
-          <button
-            type="button"
-            onClick={handleAddToReport}
-            className="btn-gold-gradient px-5 py-2.5 rounded-[12px] text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs hover:scale-[1.01] transition-transform"
-          >
-            {addedReport ? (
-              <>
-                <Check className="w-4 h-4 text-white" />
-                <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ा गया!' : 'Added to Report!'}</span>
-              </>
-            ) : (
-              <>
-                <FileText className="w-4 h-4" />
-                <span>{locale === 'hi' ? 'रिपोर्ट में जोड़ें' : 'Add to Report'}</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
     </div>

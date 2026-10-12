@@ -30,6 +30,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SectionHeader } from '@/frontend/components/ui/SectionHeader';
 import { PdfSectionPicker, SectionPickerItem } from '@/frontend/components/ui/PdfSectionPicker';
+import { Button } from '@/frontend/components/ui/Button';
 import { NumberBadge } from '@/frontend/components/ui/NumberBadge';
 import { CompoundNumber } from '@/frontend/components/ui/CompoundNumber';
 import { VedicGrid } from '@/frontend/components/VedicGrid';
@@ -74,13 +75,42 @@ export default function FinalReportPage() {
     reportSections,
     toggleReportSection,
     selectAllReportSections,
-    deselectAllReportSections
+    deselectAllReportSections,
+    reportSelection,
+    toggleReportItem,
+    clearReportSelection
   } = useNumerologyStore();
 
   const isProfileEmpty = !profile.name || !profile.dob;
   const [newRemedyInput, setNewRemedyInput] = useState('');
   const [exportLanguage, setExportLanguage] = useState<'en' | 'hi'>(locale);
   const [isDownloading, setIsDownloading] = useState(false);
+
+  const MODULE_NAMES: Record<string, string> = {
+    personality: locale === 'hi' ? 'व्यक्तित्व एवं गुण' : 'Personality & Strengths',
+    destiny: locale === 'hi' ? 'नामांक फलादेश' : 'Destiny Prediction',
+    combination: locale === 'hi' ? 'संयोजन फलादेश' : 'Combination Prediction',
+    repeating: locale === 'hi' ? 'दोहराए गए अंक' : 'Repeating Number Prediction',
+    missing: locale === 'hi' ? 'अनुपस्थित अंक' : 'Missing Number Prediction',
+    name: locale === 'hi' ? 'नाम फलादेश' : 'Name Prediction',
+    yearly: locale === 'hi' ? 'वार्षिक योग फलादेश' : 'Yearly Yog Prediction',
+    vastu: locale === 'hi' ? 'वास्तु दिशा फलादेश' : 'Vastu Directions Prediction',
+    events: locale === 'hi' ? '14 जीवन घटनाएं' : '14 Life Events Prediction',
+    remedies: locale === 'hi' ? 'वैदिक उपाय' : 'Prescribed Remedies',
+    number: locale === 'hi' ? '1-108 अंक रहस्य' : 'Number 1-108 Meaning',
+    pin_password: locale === 'hi' ? 'पिन व पासवर्ड' : 'PIN & Password',
+    general: locale === 'hi' ? 'सामान्य' : 'General',
+  };
+
+  const groupedSelectedItems = useMemo(() => {
+    const groups: Record<string, string[]> = {};
+    for (const itemKey of reportSelection) {
+      const mod = itemKey.split(':')[0] || 'general';
+      if (!groups[mod]) groups[mod] = [];
+      groups[mod].push(itemKey);
+    }
+    return groups;
+  }, [reportSelection]);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -300,47 +330,47 @@ export default function FinalReportPage() {
           className="mb-0"
         />
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {/* Language selector for PDF export */}
-          <div className="flex items-center gap-1 p-0.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs font-semibold">
-            <Globe className="w-3.5 h-3.5 text-[var(--gold)] ml-1.5" />
+          <div className="flex items-center gap-1 p-0.5 rounded-[12px] bg-[var(--surface)] border border-[var(--border)] text-xs font-semibold">
+            <Globe className="w-3.5 h-3.5 text-[var(--gold)] ml-1.5 shrink-0 block m-0" />
             <button
               type="button"
               onClick={() => setExportLanguage('en')}
-              className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${
+              className={`inline-flex flex-row items-center justify-center px-2.5 py-1 rounded-[10px] cursor-pointer transition-colors whitespace-nowrap leading-none shrink-0 ${
                 exportLanguage === 'en'
                   ? 'bg-[var(--chip-bg)] text-[var(--gold)] font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
               }`}
             >
-              English
+              <span className="whitespace-nowrap leading-none">English</span>
             </button>
             <button
               type="button"
               onClick={() => setExportLanguage('hi')}
-              className={`px-2.5 py-1 rounded-lg cursor-pointer transition-colors ${
+              className={`inline-flex flex-row items-center justify-center px-2.5 py-1 rounded-[10px] cursor-pointer transition-colors whitespace-nowrap leading-none shrink-0 ${
                 exportLanguage === 'hi'
                   ? 'bg-[var(--chip-bg)] text-[var(--heading)] font-bold'
                   : 'text-[var(--text-muted)] hover:text-[var(--heading)]'
               }`}
             >
-              हिंदी
+              <span className="whitespace-nowrap leading-none">हिंदी</span>
             </button>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="md"
+            icon={<Download className="w-4 h-4 stroke-[2]" />}
             onClick={handleDownloadPdf}
             disabled={isDownloading}
-            className="btn-gold-gradient h-[38px] px-4 text-xs font-semibold flex items-center gap-1.5 shrink-0 disabled:opacity-50 cursor-pointer rounded-xl text-white shadow-xs"
+            className="w-full sm:w-auto"
           >
-            <Download className="w-4 h-4" />
-            <span>
-              {isDownloading
-                ? (locale === 'hi' ? 'संपूर्ण पीडीएफ बन रही है...' : 'Generating Full PDF...')
-                : (locale === 'hi' ? 'संपूर्ण पीडीएफ डाउनलोड करें' : 'Download Complete PDF')}
-            </span>
-          </button>
+            {isDownloading
+              ? (locale === 'hi' ? 'संपूर्ण पीडीएफ बन रही है...' : 'Generating Full PDF...')
+              : (locale === 'hi' ? 'संपूर्ण पीडीएफ डाउनलोड करें' : 'Download Complete PDF')}
+          </Button>
         </div>
       </div>
 
@@ -354,6 +384,73 @@ export default function FinalReportPage() {
         onDeselectAll={deselectAllReportSections}
         currentLocale={exportLanguage}
       />
+
+      {/* Selected Items Grouped by Module with Untick Option */}
+      <div className="vedic-card p-5 sm:p-6 space-y-4 rounded-[24px]">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+          <div>
+            <h4 className="font-serif text-base sm:text-lg font-bold text-[var(--heading)] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[var(--gold)]" />
+              {locale === 'hi' ? 'रिपोर्ट में चयनित बिंदु' : 'Selected Report Points'}
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--chip-bg)] text-[var(--gold)] font-sans border border-[var(--border)]">
+                {reportSelection.length}
+              </span>
+            </h4>
+            <p className="text-xs text-[var(--text-muted)]">
+              {locale === 'hi'
+                ? 'विभिन्न मॉड्यूल से आपके द्वारा चुने गए सभी बिंदु (हटाने हेतु अनचेक करें)'
+                : 'Points selected across modules for your final report (uncheck to remove)'}
+            </p>
+          </div>
+
+          {reportSelection.length > 0 && (
+            <button
+              type="button"
+              onClick={clearReportSelection}
+              className="h-8 px-3 rounded-[12px] text-xs font-semibold bg-[var(--surface)] text-[var(--warn-text)] border border-[var(--border)] hover:bg-[var(--warn-bg)] transition-colors cursor-pointer"
+            >
+              {locale === 'hi' ? 'सभी हटाएं' : 'Clear All'}
+            </button>
+          )}
+        </div>
+
+        {reportSelection.length === 0 ? (
+          <p className="text-xs text-[var(--text-muted)] italic py-2">
+            {locale === 'hi'
+              ? 'वर्तमान में कोई बिंदु चयनित नहीं है। ऐप में चेकबॉक्स द्वारा बिंदु जोड़ें।'
+              : 'No points selected yet. Check boxes across pages to include specific predictions and remedies.'}
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {Object.entries(groupedSelectedItems).map(([moduleKey, items]) => (
+              <div key={moduleKey} className="space-y-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--gold)] font-serif block">
+                  {MODULE_NAMES[moduleKey] || moduleKey} ({items.length})
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {items.map((itemKey) => (
+                    <div
+                      key={itemKey}
+                      className="p-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] flex items-center justify-between gap-2 text-xs"
+                    >
+                      <span className="truncate font-mono text-[11px] text-[var(--heading)]">
+                        {itemKey}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleReportItem(itemKey)}
+                        className="text-[11px] text-[var(--warn-text)] hover:underline shrink-0 cursor-pointer"
+                      >
+                        {locale === 'hi' ? 'हटाएं' : 'Untick'}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Add Custom Remedy Box */}
       <div className="vedic-card p-5 space-y-3.5 rounded-[24px]">
@@ -381,13 +478,14 @@ export default function FinalReportPage() {
             }
             className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-[var(--surface)] border border-[var(--input-border)] text-[var(--heading)] placeholder:text-[var(--text-muted)] focus:outline-hidden focus:border-[var(--gold)]"
           />
-          <button
+          <Button
             type="submit"
-            className="px-4 py-2 rounded-xl bg-[var(--chip-bg)] border border-[var(--border)] text-[var(--gold)] text-xs font-semibold hover:bg-[var(--active-bg)] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+            size="sm"
+            variant="secondary"
+            icon={<Plus className="w-3.5 h-3.5" />}
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>{locale === 'hi' ? 'जोड़ें' : 'Add Note'}</span>
-          </button>
+            {locale === 'hi' ? 'जोड़ें' : 'Add Note'}
+          </Button>
         </form>
 
         {customRemedies.length > 0 && (
@@ -405,7 +503,9 @@ export default function FinalReportPage() {
                   <button
                     type="button"
                     onClick={() => removeCustomRemedy(i)}
-                    className="text-[var(--warn-text)] hover:opacity-80 p-1 cursor-pointer transition-colors"
+                    aria-label={locale === 'hi' ? 'उपाय हटाएं' : 'Remove note'}
+                    title={locale === 'hi' ? 'उपाय हटाएं' : 'Remove note'}
+                    className="text-[var(--warn-text)] hover:opacity-80 p-1 cursor-pointer transition-colors inline-flex flex-row items-center justify-center shrink-0 leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -430,7 +530,7 @@ export default function FinalReportPage() {
 
         <div
           ref={previewRef}
-          className="p-6 sm:p-10 rounded-[24px] bg-[var(--bg)] border-2 border-[var(--border)] text-[var(--heading)] space-y-8 shadow-sm relative overflow-hidden font-sans"
+          className="p-3.5 sm:p-8 lg:p-10 rounded-[24px] bg-[var(--bg)] border-2 border-[var(--border)] text-[var(--heading)] space-y-8 shadow-sm relative overflow-hidden font-sans"
         >
           {/* Subtle printed mandala watermark 5% */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.04] flex items-center justify-center">

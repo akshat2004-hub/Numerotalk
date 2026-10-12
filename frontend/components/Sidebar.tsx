@@ -166,7 +166,8 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--heading)] border border-[var(--border)]"
+            aria-label="Close menu"
+            className="p-1.5 rounded-[12px] text-[var(--text-muted)] hover:text-[var(--heading)] border border-[var(--border)] inline-flex flex-row items-center justify-center shrink-0 leading-none [&_svg]:block [&_svg]:shrink-0 [&_svg]:m-0"
           >
             <X className="w-3.5 h-3.5 stroke-[1.5]" />
           </button>
@@ -178,7 +179,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             type="button"
             onClick={() => setUserDropdownOpen((v) => !v)}
             className={cn(
-              'w-full flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border select-none text-left',
+              'w-full inline-flex flex-row items-center justify-between p-2 rounded-[12px] transition-all cursor-pointer border select-none whitespace-nowrap leading-none shrink-0',
               userDropdownOpen
                 ? 'bg-[var(--chip-bg)]/80 border-[var(--gold)]/60 shadow-xs ring-1 ring-[var(--gold)]/20'
                 : 'bg-[var(--bg)] border-[var(--border)] hover:border-[var(--gold)]/40 hover:bg-[var(--chip-bg)]/30'
@@ -266,10 +267,10 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 <button
                   type="button"
                   onClick={() => setShowConfirmClear(true)}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl text-rose-600 hover:bg-rose-50 font-semibold text-xs border border-rose-200 transition-colors cursor-pointer"
+                  className="w-full inline-flex flex-row items-center justify-center gap-1.5 py-1.5 px-3 rounded-[12px] text-rose-600 hover:bg-rose-50 font-semibold text-xs border border-rose-200 transition-colors cursor-pointer whitespace-nowrap select-none leading-none shrink-0"
                 >
-                  <Trash2 className="w-3 h-3" />
-                  <span>{locale === 'hi' ? 'डेटा हटाएं' : 'Clear My Data'}</span>
+                  <Trash2 className="w-3 h-3 shrink-0 block m-0" />
+                  <span className="whitespace-nowrap leading-none">{locale === 'hi' ? 'डेटा हटाएं' : 'Clear My Data'}</span>
                 </button>
               </div>
             </div>
